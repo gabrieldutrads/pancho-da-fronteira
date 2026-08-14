@@ -14,12 +14,9 @@
     padding: 90px 0 85px;
 
     background:
-        radial-gradient(
-            circle at 85% 30%,
-            rgba(216, 155, 50, 0.14),
-            transparent 30%
-        ),
-        var(--color-primary);
+        radial-gradient(circle at 18% 18%, rgba(217, 165, 76, 0.2), transparent 18%),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.06), transparent 20%),
+        linear-gradient(135deg, #2f1d17 0%, #1e120f 38%, #2a201c 100%);
 
     color: var(--color-background);
 
@@ -30,56 +27,104 @@
     content: "";
 
     position: absolute;
+    right: 14%;
+    bottom: -120px;
 
-    right: 8%;
-    bottom: -35px;
-
-    width: 210px;
-    height: 210px;
+    width: 480px;
+    height: 480px;
 
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    background: radial-gradient(circle, rgba(255, 249, 239, 0.24) 0%, rgba(255, 249, 239, 0.04) 32%, transparent 68%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
 
-    opacity: 0.8;
-
+    opacity: 0.9;
     transform: rotate(-10deg);
+    animation: heroGlow 7s ease-in-out infinite alternate;
+}
+
+.menu-hero::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(90deg, rgba(19, 12, 10, 0.68), rgba(19, 12, 10, 0.2) 40%, rgba(19, 12, 10, 0.08) 100%);
 }
 
 .menu-hero-content {
     position: relative;
     z-index: 1;
+    animation: fadeUp 0.8s ease both;
 }
 
 .menu-hero .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(217, 165, 76, 0.12);
+    border: 1px solid rgba(217, 165, 76, 0.26);
     color: var(--color-secondary);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .menu-hero h1 {
-    max-width: 700px;
+    max-width: 760px;
 
-    margin-top: 12px;
+    margin-top: 22px;
 
     font-family: var(--font-heading);
 
-    font-size: clamp(3rem, 7vw, 5.5rem);
-
-    line-height: 0.95;
+    font-size: clamp(4.2rem, 7vw, 8rem);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    text-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
 }
 
 .menu-hero h1 span {
-    color: var(--color-secondary);
+    display: block;
+    background: linear-gradient(135deg, #f4d58d 0%, #d9a54c 45%, #f7d887 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .menu-hero p {
-    max-width: 520px;
+    max-width: 620px;
 
-    margin-top: 20px;
+    margin-top: 22px;
 
-    color: rgba(255, 248, 234, 0.68);
+    color: rgba(255, 248, 234, 0.74);
 
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     line-height: 1.7;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroGlow {
+    0% {
+        transform: scale(0.96) rotate(-10deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.06) rotate(-4deg);
+        opacity: 1;
+    }
 }
 
 
@@ -118,11 +163,11 @@
 .filter-button {
     flex-shrink: 0;
 
-    min-height: 42px;
+    min-height: 44px;
 
-    padding: 0 17px;
+    padding: 0 18px;
 
-    background: var(--color-white);
+    background: rgba(255, 255, 255, 0.8);
 
     color: var(--color-text-light);
 
@@ -130,16 +175,19 @@
 
     border-radius: 999px;
 
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 
     cursor: pointer;
 
+    box-shadow: 0 8px 18px rgba(43, 26, 20, 0.04);
     transition:
         background var(--transition),
         color var(--transition),
         border-color var(--transition),
-        transform var(--transition);
+        transform var(--transition),
+        box-shadow var(--transition);
 }
 
 .filter-button:hover {
@@ -148,14 +196,16 @@
     border-color: rgba(185, 71, 46, 0.25);
 
     color: var(--color-accent);
+    box-shadow: 0 12px 24px rgba(43, 26, 20, 0.08);
 }
 
 .filter-button.active {
-    background: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary), #4b2d25);
 
     border-color: var(--color-primary);
 
     color: var(--color-background);
+    box-shadow: 0 14px 28px rgba(43, 26, 20, 0.18);
 }
 
 
@@ -301,7 +351,7 @@
 ======================================== */
 
 .product-card {
-    background: var(--color-white);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 251, 246, 0.96));
 
     border: 1px solid rgba(58, 33, 24, 0.07);
 
@@ -309,8 +359,7 @@
 
     overflow: hidden;
 
-    box-shadow:
-        0 5px 20px rgba(58, 33, 24, 0.035);
+    box-shadow: 0 16px 34px rgba(43, 26, 20, 0.06);
 
     transition:
         transform 0.3s ease,
@@ -318,10 +367,9 @@
 }
 
 .product-card:hover {
-    transform: translateY(-7px);
+    transform: translateY(-8px) scale(1.01);
 
-    box-shadow:
-        0 18px 40px rgba(58, 33, 24, 0.10);
+    box-shadow: 0 24px 50px rgba(43, 26, 20, 0.12);
 }
 
 
