@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Confira o cardápio do Pancho da Fronteira. Panchos, combos, bebidas e promoções."
+    >
+
+    <title>Cardápio | Pancho da Fronteira</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/cardapio.css">
+</head>
+
+<body>
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="header">
+
+        <nav class="navbar container">
+
+            <a href="./index.html" class="logo">
+
+                <span class="logo-icon">
+                    🌭
+                </span>
+
+                <span class="logo-text">
+                    Pancho
+                    <small>da Fronteira</small>
+                </span>
+
+            </a>
+
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+
+            <div class="nav-menu" id="navMenu">
+
+                <a
+                    href="./index.html"
+                    class="nav-link"
+                >
+                    Início
+                </a>
+
+                <a
+                    href="./cardapio.html"
+                    class="nav-link active"
+                >
+                    Cardápio
+                </a>
+
+                <a
+                    href="./index.html#sobre"
+                    class="nav-link"
+                >
+                    Sobre nós
+                </a>
+
+                <a
+                    href="./index.html#localizacao"
+                    class="nav-link"
+                >
+                    Localização
+                </a>
+
+                <a
+                    href="./carrinho.html"
+                    class="cart-button"
+                >
+                    🛒
+
+                    <span>
+                        Carrinho
+                    </span>
+
+                    <strong id="cartCount">
+                        0
+                    </strong>
+
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <!-- ========================================
+             HERO DO CARDÁPIO
+        ========================================= -->
+
+        <section class="menu-hero">
+
+            <div class="container menu-hero-content">
+
+                <span class="section-tag">
+                    🌭 Nosso cardápio
+                </span>
+
+                <h1>
+                    Escolha seu
+                    <span>favorito.</span>
+                </h1>
+
+                <p>
+                    Preparado com carinho para deixar seu
+                    momento ainda mais gostoso.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================
+             CARDÁPIO
+        ========================================= -->
+
+        <section class="menu-section">
+
+            <div class="container">
+
+
+                <!-- FILTROS -->
+
+                <div
+                    class="category-filter"
+                    id="categoryFilter"
+                >
+
+                    <button
+                        class="filter-button active"
+                        data-category="todos"
+                    >
+                        Todos
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-category="panchos"
+                    >
+                        🌭 Panchos
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-category="combos"
+                    >
+                        🍟 Combos
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-category="bebidas"
+                    >
+                        🥤 Bebidas
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-category="promocoes"
+                    >
+                        🔥 Promoções
+                    </button>
+
+                </div>
+
+
+                <!-- BUSCA -->
+
+                <div class="menu-search">
+
+                    <label
+                        for="searchInput"
+                        class="sr-only"
+                    >
+                        Buscar produto
+                    </label>
+
+                    <span>
+                        🔎
+                    </span>
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="O que você está procurando?"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- =================================
+                     PANCHOS
+                ================================= -->
+
+                <section
+                    class="product-category"
+                    data-section="panchos"
+                >
+
+                    <div class="category-heading">
+
+                        <div>
+
+                            <span class="category-label">
+                                🌭 Especialidade da casa
+                            </span>
+
+                            <h2>
+                                Panchos
+                            </h2>
+
+                        </div>
+
+                        <p>
+                            Nosso clássico, preparado do
+                            jeitinho Pancho da Fronteira.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="products-grid"
+                        id="panchosProducts"
+                    >
+
+                        <!-- PRODUTO -->
+
+                        <article
+                            class="product-card"
+                            data-category="panchos"
+                            data-name="Pancho da Casa"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🌭
+                                </div>
+
+                                <span class="product-badge">
+                                    ⭐ Mais pedido
+                                </span>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Pancho da Casa
+                                </h3>
+
+                                <p>
+                                    Nosso clássico especial,
+                                    preparado com ingredientes
+                                    selecionados.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 24,90
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Pancho da Casa"
+                                        data-price="24.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- PRODUTO -->
+
+                        <article
+                            class="product-card"
+                            data-category="panchos"
+                            data-name="Pancho Especial"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🌭
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Pancho Especial
+                                </h3>
+
+                                <p>
+                                    Uma combinação especial
+                                    para quem gosta de sabor.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 27,90
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Pancho Especial"
+                                        data-price="27.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- PRODUTO -->
+
+                        <article
+                            class="product-card"
+                            data-category="panchos"
+                            data-name="Pancho Bacon"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🥓
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Pancho Bacon
+                                </h3>
+
+                                <p>
+                                    Para quem não abre mão
+                                    daquele toque defumado.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 28,90
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Pancho Bacon"
+                                        data-price="28.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     COMBOS
+                ================================= -->
+
+                <section
+                    class="product-category"
+                    data-section="combos"
+                >
+
+                    <div class="category-heading">
+
+                        <div>
+
+                            <span class="category-label">
+                                🍟 Para compartilhar
+                            </span>
+
+                            <h2>
+                                Combos
+                            </h2>
+
+                        </div>
+
+                        <p>
+                            A combinação perfeita para
+                            aproveitar com quem você gosta.
+                        </p>
+
+                    </div>
+
+
+                    <div class="products-grid">
+
+                        <article
+                            class="product-card"
+                            data-category="combos"
+                            data-name="Combo Família"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🍔
+                                </div>
+
+                                <span class="product-badge">
+                                    ❤️ Família
+                                </span>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Combo Família
+                                </h3>
+
+                                <p>
+                                    Uma opção completa para
+                                    compartilhar.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 59,90
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Combo Família"
+                                        data-price="59.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <article
+                            class="product-card"
+                            data-category="combos"
+                            data-name="Combo Dupla"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🍟
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Combo Dupla
+                                </h3>
+
+                                <p>
+                                    Ideal para dividir aquele
+                                    momento especial.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 44,90
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Combo Dupla"
+                                        data-price="44.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     BEBIDAS
+                ================================= -->
+
+                <section
+                    class="product-category"
+                    data-section="bebidas"
+                >
+
+                    <div class="category-heading">
+
+                        <div>
+
+                            <span class="category-label">
+                                🥤 Para acompanhar
+                            </span>
+
+                            <h2>
+                                Bebidas
+                            </h2>
+
+                        </div>
+
+                        <p>
+                            Para completar seu pedido.
+                        </p>
+
+                    </div>
+
+
+                    <div class="products-grid">
+
+                        <article
+                            class="product-card product-card-small"
+                            data-category="bebidas"
+                            data-name="Refrigerante Lata"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🥤
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Refrigerante Lata
+                                </h3>
+
+                                <p>
+                                    350ml
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 6,00
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Refrigerante Lata"
+                                        data-price="6.00"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <article
+                            class="product-card product-card-small"
+                            data-category="bebidas"
+                            data-name="Água"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    💧
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Água
+                                </h3>
+
+                                <p>
+                                    500ml
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <strong class="product-price">
+                                        R$ 4,00
+                                    </strong>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Água"
+                                        data-price="4.00"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     PROMOÇÕES
+                ================================= -->
+
+                <section
+                    class="product-category"
+                    data-section="promocoes"
+                >
+
+                    <div class="category-heading">
+
+                        <div>
+
+                            <span class="category-label">
+                                🔥 Aproveita!
+                            </span>
+
+                            <h2>
+                                Promoções
+                            </h2>
+
+                        </div>
+
+                        <p>
+                            Ofertas especiais por tempo
+                            limitado.
+                        </p>
+
+                    </div>
+
+
+                    <div class="products-grid">
+
+                        <article
+                            class="product-card product-card-promotion"
+                            data-category="promocoes"
+                            data-name="Combo Pancho + Bebida"
+                        >
+
+                            <div class="product-image">
+
+                                <div class="product-placeholder">
+                                    🔥
+                                </div>
+
+                                <span class="product-badge">
+                                    -20%
+                                </span>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <h3>
+                                    Pancho + Bebida
+                                </h3>
+
+                                <p>
+                                    Um Pancho especial acompanhado
+                                    de uma bebida.
+                                </p>
+
+
+                                <div class="product-bottom">
+
+                                    <div class="price-container">
+
+                                        <del>
+                                            R$ 31,90
+                                        </del>
+
+                                        <strong class="product-price">
+                                            R$ 25,90
+                                        </strong>
+
+                                    </div>
+
+                                    <button
+                                        class="add-button"
+                                        data-product="Combo Pancho + Bebida"
+                                        data-price="25.90"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SEM RESULTADO -->
+
+                <div
+                    class="empty-state"
+                    id="emptyState"
+                    hidden
+                >
+
+                    <span>
+                        🔎
+                    </span>
+
+                    <h3>
+                        Não encontramos nada.
+                    </h3>
+
+                    <p>
+                        Tente buscar por outro produto
+                        ou categoria.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================
+             CTA
+        ========================================= -->
+
+        <section class="menu-cta">
+
+            <div class="container">
+
+                <div class="menu-cta-content">
+
+                    <span>
+                        ❤️ Feito para compartilhar
+                    </span>
+
+                    <h2>
+                        Já escolheu o seu?
+                    </h2>
+
+                    <p>
+                        Monte seu pedido e aproveite
+                        o sabor do Pancho da Fronteira.
+                    </p>
+
+                    <a
+                        href="./carrinho.html"
+                        class="btn btn-primary"
+                    >
+                        🛒 Ver meu carrinho
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Pancho da Fronteira.
+                Feito com ❤️ e muito sabor.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JS -->
+    <script src="./js/main.js"></script>
+    <script src="./js/produtos.js"></script>
+
+</body>
+</html>
