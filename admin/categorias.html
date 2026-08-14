@@ -1,84 +1,968 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorias</title>
-    <link rel="stylesheet" href="./css/home.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Gerenciamento de categorias — Pancho da Fronteira"
+    >
+
+    <title>Categorias | Pancho da Fronteira</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
-    <section class="categories section">
 
-        <div class="container">
-            <div class="section-heading">
+    <!-- ========================================
+         ADMIN LAYOUT
+    ========================================= -->
 
-                <span class="section-tag">🍴 Do nosso cardápio</span>
+    <div class="admin-layout">
 
-                <h2>
-                    Escolha o seu
-                    <span>sabor favorito</span>
-                </h2>
 
-                <p>
-                    Tem sempre uma opção deliciosa esperando por você e sua família.
-                </p>
+        <!-- ========================================
+             SIDEBAR
+        ========================================= -->
+
+        <aside class="admin-sidebar" id="adminSidebar">
+
+            <!-- LOGO -->
+
+            <div class="admin-brand">
+
+                <a href="./index.html" class="admin-logo">
+
+                    <span class="admin-logo-icon">
+                        🌭
+                    </span>
+
+                    <span class="admin-logo-text">
+                        Pancho
+                        <small>da Fronteira</small>
+                    </span>
+
+                </a>
+
             </div>
 
-            <div class="categories-grid">
-                <a href="./cardapio.html?categoria=panchos" class="category-card">
-                    <div class="category-icon">🌭</div>
 
-                    <div class="category-content">
-                        <h3>Panchos</h3>
-                        <p>O sabor que é a nossa especialidade.</p>
-                    </div>
+            <!-- MENU -->
 
-                    <span class="category-arrow">→</span>
+            <nav class="admin-nav">
+
+                <span class="admin-nav-label">
+                    Principal
+                </span>
+
+                <a
+                    href="./index.html"
+                    class="admin-nav-link"
+                >
+                    <span>📊</span>
+                    Dashboard
                 </a>
 
-                <a href="./cardapio.html?categoria=combos" class="category-card">
-                    <div class="category-icon">
-                        🍟
-                    </div>
 
-                    <div class="category-content">
-                        <h3>Combos</h3>
-                        <p>Tudo junto para matar a fome.</p>
-                    </div>
+                <span class="admin-nav-label">
+                    Gerenciamento
+                </span>
 
-                    <span class="category-arrow">→</span>
+                <a
+                    href="./produtos.html"
+                    class="admin-nav-link"
+                >
+                    <span>🌭</span>
+                    Produtos
                 </a>
 
-                <a href="./cardapio.html?categoria=bebidas" class="category-card">
-                    <div class="category-icon">
-                        🥤
-                    </div>
-
-                    <div class="category-content">
-                        <h3>Bebidas</h3>
-                        <p>Para acompanhar aquele Pancho.</p>
-                    </div>
-
-                    <span class="category-arrow">→</span>
+                <a
+                    href="./categorias.html"
+                    class="admin-nav-link active"
+                >
+                    <span>📂</span>
+                    Categorias
                 </a>
 
-                <a href="./cardapio.html?categoria=promocoes" class="category-card category-card-highlight">
-                    <div class="category-icon">
-                        🔥
-                    </div>
 
-                    <div class="category-content">
-                        <h3>Promoções</h3>
-                        <p>ofertas especiais para aproveitar.</p>
-                    </div>
+                <span class="admin-nav-label">
+                    Sistema
+                </span>
 
-                    <span class="category-arrow">→</span>
+                <a
+                    href="../index.html"
+                    class="admin-nav-link"
+                >
+                    <span>🌐</span>
+                    Ver site
                 </a>
+
+            </nav>
+
+
+            <!-- USUÁRIO -->
+
+            <div class="admin-sidebar-footer">
+
+                <div class="admin-user">
+
+                    <div class="admin-user-avatar">
+                        A
+                    </div>
+
+                    <div class="admin-user-info">
+
+                        <strong>
+                            Administrador
+                        </strong>
+
+                        <small>
+                            Painel administrativo
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="admin-logout"
+                    id="logoutButton"
+                >
+                    <span>↪</span>
+                    Sair
+                </button>
+
             </div>
+
+        </aside>
+
+
+        <!-- ========================================
+             CONTEÚDO PRINCIPAL
+        ========================================= -->
+
+        <main class="admin-main">
+
+
+            <!-- TOPBAR -->
+
+            <header class="admin-topbar">
+
+                <button
+                    type="button"
+                    class="admin-mobile-toggle"
+                    id="adminMobileToggle"
+                    aria-label="Abrir menu"
+                >
+                    ☰
+                </button>
+
+
+                <div class="admin-breadcrumb">
+
+                    <span>
+                        Administração
+                    </span>
+
+                    <strong>
+                        /
+                    </strong>
+
+                    <strong>
+                        Categorias
+                    </strong>
+
+                </div>
+
+
+                <div class="admin-topbar-actions">
+
+                    <a
+                        href="../index.html"
+                        target="_blank"
+                        class="admin-view-site"
+                    >
+                        🌐 Ver site
+                    </a>
+
+                    <div class="admin-profile-mini">
+
+                        <span>
+                            A
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ========================================
+                 CONTENT
+            ========================================= -->
+
+            <div class="admin-content">
+
+
+                <!-- CABEÇALHO -->
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="page-eyebrow">
+                            Organização do cardápio
+                        </span>
+
+                        <h1>
+                            Categorias
+                        </h1>
+
+                        <p>
+                            Organize os produtos do Pancho da
+                            Fronteira de forma simples.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="admin-button admin-button-primary"
+                        id="newCategoryButton"
+                    >
+                        <span>＋</span>
+                        Nova categoria
+                    </button>
+
+                </div>
+
+
+                <!-- ========================================
+                     ESTATÍSTICAS
+                ========================================= -->
+
+                <div class="admin-stats-grid">
+
+
+                    <article class="admin-stat-card">
+
+                        <div class="admin-stat-icon">
+                            📂
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total de categorias
+                            </span>
+
+                            <strong id="totalCategories">
+                                4
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-stat-card">
+
+                        <div class="admin-stat-icon admin-stat-icon-success">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Ativas
+                            </span>
+
+                            <strong id="activeCategories">
+                                4
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-stat-card">
+
+                        <div class="admin-stat-icon admin-stat-icon-warning">
+                            🌭
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Produtos cadastrados
+                            </span>
+
+                            <strong id="totalProducts">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="admin-stat-card">
+
+                        <div class="admin-stat-icon admin-stat-icon-accent">
+                            🔥
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Mais utilizada
+                            </span>
+
+                            <strong id="topCategory">
+                                Panchos
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- ========================================
+                     FILTROS
+                ========================================= -->
+
+                <section class="admin-panel">
+
+
+                    <div class="panel-toolbar">
+
+                        <div class="panel-title">
+
+                            <div>
+
+                                <h2>
+                                    Todas as categorias
+                                </h2>
+
+                                <p>
+                                    Gerencie as categorias do
+                                    cardápio.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="panel-actions">
+
+                            <div class="admin-search">
+
+                                <span>
+                                    🔎
+                                </span>
+
+                                <input
+                                    type="search"
+                                    id="categorySearch"
+                                    placeholder="Buscar categoria..."
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+
+                            <select
+                                class="admin-select"
+                                id="statusFilter"
+                            >
+
+                                <option value="all">
+                                    Todos os status
+                                </option>
+
+                                <option value="active">
+                                    Ativas
+                                </option>
+
+                                <option value="inactive">
+                                    Inativas
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ========================================
+                         CATEGORIAS
+                    ========================================= -->
+
+                    <div
+                        class="categories-admin-grid"
+                        id="categoriesGrid"
+                    >
+
+
+                        <!-- CATEGORIA 1 -->
+
+                        <article
+                            class="admin-category-card"
+                            data-name="Panchos"
+                            data-status="active"
+                        >
+
+                            <div class="admin-category-header">
+
+                                <div class="admin-category-icon">
+                                    🌭
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="category-more-button"
+                                    aria-label="Mais opções"
+                                >
+                                    ⋮
+                                </button>
+
+                            </div>
+
+
+                            <div class="admin-category-body">
+
+                                <div class="admin-category-title-row">
+
+                                    <h3>
+                                        Panchos
+                                    </h3>
+
+                                    <span class="status-badge status-active">
+                                        Ativa
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    Os clássicos e especiais
+                                    da casa.
+                                </p>
+
+                            </div>
+
+
+                            <div class="admin-category-footer">
+
+                                <span class="product-count">
+                                    🌭
+                                    <strong>0</strong>
+                                    produtos
+                                </span>
+
+
+                                <div class="category-actions">
+
+                                    <button
+                                        type="button"
+                                        class="icon-action"
+                                        title="Editar categoria"
+                                        data-action="edit"
+                                        data-id="1"
+                                    >
+                                        ✏️
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="icon-action icon-action-danger"
+                                        title="Excluir categoria"
+                                        data-action="delete"
+                                        data-id="1"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- CATEGORIA 2 -->
+
+                        <article
+                            class="admin-category-card"
+                            data-name="Combos"
+                            data-status="active"
+                        >
+
+                            <div class="admin-category-header">
+
+                                <div class="admin-category-icon">
+                                    🍟
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="category-more-button"
+                                    aria-label="Mais opções"
+                                >
+                                    ⋮
+                                </button>
+
+                            </div>
+
+
+                            <div class="admin-category-body">
+
+                                <div class="admin-category-title-row">
+
+                                    <h3>
+                                        Combos
+                                    </h3>
+
+                                    <span class="status-badge status-active">
+                                        Ativa
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    Combinações para compartilhar.
+                                </p>
+
+                            </div>
+
+
+                            <div class="admin-category-footer">
+
+                                <span class="product-count">
+                                    🍟
+                                    <strong>0</strong>
+                                    produtos
+                                </span>
+
+
+                                <div class="category-actions">
+
+                                    <button
+                                        type="button"
+                                        class="icon-action"
+                                        title="Editar categoria"
+                                        data-action="edit"
+                                        data-id="2"
+                                    >
+                                        ✏️
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="icon-action icon-action-danger"
+                                        title="Excluir categoria"
+                                        data-action="delete"
+                                        data-id="2"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- CATEGORIA 3 -->
+
+                        <article
+                            class="admin-category-card"
+                            data-name="Bebidas"
+                            data-status="active"
+                        >
+
+                            <div class="admin-category-header">
+
+                                <div class="admin-category-icon">
+                                    🥤
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="category-more-button"
+                                    aria-label="Mais opções"
+                                >
+                                    ⋮
+                                </button>
+
+                            </div>
+
+
+                            <div class="admin-category-body">
+
+                                <div class="admin-category-title-row">
+
+                                    <h3>
+                                        Bebidas
+                                    </h3>
+
+                                    <span class="status-badge status-active">
+                                        Ativa
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    Bebidas para acompanhar
+                                    seu pedido.
+                                </p>
+
+                            </div>
+
+
+                            <div class="admin-category-footer">
+
+                                <span class="product-count">
+                                    🥤
+                                    <strong>0</strong>
+                                    produtos
+                                </span>
+
+
+                                <div class="category-actions">
+
+                                    <button
+                                        type="button"
+                                        class="icon-action"
+                                        title="Editar categoria"
+                                        data-action="edit"
+                                        data-id="3"
+                                    >
+                                        ✏️
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="icon-action icon-action-danger"
+                                        title="Excluir categoria"
+                                        data-action="delete"
+                                        data-id="3"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- CATEGORIA 4 -->
+
+                        <article
+                            class="admin-category-card category-card-promo"
+                            data-name="Promoções"
+                            data-status="active"
+                        >
+
+                            <div class="admin-category-header">
+
+                                <div class="admin-category-icon">
+                                    🔥
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="category-more-button"
+                                    aria-label="Mais opções"
+                                >
+                                    ⋮
+                                </button>
+
+                            </div>
+
+
+                            <div class="admin-category-body">
+
+                                <div class="admin-category-title-row">
+
+                                    <h3>
+                                        Promoções
+                                    </h3>
+
+                                    <span class="status-badge status-active">
+                                        Ativa
+                                    </span>
+
+                                </div>
+
+                                <p>
+                                    Ofertas especiais e
+                                    combinações.
+                                </p>
+
+                            </div>
+
+
+                            <div class="admin-category-footer">
+
+                                <span class="product-count">
+                                    🔥
+                                    <strong>0</strong>
+                                    produtos
+                                </span>
+
+
+                                <div class="category-actions">
+
+                                    <button
+                                        type="button"
+                                        class="icon-action"
+                                        title="Editar categoria"
+                                        data-action="edit"
+                                        data-id="4"
+                                    >
+                                        ✏️
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="icon-action icon-action-danger"
+                                        title="Excluir categoria"
+                                        data-action="delete"
+                                        data-id="4"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+
+                    <!-- ESTADO VAZIO -->
+
+                    <div
+                        class="admin-empty-state"
+                        id="emptyCategories"
+                        hidden
+                    >
+
+                        <div>
+                            🔎
+                        </div>
+
+                        <h3>
+                            Nenhuma categoria encontrada
+                        </h3>
+
+                        <p>
+                            Tente alterar os filtros ou
+                            criar uma nova categoria.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ========================================
+         MODAL — NOVA CATEGORIA
+    ========================================= -->
+
+    <div
+        class="admin-modal"
+        id="categoryModal"
+        aria-hidden="true"
+    >
+
+        <div class="modal-overlay" id="modalOverlay"></div>
+
+
+        <div
+            class="modal-container"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modalTitle"
+        >
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="modal-eyebrow">
+                        Cardápio
+                    </span>
+
+                    <h2 id="modalTitle">
+                        Nova categoria
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="modalClose"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="categoryForm" class="admin-form">
+
+                <div class="form-group">
+
+                    <label for="categoryName">
+                        Nome da categoria
+                    </label>
+
+                    <input
+                        type="text"
+                        id="categoryName"
+                        name="name"
+                        placeholder="Ex: Panchos"
+                        required
+                        maxlength="50"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="categoryDescription">
+                        Descrição
+                    </label>
+
+                    <textarea
+                        id="categoryDescription"
+                        name="description"
+                        placeholder="Descreva brevemente esta categoria..."
+                        rows="4"
+                        maxlength="180"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="categoryIcon">
+                            Ícone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="categoryIcon"
+                            name="icon"
+                            placeholder="🌭"
+                            maxlength="4"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="categoryStatus">
+                            Status
+                        </label>
+
+                        <select
+                            id="categoryStatus"
+                            name="status"
+                        >
+
+                            <option value="active">
+                                Ativa
+                            </option>
+
+                            <option value="inactive">
+                                Inativa
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="admin-button admin-button-secondary"
+                        id="cancelModal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="admin-button admin-button-primary"
+                    >
+                        Salvar categoria
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
-    </section>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="../js/admin.js"></script>
+
 </body>
 
 </html>
