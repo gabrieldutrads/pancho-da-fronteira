@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard administrativo do Pancho da Fronteira">
+    <title>Dashboard | Pancho da Fronteira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <a href="./index.html" class="admin-logo">
+                    <span class="admin-logo-icon">🌭</span>
+                    <span class="admin-logo-text">
+                        Pancho
+                        <small>da Fronteira</small>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="admin-nav">
+                <span class="admin-nav-label">Principal</span>
+                <a href="./index.html" class="admin-nav-link active"><span>📊</span>Dashboard</a>
+
+                <span class="admin-nav-label">Gerenciamento</span>
+                <a href="./produtos.html" class="admin-nav-link"><span>🌭</span>Produtos</a>
+                <a href="./categorias.html" class="admin-nav-link"><span>📂</span>Categorias</a>
+
+                <span class="admin-nav-label">Sistema</span>
+                <a href="../index.html" class="admin-nav-link"><span>🌐</span>Ver site</a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <div class="admin-user">
+                    <div class="admin-user-avatar">A</div>
+                    <div class="admin-user-info">
+                        <strong>Administrador</strong>
+                        <small>Painel administrativo</small>
+                    </div>
+                </div>
+                <button type="button" class="admin-logout" id="logoutButton"><span>↪</span>Sair</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <button type="button" class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Abrir menu">☰</button>
+
+                <div class="admin-breadcrumb">
+                    <span>Administração</span>
+                    <strong>/</strong>
+                    <strong>Dashboard</strong>
+                </div>
+
+                <div class="admin-topbar-actions">
+                    <a href="../index.html" target="_blank" class="admin-view-site">🌐 Ver site</a>
+                    <div class="admin-profile-mini"><span>A</span></div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <div>
+                        <span class="page-eyebrow">Resumo geral</span>
+                        <h1>Dashboard</h1>
+                        <p>Acompanhe os principais indicadores do seu negócio.</p>
+                    </div>
+                    <button type="button" class="admin-button admin-button-primary">＋ Nova venda</button>
+                </div>
+
+                <div class="admin-stats-grid">
+                    <article class="admin-stat-card">
+                        <div class="admin-stat-icon">💰</div>
+                        <div>
+                            <span>Faturamento</span>
+                            <strong>R$ 5.480</strong>
+                        </div>
+                    </article>
+
+                    <article class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon-success">📦</div>
+                        <div>
+                            <span>Pedidos hoje</span>
+                            <strong>86</strong>
+                        </div>
+                    </article>
+
+                    <article class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon-warning">🌭</div>
+                        <div>
+                            <span>Produtos</span>
+                            <strong>14</strong>
+                        </div>
+                    </article>
+
+                    <article class="admin-stat-card">
+                        <div class="admin-stat-icon admin-stat-icon-accent">⭐</div>
+                        <div>
+                            <span>Avaliação</span>
+                            <strong>4,9</strong>
+                        </div>
+                    </article>
+                </div>
+
+                <section class="admin-panel">
+                    <div class="panel-toolbar">
+                        <div class="panel-title">
+                            <h2>Últimos pedidos</h2>
+                            <p>Pedidos recentes e entregues</p>
+                        </div>
+                        <div class="panel-actions">
+                            <div class="admin-search">
+                                <span>🔎</span>
+                                <input type="search" placeholder="Buscar pedido..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Cliente</th>
+                                    <th>Item</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1048</td>
+                                    <td>Maria L.</td>
+                                    <td>Combo Família</td>
+                                    <td>R$ 59,90</td>
+                                    <td><span class="status-badge status-active">Entregue</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#1047</td>
+                                    <td>João P.</td>
+                                    <td>Pancho Bacon</td>
+                                    <td>R$ 28,90</td>
+                                    <td><span class="status-badge status-active">Entregue</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#1046</td>
+                                    <td>Patrícia S.</td>
+                                    <td>Pancho da Casa</td>
+                                    <td>R$ 24,90</td>
+                                    <td><span class="status-badge status-inactive">Em preparo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#1045</td>
+                                    <td>Rafael M.</td>
+                                    <td>Pancho + Bebida</td>
+                                    <td>R$ 25,90</td>
+                                    <td><span class="status-badge status-active">Entregue</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>
