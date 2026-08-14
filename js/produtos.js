@@ -40,7 +40,7 @@ const addProductToCart = (name, price) => {
             name,
             price: Number(price),
             quantity: 1,
-            icon: "🌭"
+            icon: '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>'
         });
     }
 
