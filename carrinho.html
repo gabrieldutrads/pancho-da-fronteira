@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Veja o seu carrinho do Pancho da Fronteira e finalize seu pedido com rapidez."
+    >
+    <title>Carrinho | Pancho da Fronteira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/carrinho.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar container">
+            <a href="./index.html" class="logo">
+                <span class="logo-icon">🌭</span>
+                <span class="logo-text">
+                    Pancho
+                    <small>da Fronteira</small>
+                </span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+            <div class="nav-menu" id="navMenu">
+                <a href="./index.html" class="nav-link">Início</a>
+                <a href="./cardapio.html" class="nav-link">Cardápio</a>
+                <a href="./index.html#sobre" class="nav-link">Sobre nós</a>
+                <a href="./index.html#localizacao" class="nav-link">Localização</a>
+                <a href="./carrinho.html" class="cart-button active-cart">
+                    🛒
+                    <span>Carrinho</span>
+                    <strong id="cartCount">0</strong>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="cart-page">
+        <div class="container cart-layout">
+            <section class="cart-items-panel">
+                <div class="page-intro">
+                    <span class="section-tag">Seu pedido</span>
+                    <h1>Carrinho</h1>
+                </div>
+
+                <div id="cartItems" class="cart-items"></div>
+
+                <div id="emptyCart" class="empty-cart" hidden>
+                    <div class="empty-icon">🛒</div>
+                    <h2>Seu carrinho está vazio</h2>
+                    <p>Que tal escolher um dos nossos favoritos do cardápio?</p>
+                    <a href="./cardapio.html" class="btn btn-primary">Ver cardápio</a>
+                </div>
+            </section>
+
+            <aside class="summary-panel">
+                <h2>Resumo do pedido</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="subtotalValue">R$ 0,00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Entrega</span>
+                    <strong id="shippingValue">R$ 0,00</strong>
+                </div>
+
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <strong id="totalValue">R$ 0,00</strong>
+                </div>
+
+                <button type="button" class="btn btn-primary checkout-button">
+                    Finalizar pedido
+                </button>
+
+                <a href="./cardapio.html" class="continue-link">Adicionar mais itens</a>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Pancho da Fronteira. Feito com ❤️ e muito sabor.</p>
+        </div>
+    </footer>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/carrinho.js"></script>
+</body>
+</html>

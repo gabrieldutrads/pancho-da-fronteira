@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Conheça o Pancho da Casa e descubra os ingredientes que fazem o sabor do Pancho da Fronteira."
+    >
+    <title>Pancho da Casa | Pancho da Fronteira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/produto.css">
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="navbar container">
+            <a href="./index.html" class="logo">
+                <span class="logo-icon">🌭</span>
+                <span class="logo-text">
+                    Pancho
+                    <small>da Fronteira</small>
+                </span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+            <div class="nav-menu" id="navMenu">
+                <a href="./index.html" class="nav-link">Início</a>
+                <a href="./cardapio.html" class="nav-link active">Cardápio</a>
+                <a href="./index.html#sobre" class="nav-link">Sobre nós</a>
+                <a href="./index.html#localizacao" class="nav-link">Localização</a>
+                <a href="./carrinho.html" class="cart-button">
+                    🛒
+                    <span>Carrinho</span>
+                    <strong id="cartCount">0</strong>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="product-page">
+            <div class="container product-layout">
+                <div class="product-gallery">
+                    <div class="product-visual">
+                        <div class="product-emoji">🌭</div>
+                    </div>
+                    <div class="product-mini-gallery">
+                        <span>🌭</span>
+                        <span>🥓</span>
+                        <span>🍅</span>
+                    </div>
+                </div>
+
+                <div class="product-details">
+                    <span class="section-tag">⭐ Mais pedido</span>
+                    <h1>Pancho da Casa</h1>
+                    <p class="product-subtitle">O clássico que ganhou o coração da nossa rua.</p>
+
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <small>4,9 de 5 • 320 avaliações</small>
+                    </div>
+
+                    <div class="product-price-row">
+                        <strong>R$ 24,90</strong>
+                        <span>Entrega em ~25 min</span>
+                    </div>
+
+                    <p class="product-description">
+                        Nosso pão artesanal, salsicha premium, salada fresca, molho especial e aquela combinação que deixa cada mordida irresistível.
+                    </p>
+
+                    <div class="product-options">
+                        <div>
+                            <span class="option-label">Molho</span>
+                            <div class="option-chips">
+                                <button type="button" class="chip active">Barbecue</button>
+                                <button type="button" class="chip">Mostarda</button>
+                                <button type="button" class="chip">Maionese</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="option-label">Adicionais</span>
+                            <div class="option-chips">
+                                <button type="button" class="chip">Bacon</button>
+                                <button type="button" class="chip">Queijo</button>
+                                <button type="button" class="chip">Batata</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <button type="button" class="btn btn-primary add-button" data-product="Pancho da Casa" data-price="24.90">
+                            🛒 Adicionar ao carrinho
+                        </button>
+                        <a href="./cardapio.html" class="btn btn-secondary">Voltar ao cardápio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="product-info-section">
+            <div class="container info-grid">
+                <div class="info-card">
+                    <h2>Ingredientes</h2>
+                    <ul>
+                        <li>Pão artesanal</li>
+                        <li>Salsicha suína premium</li>
+                        <li>Alface e tomate</li>
+                        <li>Cebola caramelizada</li>
+                        <li>Molho da casa</li>
+                    </ul>
+                </div>
+
+                <div class="info-card highlight">
+                    <h2>Por que todo mundo ama</h2>
+                    <p>
+                        Feito na hora, em porções equilibradas e com aquele sabor que lembra comida de rua com qualidade de restaurante.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="related-products">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="section-tag">Você também pode gostar</span>
+                    <h2>Outras opções da casa</h2>
+                </div>
+
+                <div class="related-grid">
+                    <article class="mini-product-card">
+                        <div class="mini-product-emoji">🌭</div>
+                        <h3>Pancho Especial</h3>
+                        <p>R$ 27,90</p>
+                        <button type="button" class="mini-button" data-product="Pancho Especial" data-price="27.90">Adicionar</button>
+                    </article>
+
+                    <article class="mini-product-card">
+                        <div class="mini-product-emoji">🥓</div>
+                        <h3>Pancho Bacon</h3>
+                        <p>R$ 28,90</p>
+                        <button type="button" class="mini-button" data-product="Pancho Bacon" data-price="28.90">Adicionar</button>
+                    </article>
+
+                    <article class="mini-product-card">
+                        <div class="mini-product-emoji">🍟</div>
+                        <h3>Combo Família</h3>
+                        <p>R$ 59,90</p>
+                        <button type="button" class="mini-button" data-product="Combo Família" data-price="59.90">Adicionar</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Pancho da Fronteira. Feito com ❤️ e muito sabor.</p>
+        </div>
+    </footer>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/produtos.js"></script>
+</body>
+</html>
