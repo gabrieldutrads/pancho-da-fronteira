@@ -56,7 +56,7 @@ if (categoryModal && categoryForm && categoriesGrid) {
 
         const name = nameInput.value.trim();
         const description = descriptionInput.value.trim() || "Categoria do cardápio.";
-        const icon = iconInput.value.trim() || "🌭";
+        const icon = iconInput.value.trim() || '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>';
         const status = statusInput.value;
 
         if (!name) return;
@@ -80,8 +80,8 @@ if (categoryModal && categoryForm && categoriesGrid) {
             <div class="admin-category-footer">
                 <span class="product-count">${icon}<strong>0</strong> produtos</span>
                 <div class="category-actions">
-                    <button type="button" class="icon-action" title="Editar categoria" data-action="edit">✏️</button>
-                    <button type="button" class="icon-action icon-action-danger" title="Excluir categoria" data-action="delete">🗑️</button>
+                    <button type="button" class="icon-action" title="Editar categoria" data-action="edit"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5V20h2.5L17 9.5l-2.5-2.5L4 17.5Z"/><path d="M14.5 5.5l2.5 2.5"/></svg></span></button>
+                    <button type="button" class="icon-action icon-action-danger" title="Excluir categoria" data-action="delete"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M7 7l1 12h8l1-12"/><path d="M10 11v5"/><path d="M14 11v5"/></svg></span></button>
                 </div>
             </div>
         `;

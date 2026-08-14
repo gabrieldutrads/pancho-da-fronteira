@@ -12,12 +12,13 @@
 
     width: 100%;
 
-    background: rgba(255, 248, 234, 0.92);
+    background: rgba(255, 250, 243, 0.88);
 
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 
-    border-bottom: 1px solid rgba(58, 33, 24, 0.06);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 10px 25px rgba(43, 26, 20, 0.03);
 }
 
 .navbar {
@@ -44,14 +45,13 @@
     display: grid;
     place-items: center;
 
-    background: var(--color-secondary);
+    background: linear-gradient(135deg, var(--color-secondary), #efc86b);
 
     border-radius: 50%;
 
     font-size: 1.35rem;
 
-    box-shadow:
-        0 6px 15px rgba(216, 155, 50, 0.25);
+    box-shadow: 0 12px 22px rgba(217, 165, 76, 0.32);
 }
 
 .logo-text {
@@ -131,7 +131,7 @@
 
     padding: 10px 14px;
 
-    background: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary), #4a2d25);
     color: var(--color-white);
 
     border-radius: var(--radius-md);
@@ -139,11 +139,13 @@
     font-size: 0.85rem;
     font-weight: 600;
 
-    transition: transform var(--transition);
+    box-shadow: 0 12px 24px rgba(43, 26, 20, 0.16);
+    transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .cart-button:hover {
     transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(43, 26, 20, 0.2);
 }
 
 .cart-button strong {
@@ -898,7 +900,7 @@
 }
 
 .check-list li::before {
-        content: "✓ ";
+        content: "";
         color: var(--color-accent);
 }
 

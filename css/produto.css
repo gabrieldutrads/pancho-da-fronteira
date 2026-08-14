@@ -194,9 +194,14 @@
 }
 
 .info-card li::before {
-    content: "✓ ";
-    color: var(--color-accent);
-    font-weight: 700;
+    content: "";
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-right: 0.7rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+    vertical-align: middle;
 }
 
 .info-card.highlight {

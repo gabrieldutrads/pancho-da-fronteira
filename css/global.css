@@ -4,15 +4,18 @@
 ======================================== */
 
 :root {
-    --color-primary: #3A2118;
-    --color-secondary: #D89B32;
-    --color-accent: #B9472E;
+    --color-primary: #2b1a14;
+    --color-secondary: #d9a54c;
+    --color-accent: #c8553d;
 
-    --color-background: #FFF8EA;
-    --color-white: #FFFFFF;
+    --color-background: #fffaf3;
+    --color-surface: #fffdf9;
+    --color-surface-strong: #f6efe7;
+    --color-white: #ffffff;
 
-    --color-text: #3A2118;
-    --color-text-light: #765C4D;
+    --color-text: #2b1a14;
+    --color-text-light: #6b5449;
+    --color-border: rgba(43, 26, 20, 0.08);
 
     --font-heading: "Bree Serif", serif;
     --font-body: "Poppins", sans-serif;
@@ -20,13 +23,12 @@
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 20px;
-    --radius-xl: 30px;
+    --radius-xl: 28px;
 
-    --shadow-soft:
-        0 10px 30px rgba(58, 33, 24, 0.08);
+    --shadow-soft: 0 16px 38px rgba(43, 26, 20, 0.08);
+    --shadow-strong: 0 24px 60px rgba(43, 26, 20, 0.12);
 
-    --transition:
-        0.3s ease;
+    --transition: 0.3s ease;
 }
 
 
@@ -45,12 +47,40 @@ html {
 body {
     min-height: 100vh;
 
-    background: var(--color-background);
+    background:
+        radial-gradient(circle at top, rgba(217, 165, 76, 0.12), transparent 24%),
+        var(--color-background);
     color: var(--color-text);
 
     font-family: var(--font-body);
 
     overflow-x: hidden;
+}
+
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+    color: currentColor;
+}
+
+.icon svg {
+    display: block;
+    width: 1.05em;
+    height: 1.05em;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon.fill svg {
+    fill: currentColor;
+    stroke: none;
 }
 
 a {
