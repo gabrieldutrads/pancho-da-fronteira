@@ -3,49 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Login administrativo do Pancho da Fronteira">
-    <title>Login | Pancho da Fronteira</title>
+    <meta name="description" content="Login administrativo — Pancho da Fronteira">
+    <title>Admin Login | Pancho da Fronteira</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <style>
+        .auth-page { background: var(--color-primary); }
+        .auth-page::before, .auth-page::after { display: none; }
+        body::before, body::after { display: none; }
+        .auth-card { border-top: 3px solid var(--color-accent); }
+        .admin-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: var(--radius-pill);
+            background: rgba(200,85,61,0.1); color: var(--color-accent-dark);
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+            text-transform: uppercase; margin-bottom: 16px;
+        }
+    </style>
 </head>
-<body class="admin-login-page">
-    <main class="login-shell">
-        <div class="login-card">
-            <div class="login-brand">
-                <span class="admin-logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
-                <div>
-                    <h1>Pancho</h1>
-                    <small>da Fronteira</small>
+<body>
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">
+                    <span class="icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg>
+                    </span>
                 </div>
+                <div class="auth-logo-text">Pancho <small>da Fronteira</small></div>
             </div>
 
-            <div class="login-copy">
-                <span class="page-eyebrow">Área restrita</span>
-                <h2>Entrar no painel</h2>
-                <p>Gerencie produtos, categorias e pedidos em um só lugar.</p>
+            <div class="auth-header">
+                <div class="admin-badge">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                    Área Administrativa
+                </div>
+                <h1>Acesso restrito</h1>
+                <p>Entre com suas credenciais de administrador.</p>
             </div>
 
-            <form class="admin-form login-form">
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="admin@panchodafronteira.com" value="admin@panchodafronteira.com">
-                </div>
+            <div class="auth-error" id="authError" hidden>
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+                <span id="authErrorMsg">Acesso negado.</span>
+            </div>
 
+            <form class="auth-form" id="adminLoginForm" novalidate>
                 <div class="form-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" placeholder="••••••••" value="123456">
+                    <label class="form-label" for="emailInput">E-mail</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span></span>
+                        <input type="email" id="emailInput" class="form-input" placeholder="admin@email.com" autocomplete="email" required>
+                    </div>
                 </div>
-
-                <button type="submit" class="admin-button admin-button-primary login-button">Entrar</button>
+                <div class="form-group">
+                    <label class="form-label" for="passwordInput">Senha</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></span>
+                        <input type="password" id="passwordInput" class="form-input" placeholder="Senha" autocomplete="current-password" required>
+                        <button type="button" class="input-toggle-password" id="togglePass" aria-label="Mostrar senha">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary auth-submit" id="loginBtn">Entrar</button>
             </form>
 
-            <a href="../index.html" class="login-backlink">← Voltar para o site</a>
+            <div class="auth-alt" style="margin-top: 24px;">
+                <a href="../index.html">← Voltar ao site</a>
+            </div>
         </div>
     </main>
 
-    <script src="../js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script>
+    (async () => {
+        // Redirecionar se já é admin
+        const sb = getSupabase();
+        if (sb) {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                const isAdm = await checkIsAdmin(session.user.id);
+                if (isAdm) { window.location.href = "./index.html"; return; }
+            }
+        }
+
+        const form    = document.getElementById("adminLoginForm");
+        const errBox  = document.getElementById("authError");
+        const errMsg  = document.getElementById("authErrorMsg");
+        const loginBtn = document.getElementById("loginBtn");
+        const toggle  = document.getElementById("togglePass");
+        const passIn  = document.getElementById("passwordInput");
+
+        toggle.addEventListener("click", () => { passIn.type = passIn.type === "text" ? "password" : "text"; });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            errBox.hidden = true;
+
+            const email    = document.getElementById("emailInput").value.trim();
+            const password = passIn.value;
+            if (!email || !password) { errMsg.textContent = "Preencha e-mail e senha."; errBox.hidden = false; return; }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Verificando...";
+
+            try {
+                const { user } = await signIn({ email, password });
+                const isAdm = await checkIsAdmin(user.id);
+                if (!isAdm) {
+                    await signOut();
+                    throw new Error("Você não tem permissão de administrador.");
+                }
+                window.location.href = "./index.html";
+            } catch (err) {
+                errMsg.textContent = err.message;
+                errBox.hidden = false;
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Entrar";
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

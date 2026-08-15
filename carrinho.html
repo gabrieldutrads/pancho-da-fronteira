@@ -3,39 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta
-        name="description"
-        content="Veja o seu carrinho do Pancho da Fronteira e finalize seu pedido com rapidez."
-    >
-    <title>Carrinho | Pancho da Fronteira</title>
+    <meta name="description" content="Confira os itens no seu carrinho do Pancho da Fronteira e finalize seu pedido com facilidade.">
+    <title>Meu Carrinho | Pancho da Fronteira</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/carrinho.css">
 </head>
 <body>
-    <header class="header">
+    <!-- HEADER -->
+    <header class="header" id="header">
         <nav class="navbar container">
             <a href="./index.html" class="logo">
                 <span class="logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
-                <span class="logo-text">
-                    Pancho
-                    <small>da Fronteira</small>
-                </span>
+                <span class="logo-text">Pancho <small>da Fronteira</small></span>
             </a>
 
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span></button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span>
+            </button>
 
             <div class="nav-menu" id="navMenu">
                 <a href="./index.html" class="nav-link">Início</a>
                 <a href="./cardapio.html" class="nav-link">Cardápio</a>
                 <a href="./index.html#sobre" class="nav-link">Sobre nós</a>
-                <a href="./index.html#localizacao" class="nav-link">Localização</a>
                 <a href="./carrinho.html" class="cart-button active-cart">
-                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r=1.5"/><circle cx="17" cy="18" r=1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
                     <span>Carrinho</span>
                     <strong id="cartCount">0</strong>
+                </a>
+                <a href="./login.html" class="account-button" id="accountBtn" title="Minha conta">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                    <span id="accountName">Conta</span>
                 </a>
             </div>
         </nav>
@@ -43,22 +45,34 @@
 
     <main class="cart-page">
         <div class="container cart-layout">
+
+            <!-- ITENS DO CARRINHO -->
             <section class="cart-items-panel">
-                <div class="page-intro">
-                    <span class="section-tag">Seu pedido</span>
-                    <h1>Carrinho</h1>
+                <div class="page-intro" style="display:flex; justify-content:space-between; align-items:flex-end;">
+                    <div>
+                        <span class="section-tag">Seu pedido</span>
+                        <h1>Carrinho</h1>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm" id="clearCartBtn" style="color:var(--color-error);" title="Esvaziar carrinho">
+                        Limpar carrinho
+                    </button>
                 </div>
 
+                <!-- Lista de Itens -->
                 <div id="cartItems" class="cart-items"></div>
 
+                <!-- Estado Vazio -->
                 <div id="emptyCart" class="empty-cart" hidden>
-                    <div class="empty-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r=1.5"/><circle cx="17" cy="18" r=1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span></div>
+                    <div class="empty-icon">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    </div>
                     <h2>Seu carrinho está vazio</h2>
-                    <p>Que tal escolher um dos nossos favoritos do cardápio?</p>
-                    <a href="./cardapio.html" class="btn btn-primary">Ver cardápio</a>
+                    <p>Que tal escolher um dos nossos saborosos panchos artesanais?</p>
+                    <a href="./cardapio.html" class="btn btn-primary" style="margin-top: 16px;">Ver cardápio</a>
                 </div>
             </section>
 
+            <!-- RESUMO / CHECKOUT -->
             <aside class="summary-panel">
                 <h2>Resumo do pedido</h2>
 
@@ -68,8 +82,8 @@
                 </div>
 
                 <div class="summary-row">
-                    <span>Entrega</span>
-                    <strong id="shippingValue">R$ 0,00</strong>
+                    <span>Taxa estimada de entrega</span>
+                    <strong id="shippingValue">R$ 6,90</strong>
                 </div>
 
                 <div class="summary-row total-row">
@@ -77,22 +91,35 @@
                     <strong id="totalValue">R$ 0,00</strong>
                 </div>
 
-                <button type="button" class="btn btn-primary checkout-button">
+                <button type="button" class="btn btn-primary checkout-button" id="checkoutBtn" style="width:100%; margin-top:20px;">
                     Finalizar pedido
                 </button>
 
                 <a href="./cardapio.html" class="continue-link">Adicionar mais itens</a>
             </aside>
+
         </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            <div class="footer-bottom">
+                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            </div>
         </div>
     </footer>
 
-    <script src="./js/main.js"></script>
-    <script src="./js/carrinho.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/cart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            initAuth();
+        });
+    </script>
 </body>
 </html>

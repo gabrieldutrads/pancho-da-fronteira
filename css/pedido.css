@@ -1,0 +1,530 @@
+/* ============================================================
+   PANCHO DA FRONTEIRA — PEDIDO CSS
+   Checkout e acompanhamento de pedidos.
+============================================================ */
+
+/* ----------------------------------------------------------
+   PÁGINA DE PEDIDO / CHECKOUT
+---------------------------------------------------------- */
+.order-page {
+    padding: 48px 0 80px;
+    min-height: calc(100vh - 70px);
+}
+
+/* Tabs: Finalizar / Meus pedidos */
+.order-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--color-surface-strong);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    margin-bottom: 40px;
+    max-width: 480px;
+}
+
+.order-tab {
+    flex: 1;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    text-align: center;
+    transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+}
+
+.order-tab.active {
+    background: var(--color-white);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-xs);
+}
+
+.order-tab:hover:not(.active) { color: var(--color-primary); }
+
+/* Painel de aba */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ----------------------------------------------------------
+   CHECKOUT — LAYOUT
+---------------------------------------------------------- */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ----------------------------------------------------------
+   CHECKOUT STEPS
+---------------------------------------------------------- */
+.checkout-steps {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0;
+    overflow-x: auto;
+}
+
+.checkout-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px 14px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color var(--transition), border-color var(--transition);
+    cursor: default;
+}
+
+.checkout-step.active {
+    color: var(--color-accent-dark);
+    border-color: var(--color-accent);
+}
+
+.checkout-step.done { color: var(--color-success); }
+
+.step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-border);
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: background var(--transition), color var(--transition);
+}
+
+.checkout-step.active .step-num {
+    background: var(--color-accent);
+    color: white;
+}
+
+.checkout-step.done .step-num {
+    background: var(--color-success);
+    color: white;
+}
+
+/* ----------------------------------------------------------
+   PAINEL DO FORMULÁRIO
+---------------------------------------------------------- */
+.checkout-panel {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 36px;
+}
+
+.checkout-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkout-panel-title .icon { color: var(--color-accent); }
+
+/* Delivery type selector */
+.delivery-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.delivery-option {
+    position: relative;
+}
+
+.delivery-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.delivery-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 16px;
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color var(--transition), background var(--transition);
+}
+
+.delivery-option input:checked + label {
+    border-color: var(--color-accent);
+    background: rgba(200, 85, 61, 0.05);
+}
+
+.delivery-option label .icon { width: 1.8rem; height: 1.8rem; color: var(--color-text-muted); }
+.delivery-option input:checked + label .icon { color: var(--color-accent); }
+.delivery-option label strong { font-size: 0.95rem; color: var(--color-primary); }
+.delivery-option label small  { font-size: 0.8rem; color: var(--color-text-muted); }
+
+/* Payment options */
+.payment-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.payment-option { position: relative; }
+.payment-option input[type="radio"] { position: absolute; opacity: 0; }
+.payment-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.payment-option input:checked + label {
+    border-color: var(--color-accent);
+    color: var(--color-primary);
+    background: rgba(200, 85, 61, 0.04);
+}
+
+.payment-option label .icon { width: 1.1rem; height: 1.1rem; }
+
+/* Form row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Botão próximo */
+.checkout-next {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* ----------------------------------------------------------
+   RESUMO DO PEDIDO (sidebar)
+---------------------------------------------------------- */
+.order-summary-card {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 28px;
+    position: sticky;
+    top: 90px;
+}
+
+.order-summary-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.summary-items { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.summary-item-qty {
+    min-width: 22px;
+    height: 22px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.summary-item-name { flex: 1; color: var(--color-text); font-weight: 500; }
+.summary-item-price { font-weight: 600; color: var(--color-primary); }
+
+.summary-divider {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 16px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: 10px;
+}
+
+.summary-row.total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 2px solid var(--color-border-strong);
+}
+
+/* ----------------------------------------------------------
+   PEDIDO CONFIRMADO
+---------------------------------------------------------- */
+.order-confirmed {
+    text-align: center;
+    padding: 60px 24px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.confirmed-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-success-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    animation: bounceIn 0.5s ease;
+}
+
+.confirmed-icon .icon { width: 2.5rem; height: 2.5rem; color: var(--color-success); }
+
+.order-confirmed h2 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+.order-confirmed p { color: var(--color-text-light); font-size: 1rem; margin-bottom: 6px; }
+
+.order-number-display {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--color-surface-strong);
+    border-radius: var(--radius-md);
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    margin: 16px 0;
+    letter-spacing: 0.04em;
+}
+
+.confirmed-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+}
+
+@keyframes bounceIn {
+    0%   { transform: scale(0.5); opacity: 0; }
+    70%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ----------------------------------------------------------
+   LISTA DE PEDIDOS
+---------------------------------------------------------- */
+.orders-list { display: flex; flex-direction: column; gap: 16px; }
+
+.order-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+}
+
+.order-card:hover { box-shadow: var(--shadow-soft); }
+
+.order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--color-border);
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.order-card-num {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    color: var(--color-primary);
+}
+
+.order-card-date { font-size: 0.8rem; color: var(--color-text-muted); }
+
+.order-card-body { padding: 18px 20px; }
+
+.order-card-items {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: 12px;
+}
+
+.order-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--color-surface-strong);
+    border-top: 1px solid var(--color-border);
+}
+
+.order-card-total { font-weight: 700; color: var(--color-primary); }
+
+.order-card-action {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap var(--transition);
+}
+
+.order-card-action:hover { gap: 8px; }
+
+/* ----------------------------------------------------------
+   TIMELINE DE STATUS
+---------------------------------------------------------- */
+.order-timeline {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 32px;
+    margin-top: 32px;
+}
+
+.order-timeline h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+}
+
+.timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 24px;
+    position: relative;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: var(--color-surface-strong);
+    border: 2px solid var(--color-border);
+    z-index: 1;
+    position: relative;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.timeline-item.done .timeline-dot {
+    background: var(--color-success-light);
+    border-color: var(--color-success);
+}
+
+.timeline-item.current .timeline-dot {
+    background: rgba(200, 85, 61, 0.12);
+    border-color: var(--color-accent);
+    animation: pulseDot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200, 85, 61, 0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(200, 85, 61, 0); }
+}
+
+.timeline-content { padding-top: 4px; }
+
+.timeline-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-primary);
+}
+
+.timeline-item:not(.done):not(.current) .timeline-label { color: var(--color-text-muted); }
+
+.timeline-time {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVIDADE
+---------------------------------------------------------- */
+@media (max-width: 900px) {
+    .checkout-layout { grid-template-columns: 1fr; }
+    .order-summary-card { position: static; }
+}
+
+@media (max-width: 600px) {
+    .checkout-panel { padding: 24px 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .delivery-options { grid-template-columns: 1fr 1fr; }
+    .payment-options { grid-template-columns: 1fr 1fr; }
+    .order-tabs { max-width: 100%; }
+    .order-timeline { padding: 24px 20px; }
+}
+
+@media (max-width: 400px) {
+    .delivery-options { grid-template-columns: 1fr; }
+    .payment-options  { grid-template-columns: 1fr; }
+}

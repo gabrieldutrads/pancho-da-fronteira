@@ -2,875 +2,173 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="description"
-        content="Confira o cardápio do Pancho da Fronteira. Panchos, combos, bebidas e promoções."
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Confira o cardápio do Pancho da Fronteira. Panchos artesanais, combos especiais, bebidas e promoções exclusivas.">
     <title>Cardápio | Pancho da Fronteira</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/cardapio.css">
 </head>
-
 <body>
 
-    <!-- ========================================
-         HEADER
-    ========================================= -->
-
-    <header class="header">
-
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="header">
         <nav class="navbar container">
-
             <a href="./index.html" class="logo">
-
                 <span class="logo-icon">
                     <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
                 </span>
-
                 <span class="logo-text">
                     Pancho
                     <small>da Fronteira</small>
                 </span>
-
             </a>
 
-
-            <button
-                class="menu-toggle"
-                id="menuToggle"
-                aria-label="Abrir menu"
-                aria-expanded="false"
-            >
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
                 <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span>
             </button>
 
-
             <div class="nav-menu" id="navMenu">
-
-                <a
-                    href="./index.html"
-                    class="nav-link"
-                >
-                    Início
+                <a href="./index.html" class="nav-link">Início</a>
+                <a href="./cardapio.html" class="nav-link active">Cardápio</a>
+                <a href="./index.html#sobre" class="nav-link">Sobre nós</a>
+                <a href="./index.html#localizacao" class="nav-link">Localização</a>
+                <a href="./carrinho.html" class="cart-button">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    <span>Carrinho</span>
+                    <strong id="cartCount">0</strong>
                 </a>
-
-                <a
-                    href="./cardapio.html"
-                    class="nav-link active"
-                >
-                    Cardápio
+                <a href="./login.html" class="account-button" id="accountBtn" title="Minha conta">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                    <span id="accountName">Conta</span>
                 </a>
-
-                <a
-                    href="./index.html#sobre"
-                    class="nav-link"
-                >
-                    Sobre nós
-                </a>
-
-                <a
-                    href="./index.html#localizacao"
-                    class="nav-link"
-                >
-                    Localização
-                </a>
-
-                <a
-                    href="./carrinho.html"
-                    class="cart-button"
-                >
-                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r=1.5"/><circle cx="17" cy="18" r=1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
-
-                    <span>
-                        Carrinho
-                    </span>
-
-                    <strong id="cartCount">
-                        0
-                    </strong>
-
-                </a>
-
             </div>
-
         </nav>
-
     </header>
 
-
     <main>
-
-        <!-- ========================================
-             HERO DO CARDÁPIO
-        ========================================= -->
-
+        <!-- ==================== HERO DO CARDÁPIO ==================== -->
         <section class="menu-hero">
-
             <div class="container menu-hero-content">
-
                 <span class="section-tag">
-                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Nosso cardápio
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> 
+                    Nosso cardápio
                 </span>
-
                 <h1>
-                    Escolha seu
-                    <span>favorito.</span>
+                    Escolha seu <span>favorito.</span>
                 </h1>
-
                 <p>
-                    Preparado com carinho para deixar seu
-                    momento ainda mais gostoso.
+                    Preparado na hora com carinho artesanal para deixar seu momento ainda mais gostoso.
                 </p>
-
             </div>
-
         </section>
 
-
-        <!-- ========================================
-             CARDÁPIO
-        ========================================= -->
-
+        <!-- ==================== CONTEÚDO DO CARDÁPIO ==================== -->
         <section class="menu-section">
-
             <div class="container">
 
-
-                <!-- FILTROS -->
-
-                <div
-                    class="category-filter"
-                    id="categoryFilter"
-                >
-
-                    <button
-                        class="filter-button active"
-                        data-category="todos"
-                    >
-                        Todos
+                <!-- FILTROS DE CATEGORIA -->
+                <div class="category-filter" id="categoryFilter">
+                    <button class="filter-button active" data-category="todos">Todos</button>
+                    <button class="filter-button" data-category="panchos">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> 
+                        Panchos
                     </button>
-
-                    <button
-                        class="filter-button"
-                        data-category="panchos"
-                    >
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Panchos
+                    <button class="filter-button" data-category="combos">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg></span> 
+                        Combos
                     </button>
-
-                    <button
-                        class="filter-button"
-                        data-category="combos"
-                    >
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg></span> Combos
+                    <button class="filter-button" data-category="bebidas">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg></span> 
+                        Bebidas
                     </button>
-
-                    <button
-                        class="filter-button"
-                        data-category="bebidas"
-                    >
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg></span> Bebidas
+                    <button class="filter-button" data-category="promocoes">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span> 
+                        Promoções
                     </button>
-
-                    <button
-                        class="filter-button"
-                        data-category="promocoes"
-                    >
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span> Promoções
-                    </button>
-
                 </div>
-
 
                 <!-- BUSCA -->
-
                 <div class="menu-search">
-
-                    <label
-                        for="searchInput"
-                        class="sr-only"
-                    >
-                        Buscar produto
-                    </label>
-
+                    <label for="searchInput" class="sr-only">Buscar produto</label>
                     <span>
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r=5.5"/><path d="m16 16 4 4"/></svg></span>
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="5.5"/><path d="m16 16 4 4"/></svg></span>
                     </span>
-
-                    <input
-                        type="search"
-                        id="searchInput"
-                        placeholder="O que você está procurando?"
-                        autocomplete="off"
-                    >
-
+                    <input type="search" id="searchInput" placeholder="O que você está procurando?" autocomplete="off">
                 </div>
 
-
-                <!-- =================================
-                     PANCHOS
-                ================================= -->
-
-                <section
-                    class="product-category"
-                    data-section="panchos"
-                >
-
-                    <div class="category-heading">
-
-                        <div>
-
-                            <span class="category-label">
-                                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Especialidade da casa
-                            </span>
-
-                            <h2>
-                                Panchos
-                            </h2>
-
-                        </div>
-
-                        <p>
-                            Nosso clássico, preparado do
-                            jeitinho Pancho da Fronteira.
-                        </p>
-
-                    </div>
-
-
-                    <div
-                        class="products-grid"
-                        id="panchosProducts"
-                    >
-
-                        <!-- PRODUTO -->
-
-                        <article
-                            class="product-card"
-                            data-category="panchos"
-                            data-name="Pancho da Casa"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
-                                </div>
-
-                                <span class="product-badge">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span> Mais pedido
-                                </span>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Pancho da Casa
-                                </h3>
-
-                                <p>
-                                    Nosso clássico especial,
-                                    preparado com ingredientes
-                                    selecionados.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 24,90
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Pancho da Casa"
-                                        data-price="24.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <!-- PRODUTO -->
-
-                        <article
-                            class="product-card"
-                            data-category="panchos"
-                            data-name="Pancho Especial"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Pancho Especial
-                                </h3>
-
-                                <p>
-                                    Uma combinação especial
-                                    para quem gosta de sabor.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 27,90
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Pancho Especial"
-                                        data-price="27.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <!-- PRODUTO -->
-
-                        <article
-                            class="product-card"
-                            data-category="panchos"
-                            data-name="Pancho Bacon"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13c1-3.5 3.5-5.5 7-5.5S18 9.5 19 13c-1.8 1.6-3.7 2.5-7 2.5S6.8 14.6 5 13Z"/><path d="M8 11.5h8"/></svg></span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Pancho Bacon
-                                </h3>
-
-                                <p>
-                                    Para quem não abre mão
-                                    daquele toque defumado.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 28,90
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Pancho Bacon"
-                                        data-price="28.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================
-                     COMBOS
-                ================================= -->
-
-                <section
-                    class="product-category"
-                    data-section="combos"
-                >
-
-                    <div class="category-heading">
-
-                        <div>
-
-                            <span class="category-label">
-                                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg></span> Para compartilhar
-                            </span>
-
-                            <h2>
-                                Combos
-                            </h2>
-
-                        </div>
-
-                        <p>
-                            A combinação perfeita para
-                            aproveitar com quem você gosta.
-                        </p>
-
-                    </div>
-
-
-                    <div class="products-grid">
-
-                        <article
-                            class="product-card"
-                            data-category="combos"
-                            data-name="Combo Família"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13h14l-1 7H6l-1-7Z"/><path d="M7 13V9.5A2.5 2.5 0 0 1 9.5 7H14.5A2.5 2.5 0 0 1 17 9.5V13"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7"/></svg></span>
-                                </div>
-
-                                <span class="product-badge">
-                                    <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> Família
-                                </span>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Combo Família
-                                </h3>
-
-                                <p>
-                                    Uma opção completa para
-                                    compartilhar.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 59,90
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Combo Família"
-                                        data-price="59.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <article
-                            class="product-card"
-                            data-category="combos"
-                            data-name="Combo Dupla"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg></span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Combo Dupla
-                                </h3>
-
-                                <p>
-                                    Ideal para dividir aquele
-                                    momento especial.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 44,90
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Combo Dupla"
-                                        data-price="44.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================
-                     BEBIDAS
-                ================================= -->
-
-                <section
-                    class="product-category"
-                    data-section="bebidas"
-                >
-
-                    <div class="category-heading">
-
-                        <div>
-
-                            <span class="category-label">
-                                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg></span> Para acompanhar
-                            </span>
-
-                            <h2>
-                                Bebidas
-                            </h2>
-
-                        </div>
-
-                        <p>
-                            Para completar seu pedido.
-                        </p>
-
-                    </div>
-
-
-                    <div class="products-grid">
-
-                        <article
-                            class="product-card product-card-small"
-                            data-category="bebidas"
-                            data-name="Refrigerante Lata"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg></span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Refrigerante Lata
-                                </h3>
-
-                                <p>
-                                    350ml
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 6,00
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Refrigerante Lata"
-                                        data-price="6.00"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <article
-                            class="product-card product-card-small"
-                            data-category="bebidas"
-                            data-name="Água"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.8c2.2 3.2 5.3 5.8 5.3 9.4A5.3 5.3 0 1 1 6.7 12.2c0-3.6 3.1-6.2 5.3-9.4Z"/></svg></span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Água
-                                </h3>
-
-                                <p>
-                                    500ml
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <strong class="product-price">
-                                        R$ 4,00
-                                    </strong>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Água"
-                                        data-price="4.00"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================
-                     PROMOÇÕES
-                ================================= -->
-
-                <section
-                    class="product-category"
-                    data-section="promocoes"
-                >
-
-                    <div class="category-heading">
-
-                        <div>
-
-                            <span class="category-label">
-                                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span> Aproveita!
-                            </span>
-
-                            <h2>
-                                Promoções
-                            </h2>
-
-                        </div>
-
-                        <p>
-                            Ofertas especiais por tempo
-                            limitado.
-                        </p>
-
-                    </div>
-
-
-                    <div class="products-grid">
-
-                        <article
-                            class="product-card product-card-promotion"
-                            data-category="promocoes"
-                            data-name="Combo Pancho + Bebida"
-                        >
-
-                            <div class="product-image">
-
-                                <div class="product-placeholder">
-                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span>
-                                </div>
-
-                                <span class="product-badge">
-                                    -20%
-                                </span>
-
-                            </div>
-
-
-                            <div class="product-info">
-
-                                <h3>
-                                    Pancho + Bebida
-                                </h3>
-
-                                <p>
-                                    Um Pancho especial acompanhado
-                                    de uma bebida.
-                                </p>
-
-
-                                <div class="product-bottom">
-
-                                    <div class="price-container">
-
-                                        <del>
-                                            R$ 31,90
-                                        </del>
-
-                                        <strong class="product-price">
-                                            R$ 25,90
-                                        </strong>
-
-                                    </div>
-
-                                    <button
-                                        class="add-button"
-                                        data-product="Combo Pancho + Bebida"
-                                        data-price="25.90"
-                                    >
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
-
-                <!-- SEM RESULTADO -->
-
-                <div
-                    class="empty-state"
-                    id="emptyState"
-                    hidden
-                >
-
-                    <span>
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r=5.5"/><path d="m16 16 4 4"/></svg></span>
-                    </span>
-
-                    <h3>
-                        Não encontramos nada.
-                    </h3>
-
-                    <p>
-                        Tente buscar por outro produto
-                        ou categoria.
-                    </p>
-
+                <!-- CONTAINER DINÂMICO DE PRODUTOS -->
+                <div id="menuCategoriesContainer">
+                    <!-- Preenchido dinamicamente pelo js/produtos.js -->
+                </div>
+
+                <!-- SEM RESULTADOS -->
+                <div class="empty-state" id="emptyState" hidden>
+                    <div class="empty-state-icon">🔍</div>
+                    <h3>Nenhum lanche encontrado</h3>
+                    <p>Tente buscar por outro termo ou selecione outra categoria.</p>
                 </div>
 
             </div>
-
         </section>
-
-
-        <!-- ========================================
-             CTA
-        ========================================= -->
-
-        <section class="menu-cta">
-
-            <div class="container">
-
-                <div class="menu-cta-content">
-
-                    <span>
-                        <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> Feito para compartilhar
-                    </span>
-
-                    <h2>
-                        Já escolheu o seu?
-                    </h2>
-
-                    <p>
-                        Monte seu pedido e aproveite
-                        o sabor do Pancho da Fronteira.
-                    </p>
-
-                    <a
-                        href="./carrinho.html"
-                        class="btn btn-primary"
-                    >
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r=1.5"/><circle cx="17" cy="18" r=1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span> Ver meu carrinho
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
     </main>
 
-
-    <!-- ========================================
-         FOOTER
-    ========================================= -->
-
+    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
-
         <div class="container">
-
-            <p>
-                © 2026 Pancho da Fronteira.
-                Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.
-            </p>
-
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
+                        </span>
+                        <span class="logo-text">Pancho <small>da Fronteira</small></span>
+                    </div>
+                    <p>Sabor autêntico, receita de família e ingredientes de alta qualidade para matar a sua fome.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="./index.html">Início</a></li>
+                        <li><a href="./cardapio.html">Cardápio</a></li>
+                        <li><a href="./carrinho.html">Carrinho</a></li>
+                        <li><a href="./pedido.html#meus-pedidos">Meus Pedidos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Atendimento</h4>
+                    <ul>
+                        <li>Seg a Dom: 18h às 23h</li>
+                        <li>Rua das Fronteiras, 245</li>
+                        <li>Uruguaiana - RS</li>
+                        <li><a href="./admin/login.html">Área do Restaurante</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            </div>
         </div>
-
     </footer>
 
-
-    <!-- JS -->
-    <script src="./js/main.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/cart.js"></script>
     <script src="./js/produtos.js"></script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            initAuth();
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Configurações da Loja — Pancho da Fronteira">
+    <title>Configurações | Painel Administrativo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <a href="./index.html" class="admin-logo">
+                    <span class="admin-logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
+                    <span class="admin-logo-text">Pancho <small>da Fronteira</small></span>
+                </a>
+            </div>
+
+            <nav class="admin-nav">
+                <span class="admin-nav-label">Principal</span>
+                <a href="./index.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18h16"/><path d="M7 15V8"/><path d="M12 15V5"/><path d="M17 15v-7"/></svg></span></span>Dashboard</a>
+                <a href="./pedidos.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span></span>Pedidos</a>
+
+                <span class="admin-nav-label">Gerenciamento</span>
+                <a href="./produtos.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>Produtos</a>
+                <a href="./categorias.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5v-9Z"/></svg></span></span>Categorias</a>
+                <a href="./clientes.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span></span>Clientes</a>
+                <a href="./configuracoes.html" class="admin-nav-link active"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span></span>Configurações</a>
+
+                <span class="admin-nav-label">Atalhos</span>
+                <a href="../index.html" class="admin-nav-link" target="_blank"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M4 12h16"/><path d="M12 4a14 14 0 0 1 0 16"/><path d="M12 4a14 14 0 0 0 0 16"/></svg></span></span>Ver site da loja</a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <div class="admin-user">
+                    <div class="admin-user-avatar" id="adminUserAvatar">A</div>
+                    <div class="admin-user-info">
+                        <strong id="adminUserName">Admin</strong>
+                        <small>Gerente da Loja</small>
+                    </div>
+                </div>
+                <button type="button" class="admin-logout" id="logoutButton">
+                    <span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M4 12h12a4 4 0 1 1 0 8"/></svg></span></span> Sair
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <button type="button" class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Abrir menu"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span></button>
+                <div class="admin-breadcrumb">
+                    <span>Administração</span>
+                    <strong>/</strong>
+                    <strong>Configurações da Loja</strong>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="page-header">
+                    <div>
+                        <span class="page-eyebrow">Parâmetros do Negócio</span>
+                        <h1>Configurações</h1>
+                        <p>Ajuste os dados da empresa, taxas de entrega e horários de funcionamento.</p>
+                    </div>
+                </div>
+
+                <div class="admin-panel" style="max-width: 720px;">
+                    <form id="storeSettingsForm" style="display:flex; flex-direction:column; gap:20px;">
+                        <div class="form-group">
+                            <label class="form-label" for="storeName">Nome do Estabelecimento</label>
+                            <input type="text" id="storeName" class="form-input" value="Pancho da Fronteira" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="storePhone">Telefone / WhatsApp</label>
+                                <input type="tel" id="storePhone" class="form-input" placeholder="(55) 99999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="storeDeliveryFee">Taxa Padrão de Entrega (R$)</label>
+                                <input type="number" id="storeDeliveryFee" class="form-input" step="0.50" value="6.90" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="storeAddress">Endereço da Sede</label>
+                            <input type="text" id="storeAddress" class="form-input" value="Rua das Fronteiras, 245 • Centro, Uruguaiana - RS">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="storeHours">Horário de Funcionamento</label>
+                            <input type="text" id="storeHours" class="form-input" value="Segunda a Domingo: 18h às 23h">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="storeDesc">Descrição da Loja</label>
+                            <textarea id="storeDesc" class="form-textarea" rows="3">Panchos preparados com carinho, sabor e aquele toque especial que faz você querer voltar.</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="align-self:flex-start; margin-top:10px;">
+                            Salvar Configurações
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            await initAuth({
+                requireAdmin: true,
+                onLogin: (user) => {
+                    document.getElementById("adminUserName").textContent = user.email.split("@")[0];
+                    document.getElementById("adminUserAvatar").textContent = user.email[0].toUpperCase();
+                }
+            });
+            if (typeof initAdminSettingsPage === "function") {
+                initAdminSettingsPage();
+            }
+        });
+    </script>
+</body>
+</html>

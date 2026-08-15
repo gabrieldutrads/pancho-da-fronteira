@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Finalize seu pedido e acompanhe em tempo real. Pancho da Fronteira.">
+    <title>Meu Pedido | Pancho da Fronteira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/pedido.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <nav class="navbar container">
+            <a href="./index.html" class="logo">
+                <span class="logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
+                <span class="logo-text">Pancho <small>da Fronteira</small></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="./index.html" class="nav-link">Início</a>
+                <a href="./cardapio.html" class="nav-link">Cardápio</a>
+                <a href="./carrinho.html" class="cart-button">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    <span>Carrinho</span>
+                    <strong id="cartCount">0</strong>
+                </a>
+                <a href="./login.html" class="account-button" id="accountBtn" title="Minha conta">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                    <span id="accountName">Minha conta</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="order-page">
+        <div class="container">
+
+            <!-- Tabs -->
+            <div class="order-tabs" role="tablist">
+                <button class="order-tab active" id="tabCheckout" role="tab" aria-selected="true" aria-controls="panelCheckout">
+                    Finalizar pedido
+                </button>
+                <button class="order-tab" id="tabOrders" role="tab" aria-selected="false" aria-controls="panelOrders">
+                    Meus pedidos
+                </button>
+            </div>
+
+            <!-- ======== TAB: CHECKOUT ======== -->
+            <div class="tab-panel active" id="panelCheckout" role="tabpanel">
+
+                <!-- Pedido confirmado (oculto até confirmar) -->
+                <div class="order-confirmed" id="orderConfirmed" hidden>
+                    <div class="confirmed-icon">
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    </div>
+                    <h2>Pedido realizado!</h2>
+                    <p>Obrigado por escolher o Pancho da Fronteira.</p>
+                    <div class="order-number-display" id="confirmedOrderNum">#PF-0001</div>
+                    <p style="font-size:0.9rem; color:var(--color-text-muted);">Acompanhe o status do seu pedido na aba "Meus pedidos".</p>
+                    <div class="confirmed-actions">
+                        <button class="btn btn-secondary" onclick="switchTab('orders')">Ver meus pedidos</button>
+                        <a href="./cardapio.html" class="btn btn-primary">Fazer novo pedido</a>
+                    </div>
+                </div>
+
+                <!-- Formulário de checkout -->
+                <div id="checkoutContent">
+                    <!-- Steps -->
+                    <div class="checkout-steps">
+                        <div class="checkout-step active" id="step1Indicator">
+                            <span class="step-num">1</span> Dados
+                        </div>
+                        <div class="checkout-step" id="step2Indicator">
+                            <span class="step-num">2</span> Entrega
+                        </div>
+                        <div class="checkout-step" id="step3Indicator">
+                            <span class="step-num">3</span> Pagamento
+                        </div>
+                    </div>
+
+                    <div class="checkout-layout">
+
+                        <!-- Formulário -->
+                        <div>
+
+                            <!-- STEP 1: Dados pessoais -->
+                            <div id="step1" class="checkout-panel">
+                                <h2 class="checkout-panel-title">
+                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                                    Seus dados
+                                </h2>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="clienteName">Nome completo <span>*</span></label>
+                                    <input type="text" id="clienteName" class="form-input" placeholder="Seu nome" autocomplete="name" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="clientePhone">WhatsApp / Telefone <span>*</span></label>
+                                    <input type="tel" id="clientePhone" class="form-input" placeholder="(55) 99999-9999" autocomplete="tel" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="orderNotes">Observações gerais</label>
+                                    <textarea id="orderNotes" class="form-textarea" rows="3" placeholder="Alergias, preferências, etc..."></textarea>
+                                </div>
+
+                                <button type="button" class="btn btn-primary checkout-next" id="toStep2Btn">
+                                    Continuar
+                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg></span>
+                                </button>
+                            </div>
+
+                            <!-- STEP 2: Entrega -->
+                            <div id="step2" class="checkout-panel" hidden>
+                                <h2 class="checkout-panel-title">
+                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h18l-1.5 9a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5L3 9Z"/><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/></svg></span>
+                                    Forma de entrega
+                                </h2>
+
+                                <div class="delivery-options">
+                                    <div class="delivery-option">
+                                        <input type="radio" name="deliveryType" id="deliveryEntrega" value="entrega" checked>
+                                        <label for="deliveryEntrega">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8Z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+                                            <strong>Entrega</strong>
+                                            <small>Taxa: R$ 6,90</small>
+                                        </label>
+                                    </div>
+                                    <div class="delivery-option">
+                                        <input type="radio" name="deliveryType" id="deliveryRetirada" value="retirada">
+                                        <label for="deliveryRetirada">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-4.4-6-10a6 6 0 1 1 12 0c0 5.6-6 10-6 10Z"/><circle cx="12" cy="11" r="2.5"/></svg></span>
+                                            <strong>Retirada</strong>
+                                            <small>Sem taxa</small>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Campos de endereço (aparece para entrega) -->
+                                <div id="addressFields">
+                                    <div class="form-group">
+                                        <label class="form-label" for="addrStreet">Rua / Avenida <span>*</span></label>
+                                        <input type="text" id="addrStreet" class="form-input" placeholder="Rua das Acácias" autocomplete="street-address">
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="addrNumber">Número <span>*</span></label>
+                                            <input type="text" id="addrNumber" class="form-input" placeholder="123">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="addrComplement">Complemento</label>
+                                            <input type="text" id="addrComplement" class="form-input" placeholder="Ap. 2B">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="addrNeighborhood">Bairro <span>*</span></label>
+                                        <input type="text" id="addrNeighborhood" class="form-input" placeholder="Centro">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="addrReference">Ponto de referência</label>
+                                        <input type="text" id="addrReference" class="form-input" placeholder="Próximo ao mercado X">
+                                    </div>
+                                </div>
+
+                                <div class="form-row" style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-ghost checkout-next" id="backToStep1Btn">← Voltar</button>
+                                    <button type="button" class="btn btn-primary checkout-next" id="toStep3Btn">Continuar →</button>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: Pagamento -->
+                            <div id="step3" class="checkout-panel" hidden>
+                                <h2 class="checkout-panel-title">
+                                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+                                    Forma de pagamento
+                                </h2>
+
+                                <div class="payment-options">
+                                    <div class="payment-option">
+                                        <input type="radio" name="paymentMethod" id="payDinheiro" value="dinheiro" checked>
+                                        <label for="payDinheiro">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
+                                            Dinheiro
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" name="paymentMethod" id="payPix" value="pix">
+                                        <label for="payPix">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 4.5 4.5L12 11 7.5 6.5Z"/><path d="m12 22-4.5-4.5L12 13l4.5 4.5Z"/><path d="m2 12 4.5-4.5L11 12l-4.5 4.5Z"/><path d="m22 12-4.5 4.5L13 12l4.5-4.5Z"/></svg></span>
+                                            PIX
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" name="paymentMethod" id="payDebito" value="cartao_debito">
+                                        <label for="payDebito">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+                                            Débito
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" name="paymentMethod" id="payCredito" value="cartao_credito">
+                                        <label for="payCredito">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+                                            Crédito
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Troco para dinheiro -->
+                                <div class="form-group" id="trocoGroup">
+                                    <label class="form-label" for="trocoInput">Troco para quanto?</label>
+                                    <input type="number" id="trocoInput" class="form-input" placeholder="Ex: 50.00" min="0" step="0.01">
+                                </div>
+
+                                <div class="form-row" style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-ghost" id="backToStep2Btn">← Voltar</button>
+                                    <button type="button" class="btn btn-primary" id="confirmOrderBtn" style="flex:1;">
+                                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+                                        Confirmar pedido
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Resumo lateral -->
+                        <aside class="order-summary-card" id="orderSummaryCard">
+                            <h3>Resumo do pedido</h3>
+                            <div class="summary-items" id="summaryItems"></div>
+                            <hr class="summary-divider">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="summarySubtotal">R$ 0,00</span>
+                            </div>
+                            <div class="summary-row" id="summaryDeliveryRow">
+                                <span>Entrega</span>
+                                <span id="summaryDelivery">R$ 6,90</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <strong id="summaryTotal">R$ 0,00</strong>
+                            </div>
+                        </aside>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ======== TAB: MEUS PEDIDOS ======== -->
+            <div class="tab-panel" id="panelOrders" role="tabpanel">
+                <div id="ordersContent">
+                    <div class="empty-state" id="ordersEmpty" hidden>
+                        <div class="empty-state-icon">📋</div>
+                        <h3>Nenhum pedido ainda</h3>
+                        <p>Seu histórico de pedidos aparecerá aqui.</p>
+                        <a href="./cardapio.html" class="btn btn-primary">Ver cardápio</a>
+                    </div>
+                    <div class="empty-state" id="ordersLogin" hidden>
+                        <div class="empty-state-icon">🔐</div>
+                        <h3>Entre na sua conta</h3>
+                        <p>Para ver seus pedidos, faça login primeiro.</p>
+                        <a href="./login.html" class="btn btn-primary">Entrar</a>
+                    </div>
+                    <div class="orders-list" id="ordersList"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/cart.js"></script>
+    <script>
+
+    /* ===== ESTADO ===== */
+    let currentStep      = 1;
+    let checkoutData     = {};
+    let deliveryFee      = APP_CONFIG.defaultDeliveryFee;
+    let currentUser      = null;
+
+    /* ===== TABS ===== */
+    function switchTab(tab) {
+        const checkout = document.getElementById("tabCheckout");
+        const orders   = document.getElementById("tabOrders");
+        const pCheckout = document.getElementById("panelCheckout");
+        const pOrders   = document.getElementById("panelOrders");
+
+        if (tab === "orders") {
+            orders.classList.add("active");   checkout.classList.remove("active");
+            pOrders.classList.add("active");  pCheckout.classList.remove("active");
+            loadMyOrders();
+        } else {
+            checkout.classList.add("active");  orders.classList.remove("active");
+            pCheckout.classList.add("active"); pOrders.classList.remove("active");
+        }
+    }
+
+    document.getElementById("tabCheckout").addEventListener("click", () => switchTab("checkout"));
+    document.getElementById("tabOrders").addEventListener("click",   () => switchTab("orders"));
+
+    // Hash routing
+    if (location.hash === "#meus-pedidos") switchTab("orders");
+
+    /* ===== STEPS ===== */
+    function goStep(n) {
+        [1,2,3].forEach(i => {
+            document.getElementById(`step${i}`).hidden = (i !== n);
+            const ind = document.getElementById(`step${i}Indicator`);
+            ind.classList.toggle("active", i === n);
+            ind.classList.toggle("done", i < n);
+        });
+        currentStep = n;
+    }
+
+    document.getElementById("toStep2Btn").addEventListener("click", () => {
+        const name  = document.getElementById("clienteName").value.trim();
+        const phone = document.getElementById("clientePhone").value.trim();
+        if (!name)  { showToast("Informe seu nome.", "warning"); return; }
+        if (!phone) { showToast("Informe seu telefone.", "warning"); return; }
+        checkoutData.customerName  = name;
+        checkoutData.customerPhone = phone;
+        checkoutData.notes         = document.getElementById("orderNotes").value.trim();
+        goStep(2);
+    });
+
+    document.getElementById("backToStep1Btn").addEventListener("click", () => goStep(1));
+
+    document.getElementById("toStep3Btn").addEventListener("click", () => {
+        const isEntrega = document.getElementById("deliveryEntrega").checked;
+        checkoutData.deliveryType = isEntrega ? "entrega" : "retirada";
+        if (isEntrega) {
+            const street = document.getElementById("addrStreet").value.trim();
+            const number = document.getElementById("addrNumber").value.trim();
+            const hood   = document.getElementById("addrNeighborhood").value.trim();
+            if (!street) { showToast("Informe a rua.", "warning"); return; }
+            if (!number) { showToast("Informe o número.", "warning"); return; }
+            if (!hood)   { showToast("Informe o bairro.", "warning"); return; }
+            checkoutData.address = {
+                street, number,
+                complement:   document.getElementById("addrComplement").value.trim(),
+                neighborhood: hood,
+                reference:    document.getElementById("addrReference").value.trim(),
+                city: "Uruguaiana", state: "RS",
+            };
+            deliveryFee = 6.90;
+        } else {
+            checkoutData.address = null;
+            deliveryFee = 0;
+        }
+        updateSummary();
+        goStep(3);
+    });
+
+    document.getElementById("backToStep2Btn").addEventListener("click", () => goStep(2));
+
+    /* Mostrar/ocultar campos de endereço */
+    document.querySelectorAll("input[name='deliveryType']").forEach(r => {
+        r.addEventListener("change", () => {
+            const isEntrega = document.getElementById("deliveryEntrega").checked;
+            document.getElementById("addressFields").hidden = !isEntrega;
+            deliveryFee = isEntrega ? 6.90 : 0;
+            updateSummary();
+        });
+    });
+
+    /* Troco */
+    document.querySelectorAll("input[name='paymentMethod']").forEach(r => {
+        r.addEventListener("change", () => {
+            const isDinheiro = document.getElementById("payDinheiro").checked;
+            document.getElementById("trocoGroup").hidden = !isDinheiro;
+        });
+    });
+
+    /* ===== RESUMO ===== */
+    function updateSummary() {
+        const cart     = readCart();
+        const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+        const fee      = cart.length > 0 ? deliveryFee : 0;
+        const total    = subtotal + fee;
+
+        const itemsEl    = document.getElementById("summaryItems");
+        const deliveryEl = document.getElementById("summaryDelivery");
+        const deliveryRow = document.getElementById("summaryDeliveryRow");
+
+        itemsEl.innerHTML = cart.map(i => `
+            <div class="summary-item">
+                <span class="summary-item-qty">${i.quantity}</span>
+                <span class="summary-item-name">${i.name}</span>
+                <span class="summary-item-price">${formatPrice(i.price * i.quantity)}</span>
+            </div>
+        `).join("");
+
+        document.getElementById("summarySubtotal").textContent = formatPrice(subtotal);
+        deliveryEl.textContent = fee > 0 ? formatPrice(fee) : "Grátis";
+        document.getElementById("summaryTotal").textContent    = formatPrice(total);
+    }
+
+    /* ===== CONFIRMAR PEDIDO ===== */
+    document.getElementById("confirmOrderBtn").addEventListener("click", async () => {
+        const cart = readCart();
+        if (cart.length === 0) { showToast("Seu carrinho está vazio!", "warning"); return; }
+
+        const payMethod = document.querySelector("input[name='paymentMethod']:checked")?.value || "dinheiro";
+        checkoutData.paymentMethod = payMethod;
+
+        const btn = document.getElementById("confirmOrderBtn");
+        btn.disabled = true;
+        btn.textContent = "Confirmando...";
+
+        try {
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const fee      = checkoutData.deliveryType === "entrega" ? deliveryFee : 0;
+            const total    = subtotal + fee;
+
+            const order = await createOrder({
+                userId:          currentUser?.id || null,
+                customerName:    checkoutData.customerName,
+                customerPhone:   checkoutData.customerPhone,
+                deliveryType:    checkoutData.deliveryType,
+                addressId:       null,
+                addressSnapshot: checkoutData.address,
+                paymentMethod:   checkoutData.paymentMethod,
+                subtotal,
+                deliveryFee:     fee,
+                total,
+                notes:           checkoutData.notes || null,
+                items:           cart,
+            });
+
+            clearCart();
+            document.getElementById("confirmedOrderNum").textContent = order.order_number;
+            document.getElementById("checkoutContent").hidden = true;
+            document.getElementById("orderConfirmed").hidden = false;
+            showToast("Pedido confirmado! 🎉", "success", 5000);
+
+        } catch (err) {
+            showToast(err.message || "Erro ao confirmar pedido.", "error");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Confirmar pedido";
+        }
+    });
+
+    /* ===== MEUS PEDIDOS ===== */
+    async function loadMyOrders() {
+        const listEl   = document.getElementById("ordersList");
+        const emptyEl  = document.getElementById("ordersEmpty");
+        const loginEl  = document.getElementById("ordersLogin");
+
+        listEl.innerHTML = "";
+        emptyEl.hidden = true;
+        loginEl.hidden = true;
+
+        if (!currentUser) {
+            loginEl.hidden = false;
+            return;
+        }
+
+        listEl.innerHTML = '<div class="skeleton skeleton-card" style="height:120px;margin-bottom:12px;"></div>'.repeat(2);
+
+        const orders = await fetchOrdersByUser(currentUser.id);
+        listEl.innerHTML = "";
+
+        if (!orders.length) { emptyEl.hidden = false; return; }
+
+        orders.forEach(order => {
+            const info = getStatusInfo(order.status);
+            const itemsSummary = (order.order_items || []).map(i => `${i.quantity}x ${i.product_name}`).join(", ");
+            const card = document.createElement("div");
+            card.className = "order-card";
+            card.innerHTML = `
+                <div class="order-card-header">
+                    <div>
+                        <div class="order-card-num">${order.order_number}</div>
+                        <div class="order-card-date">${formatDate(order.created_at)}</div>
+                    </div>
+                    <span class="status-badge ${info.color}">${info.emoji} ${info.label}</span>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-card-items">${itemsSummary || "Sem itens"}</div>
+                    ${renderTimeline(order.status)}
+                </div>
+                <div class="order-card-footer">
+                    <span class="order-card-total">${formatPrice(order.total)}</span>
+                    <span class="order-card-action">
+                        ${order.delivery_type === "entrega" ? "🛵 Entrega" : "🏠 Retirada"}
+                    </span>
+                </div>
+            `;
+            listEl.appendChild(card);
+        });
+    }
+
+    const STATUS_FLOW = ["recebido","confirmado","preparando","pronto","saiu_para_entrega","entregue"];
+    const STATUS_LABELS = {
+        recebido: "📋 Recebido", confirmado: "✅ Confirmado",
+        preparando: "🍳 Em preparo", pronto: "✔️ Pronto",
+        saiu_para_entrega: "🛵 Saiu para entrega", entregue: "🏠 Entregue",
+    };
+
+    function renderTimeline(currentStatus) {
+        if (currentStatus === "cancelado") {
+            return `<div style="color:var(--color-error);font-size:0.875rem;margin-top:8px;">❌ Pedido cancelado</div>`;
+        }
+        const currentIdx = STATUS_FLOW.indexOf(currentStatus);
+        return `
+            <div class="order-timeline" style="margin-top:16px;padding:20px;">
+                <div class="timeline">
+                    ${STATUS_FLOW.map((s, i) => `
+                        <div class="timeline-item ${i < currentIdx ? "done" : ""} ${i === currentIdx ? "current" : ""}">
+                            <div class="timeline-dot">${i <= currentIdx ? (i < currentIdx ? "✓" : STATUS_LABELS[s].split(" ")[0]) : ""}</div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">${STATUS_LABELS[s]}</div>
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
+
+    /* ===== INIT ===== */
+    (async () => {
+        await initAuth({
+            onLogin: (user) => { currentUser = user; },
+            onLogout: () => { currentUser = null; },
+        });
+
+        // Pré-preencher dados se logado
+        if (currentUser) {
+            const profile = await fetchProfile(currentUser.id);
+            if (profile?.nome)     document.getElementById("clienteName").value = profile.nome;
+            if (profile?.telefone) document.getElementById("clientePhone").value = profile.telefone;
+        }
+
+        updateSummary();
+    })();
+
+    </script>
+
+</body>
+</html>

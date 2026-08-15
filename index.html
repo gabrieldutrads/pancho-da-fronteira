@@ -6,15 +6,18 @@
 
     <meta
         name="description"
-        content="Pancho da Fronteira — sabor artesanal, carinho e aquele gostinho especial da fronteira."
+        content="Pancho da Fronteira — sabor artesanal, carinho e aquele gostinho especial da fronteira. Peça online."
     >
 
     <title>Pancho da Fronteira | Sabor que reúne</title>
 
+    <!-- Favicon & PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2b1a14">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
         href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet"
@@ -28,11 +31,8 @@
 <body>
 
     <!-- ==================== HEADER ==================== -->
-
     <header class="header" id="header">
-
         <nav class="navbar container">
-
             <a href="./index.html" class="logo">
                 <span class="logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
                 <span class="logo-text">
@@ -51,51 +51,36 @@
             </button>
 
             <div class="nav-menu" id="navMenu">
-
-                <a href="./index.html" class="nav-link active">
-                    Início
-                </a>
-
-                <a href="./cardapio.html" class="nav-link">
-                    Cardápio
-                </a>
-
-                <a href="#sobre" class="nav-link">
-                    Sobre nós
-                </a>
-
-                <a href="#localizacao" class="nav-link">
-                    Localização
-                </a>
+                <a href="./index.html" class="nav-link active">Início</a>
+                <a href="./cardapio.html" class="nav-link">Cardápio</a>
+                <a href="#sobre" class="nav-link">Sobre nós</a>
+                <a href="#depoimentos" class="nav-link">Depoimentos</a>
+                <a href="#localizacao" class="nav-link">Localização</a>
 
                 <a href="./carrinho.html" class="cart-button">
-                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r=1.5"/><circle cx="17" cy="18" r=1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
                     <span>Carrinho</span>
                     <strong id="cartCount">0</strong>
                 </a>
 
+                <a href="./login.html" class="account-button" id="accountBtn" title="Minha conta">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                    <span id="accountName">Conta</span>
+                </a>
             </div>
-
         </nav>
-
     </header>
 
-
     <main>
-
         <!-- ==================== HERO ==================== -->
-
         <section class="hero">
-
             <div class="hero-decoration hero-decoration-one"></div>
             <div class="hero-decoration hero-decoration-two"></div>
 
             <div class="container hero-content">
-
                 <div class="hero-text">
-
                     <span class="hero-badge">
-                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Feito com carinho
+                        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Feito com carinho familiar
                     </span>
 
                     <h1>
@@ -104,13 +89,10 @@
                     </h1>
 
                     <p class="hero-description">
-                        Panchos preparados com carinho, sabor e
-                        aquele toque especial que faz você querer
-                        voltar.
+                        Panchos artesanais preparados com ingredientes selecionados, molhos especiais e aquele toque caseiro que faz você querer voltar sempre.
                     </p>
 
                     <div class="hero-actions">
-
                         <a href="./cardapio.html" class="btn btn-primary">
                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span> Pedir agora
                         </a>
@@ -119,43 +101,33 @@
                             Ver cardápio
                             <span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg></span></span>
                         </a>
-
                     </div>
 
                     <div class="hero-info">
-
                         <div class="hero-info-item">
                             <span><span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span></span>
                             <div>
-                                <strong>Feito com carinho</strong>
-                                <small>Para você e sua família</small>
+                                <strong>Feito com amor</strong>
+                                <small>Receita artesanal de família</small>
                             </div>
                         </div>
 
                         <div class="hero-info-item">
                             <span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span></span>
                             <div>
-                                <strong>Sabor especial</strong>
-                                <small>Do jeitinho que você gosta</small>
+                                <strong>Entrega Quentinha</strong>
+                                <small>Rápido na sua porta</small>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
 
-
                 <div class="hero-image">
-
                     <div class="hero-image-glow"></div>
-
                     <div class="hero-image-circle">
-
-                        <!-- Foto do produto entra aqui -->
                         <div class="hero-placeholder">
                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
                         </div>
-
                     </div>
 
                     <div class="hero-floating-card hero-card-top">
@@ -173,14 +145,11 @@
                             <small>Família & amigos</small>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </section>
 
-
+        <!-- ==================== SOBRE NÓS ==================== -->
         <section class="featured-section" id="sobre">
             <div class="container">
                 <div class="section-heading section-heading-center">
@@ -192,38 +161,39 @@
                     <article class="feature-card">
                         <div class="feature-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></div>
                         <h3>Receita artesanal</h3>
-                        <p>Preparados com cuidado, ingredientes selecionados e o toque especial da nossa casa.</p>
+                        <p>Preparados com cuidado, pão quentinho na chapa e o molho especial secreto da nossa família.</p>
                     </article>
 
                     <article class="feature-card">
                         <div class="feature-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span></div>
-                        <h3>Feito na hora</h3>
-                        <p>Todo pedido é preparado sob demanda para manter sabor, temperatura e qualidade.</p>
+                        <h3>Feito sob demanda</h3>
+                        <p>Todo lanche é montado após a confirmação do pedido para preservar crocância, temperatura e sabor.</p>
                     </article>
 
                     <article class="feature-card">
                         <div class="feature-icon"><span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span></div>
                         <h3>Atendimento acolhedor</h3>
-                        <p>Mais do que um lanche: uma experiência feita para receber bem a sua família e amigos.</p>
+                        <p>Mais do que um lanche: uma experiência feita para receber bem a sua família em cada mordida.</p>
                     </article>
                 </div>
             </div>
         </section>
 
+        <!-- ==================== DESTAQUES ==================== -->
         <section class="showcase-section">
             <div class="container showcase-layout">
                 <div class="showcase-copy">
                     <span class="section-tag section-tag-dark">Destaques</span>
                     <h2>Os favoritos da casa</h2>
                     <p>
-                        Dos clássicos aos combos mais pedidas, cada opção foi pensada para deixar sua refeição ainda melhor.
+                        Dos clássicos aos combos mais pedidos, cada opção foi pensada para transformar seu jantar em uma festa.
                     </p>
                     <ul class="check-list">
-                        <li>Pancho da Casa com molho especial</li>
-                        <li>Combo Família para dividir</li>
-                        <li>Bebidas para acompanhar cada mordida</li>
+                        <li>Pancho da Casa com molho especial artesanal</li>
+                        <li>Combo Família completo para dividir</li>
+                        <li>Bebidas geladas para acompanhar cada mordida</li>
                     </ul>
-                    <a href="./cardapio.html" class="btn btn-primary">Explorar cardápio</a>
+                    <a href="./cardapio.html" class="btn btn-primary" style="margin-top: 20px;">Explorar cardápio completo</a>
                 </div>
 
                 <div class="showcase-cards">
@@ -235,58 +205,118 @@
                     <article class="showcase-item">
                         <div class="showcase-emoji"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg></span></div>
                         <strong>Combo Família</strong>
-                        <small>R$ 59,90</small>
+                        <small>R$ 89,90</small>
                     </article>
                     <article class="showcase-item">
-                        <div class="showcase-emoji"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg></span></div>
-                        <strong>Refrigerante</strong>
-                        <small>R$ 6,00</small>
+                        <div class="showcase-emoji"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg></span></div>
+                        <strong>Pancho + Refri</strong>
+                        <small>R$ 25,90</small>
                     </article>
                 </div>
             </div>
         </section>
 
+        <!-- ==================== DEPOIMENTOS ==================== -->
+        <section class="featured-section" id="depoimentos" style="background: var(--color-surface-strong);">
+            <div class="container">
+                <div class="section-heading section-heading-center">
+                    <span class="section-tag section-tag-dark">Depoimentos</span>
+                    <h2>O que nossos clientes dizem</h2>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card" style="background: var(--color-white);">
+                        <div style="color: var(--color-secondary); font-size: 1.2rem; margin-bottom: 8px;">★★★★★</div>
+                        <p style="font-style: italic; margin-bottom: 16px;">"O melhor pancho da cidade sem dúvidas! O molho da casa é surreal de bom e a entrega foi super rápida."</p>
+                        <strong>— Lucas Silveira</strong>
+                    </article>
+
+                    <article class="feature-card" style="background: var(--color-white);">
+                        <div style="color: var(--color-secondary); font-size: 1.2rem; margin-bottom: 8px;">★★★★★</div>
+                        <p style="font-style: italic; margin-bottom: 16px;">"Pedimos o Combo Família no domingo e todo mundo adorou. Lanche quentinho, caprichado e com carinho."</p>
+                        <strong>— Mariana Ferreira</strong>
+                    </article>
+
+                    <article class="feature-card" style="background: var(--color-white);">
+                        <div style="color: var(--color-secondary); font-size: 1.2rem; margin-bottom: 8px;">★★★★★</div>
+                        <p style="font-style: italic; margin-bottom: 16px;">"Atendimento excelente no WhatsApp e o acompanhamento do pedido no site é muito prático e moderno."</p>
+                        <strong>— Gabriel Dutra</strong>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== LOCALIZAÇÃO ==================== -->
         <section class="location-section" id="localizacao">
             <div class="container location-layout">
                 <div class="location-card">
                     <span class="section-tag section-tag-dark">Localização</span>
                     <h2>Venha nos visitar</h2>
-                    <p>Rua das Fronteiras, 245 • Centro</p>
-                    <ul>
-                        <li>Segunda a domingo</li>
-                        <li>18h às 23h</li>
-                        <li>Delivery e retirada</li>
+                    <p>Rua das Fronteiras, 245 • Centro • Uruguaiana - RS</p>
+                    <ul style="margin-top: 15px; display:flex; flex-direction:column; gap:8px;">
+                        <li>🕒 Segunda a Domingo: 18h às 23h</li>
+                        <li>🛵 Delivery com entrega rápida</li>
+                        <li>🛍️ Opção de retirada no local</li>
                     </ul>
                 </div>
 
                 <div class="map-placeholder">
-                    <div class="map-pin"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-4.4-6-10a6 6 0 1 1 12 0c0 5.6-6 10-6 10Z"/><circle cx="12" cy="11" r=2.5"/></svg></span></div>
-                    <span>Pancho da Fronteira</span>
+                    <div class="map-pin"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-4.4-6-10a6 6 0 1 1 12 0c0 5.6-6 10-6 10Z"/><circle cx="12" cy="11" r="2.5"/></svg></span></div>
+                    <span>Pancho da Fronteira • Sede Central</span>
                 </div>
             </div>
         </section>
-
     </main>
 
-
     <!-- ==================== FOOTER ==================== -->
-
     <footer class="footer">
-
         <div class="container">
-
-            <p>
-                © 2026 Pancho da Fronteira.
-                Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.
-            </p>
-
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
+                        </span>
+                        <span class="logo-text">Pancho <small>da Fronteira</small></span>
+                    </div>
+                    <p>Sabor autêntico, receita de família e ingredientes de alta qualidade para matar a sua fome.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="./index.html">Início</a></li>
+                        <li><a href="./cardapio.html">Cardápio</a></li>
+                        <li><a href="./carrinho.html">Carrinho</a></li>
+                        <li><a href="./pedido.html#meus-pedidos">Meus Pedidos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Atendimento</h4>
+                    <ul>
+                        <li>Seg a Dom: 18h às 23h</li>
+                        <li>Rua das Fronteiras, 245</li>
+                        <li>Uruguaiana - RS</li>
+                        <li><a href="./admin/login.html">Área do Restaurante</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            </div>
         </div>
-
     </footer>
 
-
-    <!-- JavaScript -->
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/ui.js"></script>
     <script src="./js/main.js"></script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            initAuth();
+        });
+    </script>
 </body>
 </html>
