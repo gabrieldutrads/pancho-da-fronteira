@@ -1,122 +1,358 @@
-const cartStorageKey = "panchoCart";
+// ============================================
+// CARRINHO
+// ============================================
 
-const readCart = () => {
-    try {
-        return JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
-    } catch (error) {
-        return [];
+const CART_KEY = "pancho_cart";
+
+
+// ============================================
+// PEGAR CARRINHO
+// ============================================
+
+function getCart() {
+
+    return JSON.parse(
+        localStorage.getItem(CART_KEY) || "[]"
+    );
+
+}
+
+
+// ============================================
+// SALVAR CARRINHO
+// ============================================
+
+function saveCart(cart) {
+
+    localStorage.setItem(
+        CART_KEY,
+        JSON.stringify(cart)
+    );
+
+}
+
+
+// ============================================
+// ADICIONAR PRODUTO
+// ============================================
+
+function addToCart(name, price) {
+
+    const cart = getCart();
+
+    const existing = cart.find(
+        item => item.name === name
+    );
+
+
+    if (existing) {
+
+        existing.quantity++;
+
+    } else {
+
+        cart.push({
+            name,
+            price,
+            quantity: 1
+        });
+
     }
-};
 
-const writeCart = (cart) => {
-    localStorage.setItem(cartStorageKey, JSON.stringify(cart));
-};
 
-const updateCartBadge = () => {
-    const cartBadge = document.getElementById("cartCount");
-    if (!cartBadge) return;
+    saveCart(cart);
 
-    const total = readCart().reduce((sum, item) => sum + Number(item.quantity || 1), 0);
-    cartBadge.textContent = String(total);
-};
 
-const formatPrice = (value) =>
-    new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    }).format(value);
+    // feedback simples
 
-const renderCart = () => {
-    const cartItemsContainer = document.getElementById("cartItems");
-    const emptyCart = document.getElementById("emptyCart");
-    const subtotalValue = document.getElementById("subtotalValue");
-    const shippingValue = document.getElementById("shippingValue");
-    const totalValue = document.getElementById("totalValue");
+    const goCart =
+        confirm(
+            `${name} foi adicionado ao carrinho! 🌭\n\nDeseja ir para o carrinho?`
+        );
 
-    if (!cartItemsContainer) return;
 
-    const cart = readCart();
-    cartItemsContainer.innerHTML = "";
+    if (goCart) {
+
+        window.location.href =
+            "carrinho.html";
+
+    }
+
+}
+
+
+// ============================================
+// REMOVER
+// ============================================
+
+function removeFromCart(name) {
+
+    let cart = getCart();
+
+    cart = cart.filter(
+        item => item.name !== name
+    );
+
+    saveCart(cart);
+
+    renderCart();
+
+}
+
+
+// ============================================
+// ALTERAR QUANTIDADE
+// ============================================
+
+function changeQuantity(name, amount) {
+
+    const cart = getCart();
+
+    const item = cart.find(
+        item => item.name === name
+    );
+
+
+    if (!item) return;
+
+
+    item.quantity += amount;
+
+
+    if (item.quantity <= 0) {
+
+        removeFromCart(name);
+
+        return;
+
+    }
+
+
+    saveCart(cart);
+
+    renderCart();
+
+}
+
+
+// ============================================
+// FORMATAR DINHEIRO
+// ============================================
+
+function formatMoney(value) {
+
+    return value.toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
+
+}
+
+
+// ============================================
+// RENDERIZAR
+// ============================================
+
+function renderCart() {
+
+    const container =
+        document.getElementById(
+            "cartItems"
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            "total"
+        );
+
+
+    if (!container) return;
+
+
+    const cart = getCart();
+
+
+    if (cart.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty-cart">
+
+                <div>
+                    🛒
+                </div>
+
+                <h2>
+                    Seu carrinho está vazio.
+                </h2>
+
+                <p>
+                    Que tal escolher alguma coisa deliciosa?
+                </p>
+
+                <a
+                    href="cardapio.html"
+                    class="btn"
+                >
+                    🍴 Ver cardápio
+                </a>
+
+            </div>
+
+        `;
+
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                formatMoney(0);
+
+        }
+
+        return;
+
+    }
+
+
+    let total = 0;
+
+
+    container.innerHTML =
+        cart.map(item => {
+
+            const subtotal =
+                item.price *
+                item.quantity;
+
+
+            total += subtotal;
+
+
+            return `
+
+                <div class="cart-item">
+
+                    <div class="cart-product">
+
+                        <div class="cart-icon">
+                            🌭
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                ${item.name}
+                            </h3>
+
+                            <span>
+                                ${formatMoney(item.price)}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quantity">
+
+                        <button
+                            onclick="
+                            changeQuantity(
+                                '${item.name}',
+                                -1
+                            )
+                            "
+                        >
+                            −
+                        </button>
+
+                        <strong>
+                            ${item.quantity}
+                        </strong>
+
+                        <button
+                            onclick="
+                            changeQuantity(
+                                '${item.name}',
+                                1
+                            )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <strong>
+                        ${formatMoney(subtotal)}
+                    </strong>
+
+
+                    <button
+                        class="remove"
+                        onclick="
+                        removeFromCart(
+                            '${item.name}'
+                        )
+                        "
+                        title="Remover"
+                    >
+                        🗑️
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatMoney(total);
+
+    }
+
+}
+
+
+// ============================================
+// FINALIZAR PEDIDO
+// ============================================
+
+function finishOrder() {
+
+    const cart = getCart();
+
 
     if (!cart.length) {
-        if (emptyCart) emptyCart.hidden = false;
-        cartItemsContainer.innerHTML = "";
-    } else if (emptyCart) {
-        emptyCart.hidden = true;
-    }
 
-    cart.forEach((item) => {
-        const row = document.createElement("article");
-        row.className = "cart-item";
-        row.dataset.name = item.name;
-        row.innerHTML = `
-            <div class="item-emoji">${item.icon || '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>'}</div>
-            <div class="item-info">
-                <h3>${item.name}</h3>
-                <p>${formatPrice(item.price)} cada</p>
-                <div class="item-meta">
-                    <div class="quantity-controls">
-                        <button type="button" class="quantity-button" data-action="decrease" data-name="${item.name}">−</button>
-                        <span class="quantity-value">${item.quantity}</span>
-                        <button type="button" class="quantity-button" data-action="increase" data-name="${item.name}">+</button>
-                    </div>
-                    <button type="button" class="remove-button" data-action="remove" data-name="${item.name}">×</button>
-                </div>
-            </div>
-            <strong class="item-price">${formatPrice(item.price * item.quantity)}</strong>
-        `;
-        cartItemsContainer.appendChild(row);
-    });
+        alert(
+            "Seu carrinho está vazio. 😅"
+        );
 
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = subtotal > 0 ? 6.9 : 0;
-    const total = subtotal + shipping;
-
-    if (subtotalValue) subtotalValue.textContent = formatPrice(subtotal);
-    if (shippingValue) shippingValue.textContent = formatPrice(shipping);
-    if (totalValue) totalValue.textContent = formatPrice(total);
-
-    updateCartBadge();
-};
-
-const adjustQuantity = (name, delta) => {
-    const cart = readCart();
-    const target = cart.find((item) => item.name === name);
-    if (!target) return;
-
-    target.quantity += delta;
-    if (target.quantity <= 0) {
-        const filtered = cart.filter((item) => item.name !== name);
-        writeCart(filtered);
-        renderCart();
         return;
+
     }
 
-    writeCart(cart);
-    renderCart();
-};
 
-const removeItem = (name) => {
-    const cart = readCart().filter((item) => item.name !== name);
-    writeCart(cart);
-    renderCart();
-};
+    window.location.href =
+        "pedido.html";
 
-window.addEventListener("DOMContentLoaded", () => {
-    const cartItemsContainer = document.getElementById("cartItems");
-    if (!cartItemsContainer) return;
+}
 
-    cartItemsContainer.addEventListener("click", (event) => {
-        const target = event.target.closest("button");
-        if (!target) return;
 
-        const action = target.dataset.action;
-        const name = target.dataset.name;
+// ============================================
+// INICIAR
+// ============================================
 
-        if (action === "increase") adjustQuantity(name, 1);
-        if (action === "decrease") adjustQuantity(name, -1);
-        if (action === "remove") removeItem(name);
-    });
-
-    renderCart();
-});
+document.addEventListener(
+    "DOMContentLoaded",
+    renderCart
+);
