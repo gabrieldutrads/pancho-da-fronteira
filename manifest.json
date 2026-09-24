@@ -1,0 +1,21 @@
+{
+  "name": "Pancho da Fronteira",
+  "short_name": "Pancho",
+  "description": "O verdadeiro sabor da fronteira. Peça online seus panchos artesanais favoritos.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#fffaf3",
+  "theme_color": "#2b1a14",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

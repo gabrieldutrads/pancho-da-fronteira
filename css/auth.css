@@ -1,0 +1,280 @@
+/* ============================================================
+   PANCHO DA FRONTEIRA — AUTH CSS
+   Login, cadastro, recuperação de senha.
+============================================================ */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+}
+
+/* Card central */
+.auth-card {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-strong);
+    padding: 48px 42px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.4s ease;
+}
+
+/* Logo no topo */
+.auth-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.auth-logo-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: var(--shadow-accent);
+}
+
+.auth-logo-icon .icon { width: 1.8rem; height: 1.8rem; }
+
+.auth-logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    line-height: 1.1;
+}
+
+.auth-logo-text small {
+    display: block;
+    font-size: 0.65rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Cabeçalho do card */
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.auth-header h1 {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+}
+
+.auth-header p {
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+}
+
+/* Formulário */
+.auth-form { display: flex; flex-direction: column; gap: 0; }
+
+.auth-form .form-group { margin-bottom: 20px; }
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
+
+.input-icon .icon { width: 1.1rem; height: 1.1rem; }
+
+.input-wrapper .form-input {
+    padding-left: 42px;
+}
+
+.input-toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    padding: 4px;
+    border-radius: 4px;
+    transition: color var(--transition);
+}
+
+.input-toggle-password:hover { color: var(--color-primary); }
+.input-toggle-password .icon { width: 1.1rem; height: 1.1rem; }
+
+/* Submit button */
+.auth-submit {
+    width: 100%;
+    margin-top: 8px;
+    min-height: 54px;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+}
+
+/* Links alternativos */
+.auth-alt {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.auth-alt a {
+    color: var(--color-accent-dark);
+    font-weight: 600;
+    transition: color var(--transition);
+}
+
+.auth-alt a:hover { color: var(--color-accent); }
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+
+/* Forgot password link */
+.forgot-link {
+    font-size: 0.85rem;
+    color: var(--color-accent-dark);
+    font-weight: 500;
+    text-align: right;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 16px;
+    transition: color var(--transition);
+}
+
+.forgot-link:hover { color: var(--color-accent); }
+
+/* Erro global do form */
+.auth-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--color-error-light);
+    color: var(--color-error);
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    animation: slideUp 0.2s ease;
+}
+
+.auth-error .icon { width: 1rem; height: 1rem; flex-shrink: 0; }
+
+/* Sucesso */
+.auth-success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--color-success-light);
+    color: var(--color-success);
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    animation: slideUp 0.2s ease;
+}
+
+/* Checkbox customizado */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.checkbox-group a {
+    color: var(--color-accent-dark);
+    font-weight: 500;
+}
+
+/* Forças de senha */
+.password-strength {
+    margin-top: 6px;
+    display: flex;
+    gap: 4px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-border);
+    transition: background 0.3s;
+}
+
+.strength-bar.weak   { background: var(--color-error); }
+.strength-bar.medium { background: var(--color-warning); }
+.strength-bar.strong { background: var(--color-success); }
+
+/* Voltar link */
+.auth-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    transition: color var(--transition);
+    margin-bottom: 24px;
+}
+
+.auth-back:hover { color: var(--color-primary); }
+
+/* ----------------------------------------------------------
+   RESPONSIVIDADE
+---------------------------------------------------------- */
+@media (max-width: 480px) {
+    .auth-card { padding: 36px 24px; border-radius: var(--radius-lg); }
+    .auth-header h1 { font-size: 1.5rem; }
+}

@@ -1,134 +1,317 @@
-const CART_KEY = "panchoCart";
+/* ============================================================
+   PANCHO DA FRONTEIRA — PRODUCTS.JS
+   Gerenciamento e renderização de produtos e cardápio.
+   Suporta dados dinâmicos do Supabase com fallback estático.
+============================================================ */
 
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    }).format(value);
-};
+// Dados de fallback locais (caso o Supabase ainda não esteja configurado)
+const FALLBACK_CATEGORIES = [
+    { id: "panchos", name: "Panchos", icon: '<svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg>', label: "Especialidade da casa", description: "Nosso clássico, preparado do jeitinho Pancho da Fronteira." },
+    { id: "combos", name: "Combos", icon: '<svg viewBox="0 0 24 24"><path d="M7 8h10l-1 10H8L7 8Z"/><path d="M9 8V5.5a3 3 0 0 1 6 0V8"/><path d="M8 11h8"/></svg>', label: "Para compartilhar", description: "A combinação perfeita para aproveitar com quem você gosta." },
+    { id: "bebidas", name: "Bebidas", icon: '<svg viewBox="0 0 24 24"><path d="M7 3h10l-1 15a2 2 0 0 1-2 1.8H10a2 2 0 0 1-2-1.8L7 3Z"/><path d="M10 3V2h4v1"/><path d="M9 8h6"/></svg>', label: "Para acompanhar", description: "Para completar seu pedido com bebidas bem geladas." },
+    { id: "promocoes", name: "Promoções", icon: '<svg viewBox="0 0 24 24"><path d="M13.5 2.5c1.4 2 1.7 3.4 1.2 5-.6 1.9-2.3 2.7-3.5 4.1-1.2 1.4-1.2 3.9-.4 5.4 1.7 2.9 5.7 3.1 8.2 1.4 2.7-1.8 3.8-5.1 2.6-8-1.4-3.4-5.3-6.4-7.1-7.9Z"/><path d="M10 13c.5 1.6 1.5 2.6 3 3.3"/></svg>', label: "Aproveita!", description: "Ofertas especiais por tempo limitado." }
+];
 
-const getCart = () => {
+const FALLBACK_PRODUCTS = [
+    { id: "1", category_slug: "panchos", category_name: "Panchos", name: "Pancho da Casa", description: "Nosso pão artesanal, salsicha premium, salada fresca e molho especial.", price: 24.90, featured: true, badge: "Mais pedido", image_url: null },
+    { id: "2", category_slug: "panchos", category_name: "Panchos", name: "Pancho Especial", description: "Uma combinação especial e marcante para quem ama muito sabor.", price: 27.90, featured: false, badge: null, image_url: null },
+    { id: "3", category_slug: "panchos", category_name: "Panchos", name: "Pancho Bacon", description: "Para quem não abre mão daquele toque defumado e bacon crocante.", price: 28.90, featured: true, badge: "Defumado", image_url: null },
+    { id: "4", category_slug: "combos", category_name: "Combos", name: "Combo Família", description: "4 Panchos da Casa + 4 Bebidas. Uma opção completa para compartilhar.", price: 89.90, featured: true, badge: "Família", image_url: null },
+    { id: "5", category_slug: "combos", category_name: "Combos", name: "Combo Dupla", description: "2 Panchos Especiais + 2 Bebidas para dividir momentos deliciosos.", price: 49.90, featured: false, badge: null, image_url: null },
+    { id: "6", category_slug: "bebidas", category_name: "Bebidas", name: "Refrigerante Lata", description: "Lata gelada 350ml (Coca-Cola, Guaraná, Sprite).", price: 6.00, featured: false, badge: null, image_url: null },
+    { id: "7", category_slug: "bebidas", category_name: "Bebidas", name: "Água Mineral", description: "Garrafa 500ml sem gás.", price: 4.00, featured: false, badge: null, image_url: null },
+    { id: "8", category_slug: "promocoes", category_name: "Promoções", name: "Pancho + Bebida", description: "1 Pancho Especial acompanhado de 1 refrigerante lata bem gelado.", price: 25.90, original_price: 31.90, featured: true, badge: "-20%", image_url: null }
+];
+
+/* ----------------------------------------------------------
+   OBTER PRODUTOS & CATEGORIAS (com fallback)
+---------------------------------------------------------- */
+async function loadMenuData() {
+    let categories = [];
+    let products = [];
+
     try {
-        return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-    } catch (error) {
-        return [];
+        if (typeof fetchCategories === "function" && typeof fetchProducts === "function") {
+            const dbCategories = await fetchCategories();
+            const dbProducts = await fetchProducts();
+
+            if (dbCategories && dbCategories.length > 0) {
+                categories = dbCategories;
+            }
+            if (dbProducts && dbProducts.length > 0) {
+                products = dbProducts;
+            }
+        }
+    } catch (err) {
+        console.warn("[Products] Usando fallback local:", err);
     }
-};
 
-const saveCart = (cart) => {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-};
+    if (categories.length === 0) categories = FALLBACK_CATEGORIES;
+    if (products.length === 0) products = FALLBACK_PRODUCTS;
 
-const updateCartBadge = () => {
-    const countNode = document.getElementById("cartCount");
-    const cart = getCart();
-    const total = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+    return { categories, products };
+}
 
-    if (countNode) {
-        countNode.textContent = String(total);
+/* ----------------------------------------------------------
+   OBTER PRODUTO POR ID OU NOME
+---------------------------------------------------------- */
+async function getProductDetail(idOrSlug) {
+    if (!idOrSlug) return null;
+
+    try {
+        if (typeof fetchProductById === "function") {
+            const prod = await fetchProductById(idOrSlug);
+            if (prod) return prod;
+        }
+    } catch (e) {
+        console.warn("[Products] Buscando no fallback local");
     }
-};
 
-const addProductToCart = (name, price) => {
-    const cart = getCart();
-    const product = cart.find((item) => item.name === name);
+    // Procura no fallback
+    const found = FALLBACK_PRODUCTS.find(p => p.id === idOrSlug || p.name.toLowerCase() === decodeURIComponent(idOrSlug).toLowerCase());
+    return found || null;
+}
 
-    if (product) {
-        product.quantity += 1;
-    } else {
-        cart.push({
-            name,
-            price: Number(price),
-            quantity: 1,
-            icon: '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>'
+/* ----------------------------------------------------------
+   RENDERIZAR CARDÁPIO COMPLETO (cardapio.html)
+---------------------------------------------------------- */
+async function renderFullMenu() {
+    const categoriesFilterContainer = document.getElementById("categoryFilter");
+    const menuContainer = document.getElementById("menuCategoriesContainer");
+    const emptyState = document.getElementById("emptyState");
+
+    if (!menuContainer) return;
+
+    const { categories, products } = await loadMenuData();
+
+    // Renderizar Botões de Filtro se o container existir
+    if (categoriesFilterContainer) {
+        categoriesFilterContainer.innerHTML = `
+            <button class="filter-button active" data-category="todos">Todos</button>
+            ${categories.map(cat => `
+                <button class="filter-button" data-category="${cat.id || cat.name.toLowerCase()}">
+                    <span class="icon" aria-hidden="true">${cat.icon && cat.icon.includes('<svg') ? cat.icon : '<svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg>'}</span>
+                    ${cat.name}
+                </button>
+            `).join("")}
+        `;
+    }
+
+    // Renderizar Seções de Categorias com Produtos
+    menuContainer.innerHTML = categories.map(cat => {
+        const catKey = cat.id || cat.name.toLowerCase();
+        const catProducts = products.filter(p => {
+            if (p.category_id) return p.category_id === cat.id;
+            if (p.category_slug) return p.category_slug === catKey;
+            if (p.categories?.name) return p.categories.name.toLowerCase() === cat.name.toLowerCase();
+            return false;
         });
-    }
 
-    saveCart(cart);
-    updateCartBadge();
-};
+        if (catProducts.length === 0) return "";
 
-const filterProducts = () => {
+        return `
+            <section class="product-category" data-section="${catKey}">
+                <div class="category-heading">
+                    <div>
+                        <span class="category-label">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
+                            ${cat.label || cat.name}
+                        </span>
+                        <h2>${cat.name}</h2>
+                    </div>
+                    ${cat.description ? `<p>${cat.description}</p>` : ""}
+                </div>
+
+                <div class="products-grid">
+                    ${catProducts.map(prod => `
+                        <article class="product-card ${prod.original_price ? 'product-card-promotion' : ''}" data-category="${catKey}" data-name="${prod.name}">
+                            <a href="./produto.html?id=${encodeURIComponent(prod.id || prod.name)}" class="product-image-link" aria-label="Ver detalhes de ${prod.name}">
+                                <div class="product-image">
+                                    ${prod.image_url 
+                                        ? `<img src="${prod.image_url}" alt="${prod.name}" loading="lazy">` 
+                                        : `<div class="product-placeholder"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></div>`
+                                    }
+                                    ${prod.badge || prod.featured ? `
+                                        <span class="product-badge">
+                                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span>
+                                            ${prod.badge || 'Destaque'}
+                                        </span>
+                                    ` : ''}
+                                </div>
+                            </a>
+
+                            <div class="product-info">
+                                <a href="./produto.html?id=${encodeURIComponent(prod.id || prod.name)}">
+                                    <h3>${prod.name}</h3>
+                                </a>
+                                <p>${prod.description || ''}</p>
+
+                                <div class="product-bottom">
+                                    <div class="price-container">
+                                        ${prod.original_price ? `<del>${window.formatPrice ? window.formatPrice(prod.original_price) : 'R$ ' + prod.original_price.toFixed(2)}</del>` : ''}
+                                        <strong class="product-price">${window.formatPrice ? window.formatPrice(prod.price) : 'R$ ' + prod.price.toFixed(2)}</strong>
+                                    </div>
+                                    <button class="add-button" data-id="${prod.id || ''}" data-product="${prod.name}" data-price="${prod.price}" title="Adicionar ao carrinho" aria-label="Adicionar ${prod.name}">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    `).join("")}
+                </div>
+            </section>
+        `;
+    }).join("");
+
+    setupFilterHandlers();
+}
+
+/* ----------------------------------------------------------
+   FILTRAGEM E BUSCA NO CARDÁPIO
+---------------------------------------------------------- */
+function setupFilterHandlers() {
     const buttons = document.querySelectorAll(".filter-button");
     const searchInput = document.getElementById("searchInput");
     const emptyState = document.getElementById("emptyState");
     const sections = document.querySelectorAll(".product-category");
 
-    if (!buttons.length || !searchInput || !sections.length) {
-        return;
+    const runFilter = () => {
+        const selectedCategory = document.querySelector(".filter-button.active")?.dataset.category || "todos";
+        const query = searchInput?.value.trim().toLowerCase() || "";
+        let hasVisibleProduct = false;
+
+        sections.forEach(section => {
+            const sectionCategory = section.dataset.section;
+            const cards = section.querySelectorAll(".product-card");
+            let sectionHasVisible = false;
+
+            cards.forEach(card => {
+                const categoryMatches = selectedCategory === "todos" || card.dataset.category === selectedCategory || sectionCategory === selectedCategory;
+                const productName = (card.dataset.name || "").toLowerCase();
+                const searchMatches = !query || productName.includes(query);
+                const show = categoryMatches && searchMatches;
+
+                card.hidden = !show;
+                if (show) {
+                    sectionHasVisible = true;
+                    hasVisibleProduct = true;
+                }
+            });
+
+            section.hidden = !sectionHasVisible;
+        });
+
+        if (emptyState) {
+            emptyState.hidden = hasVisibleProduct;
+        }
+    };
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            buttons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            runFilter();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener("input", runFilter);
+    }
+}
+
+/* ----------------------------------------------------------
+   INICIALIZADOR DA PÁGINA DE PRODUTO INDIVIDUAL (produto.html)
+---------------------------------------------------------- */
+async function initProductDetailPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get("id") || "1";
+
+    const product = await getProductDetail(productId);
+    if (!product) return;
+
+    // Atualizar títulos e SEO
+    document.title = `${product.name} | Pancho da Fronteira`;
+    const nameEls = document.querySelectorAll(".product-detail-name");
+    nameEls.forEach(el => el.textContent = product.name);
+
+    const priceEl = document.getElementById("productPrice");
+    if (priceEl) priceEl.textContent = window.formatPrice ? window.formatPrice(product.price) : `R$ ${product.price.toFixed(2)}`;
+
+    const descEl = document.getElementById("productDescription");
+    if (descEl) descEl.textContent = product.description;
+
+    const badgeEl = document.getElementById("productBadge");
+    if (badgeEl) {
+        if (product.badge || product.featured) {
+            badgeEl.textContent = product.badge || "Destaque";
+            badgeEl.hidden = false;
+        } else {
+            badgeEl.hidden = true;
+        }
     }
 
-    const selectedCategory = document.querySelector(".filter-button.active")?.dataset.category || "todos";
-    const query = searchInput.value.trim().toLowerCase();
+    // Botão Adicionar
+    const addBtn = document.getElementById("addToCartMainBtn");
+    if (addBtn) {
+        addBtn.dataset.id = product.id;
+        addBtn.dataset.product = product.name;
+        addBtn.dataset.price = product.price;
 
-    let hasVisibleProduct = false;
+        addBtn.addEventListener("click", () => {
+            const qty = parseInt(document.getElementById("productQuantity")?.value || "1", 10);
+            const notes = document.getElementById("productNotes")?.value.trim() || "";
 
-    sections.forEach((section) => {
-        const sectionCategory = section.dataset.section;
-        const cards = section.querySelectorAll(".product-card");
-        let sectionHasVisibleItem = false;
+            // Opções selecionadas (chips ativos)
+            const activeOptions = Array.from(document.querySelectorAll(".chip.active")).map(c => c.textContent.trim());
+            const fullNotes = [notes, activeOptions.length > 0 ? `Opções: ${activeOptions.join(", ")}` : ""].filter(Boolean).join(" | ");
 
-        cards.forEach((card) => {
-            const categoryMatches = selectedCategory === "todos" || card.dataset.category === selectedCategory;
-            const productName = (card.dataset.name || "").toLowerCase();
-            const searchMatches = !query || productName.includes(query);
-            const showCard = categoryMatches && searchMatches;
-
-            card.hidden = !showCard;
-            if (showCard) {
-                sectionHasVisibleItem = true;
-                hasVisibleProduct = true;
+            if (typeof addToCart === "function") {
+                addToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image_url,
+                    notes: fullNotes,
+                    quantity: qty
+                });
+                if (typeof showToast === "function") {
+                    showToast(`${qty}x ${product.name} adicionado ao carrinho!`, "success");
+                }
             }
         });
-
-        if (sectionHasVisibleItem) {
-            section.hidden = false;
-        } else {
-            section.hidden = true;
-        }
-    });
-
-    if (emptyState) {
-        emptyState.hidden = hasVisibleProduct;
-    }
-};
-
-const setupProductInteractions = () => {
-    document.querySelectorAll(".filter-button").forEach((button) => {
-        button.addEventListener("click", () => {
-            document.querySelectorAll(".filter-button").forEach((item) => item.classList.remove("active"));
-            button.classList.add("active");
-            filterProducts();
-        });
-    });
-
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) {
-        searchInput.addEventListener("input", filterProducts);
     }
 
-    document.querySelectorAll(".add-button, .mini-button").forEach((button) => {
-        button.addEventListener("click", () => {
-            const name = button.dataset.product;
-            const price = button.dataset.price;
-
-            if (!name || !price) return;
-            addProductToCart(name, price);
+    // Seleção de Chips (Molhos / Adicionais)
+    document.querySelectorAll(".option-chips").forEach(group => {
+        group.addEventListener("click", (e) => {
+            const chip = e.target.closest(".chip");
+            if (!chip) return;
+            // Se o grupo permitir múltiplo ou single
+            const isSingle = group.dataset.multiple !== "true";
+            if (isSingle) {
+                group.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+                chip.classList.add("active");
+            } else {
+                chip.classList.toggle("active");
+            }
         });
     });
+}
 
-    const chips = document.querySelectorAll(".chip");
-    chips.forEach((chip) => {
-        chip.addEventListener("click", () => {
-            const group = chip.parentElement?.querySelectorAll(".chip");
-            group?.forEach((item) => item.classList.remove("active"));
-            chip.classList.add("active");
-        });
-    });
-};
+// Auto-inicializar ao carregar
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("menuCategoriesContainer")) {
+        renderFullMenu();
+    }
+    if (document.getElementById("productDetailContainer")) {
+        initProductDetailPage();
+    }
+});
 
-window.addEventListener("DOMContentLoaded", () => {
-    updateCartBadge();
-    setupProductInteractions();
-    filterProducts();
+// Expor globalmente
+Object.assign(window, {
+    loadMenuData,
+    getProductDetail,
+    renderFullMenu,
+    initProductDetailPage
 });

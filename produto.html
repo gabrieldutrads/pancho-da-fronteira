@@ -5,6 +5,7 @@
 <head>
 
     <meta charset="UTF-8">
+<<<<<<< HEAD
 
     <meta
         name="viewport"
@@ -23,9 +24,22 @@
         href="css/produto.css"
     >
 
+=======
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personalize e peça seu Pancho favorito online com entrega rápida e quentinha.">
+    <title>Detalhes do Produto | Pancho da Fronteira</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/produto.css">
+>>>>>>> c77000fd24e04bc45907cdf497926a535474d57a
 </head>
 
 <body>
+<<<<<<< HEAD
 
 <header class="header">
 
@@ -84,8 +98,138 @@
 
         <div class="product-photo">
             🌭
+=======
+    <header class="header" id="header">
+        <nav class="navbar container">
+            <a href="./index.html" class="logo">
+                <span class="logo-icon"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>
+                <span class="logo-text">Pancho <small>da Fronteira</small></span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span>
+            </button>
+
+            <div class="nav-menu" id="navMenu">
+                <a href="./index.html" class="nav-link">Início</a>
+                <a href="./cardapio.html" class="nav-link active">Cardápio</a>
+                <a href="./index.html#sobre" class="nav-link">Sobre nós</a>
+                <a href="./carrinho.html" class="cart-button">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                    <span>Carrinho</span>
+                    <strong id="cartCount">0</strong>
+                </a>
+                <a href="./login.html" class="account-button" id="accountBtn" title="Minha conta">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                    <span id="accountName">Conta</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="productDetailContainer">
+        <section class="product-page">
+            <div class="container product-layout">
+                <div class="product-gallery">
+                    <div class="product-visual">
+                        <div class="product-emoji">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-details">
+                    <span class="section-tag" id="productBadge"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span> Destaque da Casa</span>
+                    <h1 class="product-detail-name">Carregando produto...</h1>
+                    <p class="product-subtitle">Preparado na hora com ingredientes frescos e receita de família.</p>
+
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <small>4,9 de 5 • 300+ clientes satisfeitos</small>
+                    </div>
+
+                    <div class="product-price-row">
+                        <strong id="productPrice">R$ 0,00</strong>
+                        <span>Entrega rápida em ~25 min</span>
+                    </div>
+
+                    <p class="product-description" id="productDescription">
+                        Carregando descrição do lanche...
+                    </p>
+
+                    <div class="product-options">
+                        <div>
+                            <span class="option-label">Escolha o Molho Principal</span>
+                            <div class="option-chips" data-multiple="false">
+                                <button type="button" class="chip active">Molho Especial da Casa</button>
+                                <button type="button" class="chip">Barbecue Artesanal</button>
+                                <button type="button" class="chip">Maionese Verde</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="option-label">Adicionais Extras</span>
+                            <div class="option-chips" data-multiple="true">
+                                <button type="button" class="chip">+ Bacon Crocante</button>
+                                <button type="button" class="chip">+ Queijo Derretido</button>
+                                <button type="button" class="chip">+ Batata Palha</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label class="form-label" for="productNotes">Observações do seu lanche:</label>
+                            <input type="text" id="productNotes" class="form-input" placeholder="Ex: Sem cebola, molho à parte...">
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px; max-width: 140px;">
+                            <label class="form-label" for="productQuantity">Quantidade:</label>
+                            <input type="number" id="productQuantity" class="form-input" value="1" min="1" max="20">
+                        </div>
+                    </div>
+
+                    <div class="product-actions" style="margin-top: 25px;">
+                        <button type="button" class="btn btn-primary" id="addToCartMainBtn">
+                            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
+                            Adicionar ao carrinho
+                        </button>
+                        <a href="./cardapio.html" class="btn btn-secondary">Voltar ao cardápio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO DE INFORMAÇÕES DE QUALIDADE -->
+        <section class="product-info-section">
+            <div class="container info-grid">
+                <div class="info-card">
+                    <h2>Nossos Ingredientes</h2>
+                    <ul>
+                        <li>Pão artesanal tostado na chapa</li>
+                        <li>Salsicha premium e carnes selecionadas</li>
+                        <li>Salada fresca com vegetais locais</li>
+                        <li>Molhos caseiros sem conservantes</li>
+                    </ul>
+                </div>
+
+                <div class="info-card highlight">
+                    <h2>Por que nosso sabor é inconfundível</h2>
+                    <p>
+                        Todo pancho é montado no exato momento do seu pedido, garantindo que o pão chegue crocante, a temperatura perfeita e o sabor autêntico da fronteira.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+            </div>
+>>>>>>> c77000fd24e04bc45907cdf497926a535474d57a
         </div>
 
+<<<<<<< HEAD
 
         <div class="product-info">
 
@@ -135,6 +279,21 @@
 
 <script src="js/carrinho.js"></script>
 
+=======
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/supabase.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/cart.js"></script>
+    <script src="./js/produtos.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            initAuth();
+        });
+    </script>
+>>>>>>> c77000fd24e04bc45907cdf497926a535474d57a
 </body>
 
 </html>
