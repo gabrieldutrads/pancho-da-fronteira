@@ -108,6 +108,10 @@
             </div>
 
             <div class="auth-alt" style="margin-top: 12px;">
+                <a href="#" id="guestContinueLink">Continuar sem conta</a>
+            </div>
+
+            <div class="auth-alt" style="margin-top: 12px;">
                 <a href="./index.html">← Voltar ao início</a>
             </div>
 
@@ -139,8 +143,14 @@
         const togglePass  = document.getElementById("togglePassword");
         const forgotLink  = document.getElementById("forgotLink");
         const loginBtn    = document.getElementById("loginBtn");
+        const guestLink   = document.getElementById("guestContinueLink");
         const errorBox    = document.getElementById("authError");
         const errorMsg    = document.getElementById("authErrorMsg");
+
+        const guestReturnTo = new URLSearchParams(location.search).get("returnTo") || "/pedido.html";
+        if (guestLink) {
+            guestLink.href = guestReturnTo.startsWith("/") ? guestReturnTo : "./pedido.html";
+        }
 
         function showError(msg) {
             errorMsg.textContent = msg;
@@ -184,8 +194,8 @@
 
             try {
                 await signIn({ email, password });
-                const returnTo = new URLSearchParams(location.search).get("returnTo") || "/index.html";
-                window.location.href = returnTo;
+                const redirectTo = new URLSearchParams(location.search).get("returnTo") || "/index.html";
+                window.location.href = redirectTo;
             } catch (err) {
                 showError(err.message);
                 loginBtn.disabled = false;

@@ -13,14 +13,14 @@ const FALLBACK_CATEGORIES = [
 ];
 
 const FALLBACK_PRODUCTS = [
-    { id: "1", category_slug: "panchos", category_name: "Panchos", name: "Pancho da Casa", description: "Nosso pão artesanal, salsicha premium, salada fresca e molho especial.", price: 24.90, featured: true, badge: "Mais pedido", image_url: null },
-    { id: "2", category_slug: "panchos", category_name: "Panchos", name: "Pancho Especial", description: "Uma combinação especial e marcante para quem ama muito sabor.", price: 27.90, featured: false, badge: null, image_url: null },
-    { id: "3", category_slug: "panchos", category_name: "Panchos", name: "Pancho Bacon", description: "Para quem não abre mão daquele toque defumado e bacon crocante.", price: 28.90, featured: true, badge: "Defumado", image_url: null },
-    { id: "4", category_slug: "combos", category_name: "Combos", name: "Combo Família", description: "4 Panchos da Casa + 4 Bebidas. Uma opção completa para compartilhar.", price: 89.90, featured: true, badge: "Família", image_url: null },
-    { id: "5", category_slug: "combos", category_name: "Combos", name: "Combo Dupla", description: "2 Panchos Especiais + 2 Bebidas para dividir momentos deliciosos.", price: 49.90, featured: false, badge: null, image_url: null },
-    { id: "6", category_slug: "bebidas", category_name: "Bebidas", name: "Refrigerante Lata", description: "Lata gelada 350ml (Coca-Cola, Guaraná, Sprite).", price: 6.00, featured: false, badge: null, image_url: null },
-    { id: "7", category_slug: "bebidas", category_name: "Bebidas", name: "Água Mineral", description: "Garrafa 500ml sem gás.", price: 4.00, featured: false, badge: null, image_url: null },
-    { id: "8", category_slug: "promocoes", category_name: "Promoções", name: "Pancho + Bebida", description: "1 Pancho Especial acompanhado de 1 refrigerante lata bem gelado.", price: 25.90, original_price: 31.90, featured: true, badge: "-20%", image_url: null }
+    { id: "11111111-1111-4111-8111-111111111111", category_slug: "panchos", category_name: "Panchos", name: "Pancho da Casa", description: "Nosso pão artesanal, salsicha premium, salada fresca e molho especial.", price: 24.90, featured: true, badge: "Mais pedido", image_url: null },
+    { id: "22222222-2222-4222-8222-222222222222", category_slug: "panchos", category_name: "Panchos", name: "Pancho Especial", description: "Uma combinação especial e marcante para quem ama muito sabor.", price: 27.90, featured: false, badge: null, image_url: null },
+    { id: "33333333-3333-4333-8333-333333333333", category_slug: "panchos", category_name: "Panchos", name: "Pancho Bacon", description: "Para quem não abre mão daquele toque defumado e bacon crocante.", price: 28.90, featured: true, badge: "Defumado", image_url: null },
+    { id: "44444444-4444-4444-8444-444444444444", category_slug: "combos", category_name: "Combos", name: "Combo Família", description: "4 Panchos da Casa + 4 Bebidas. Uma opção completa para compartilhar.", price: 89.90, featured: true, badge: "Família", image_url: null },
+    { id: "55555555-5555-4555-8555-555555555555", category_slug: "combos", category_name: "Combos", name: "Combo Dupla", description: "2 Panchos Especiais + 2 Bebidas para dividir momentos deliciosos.", price: 49.90, featured: false, badge: null, image_url: null },
+    { id: "66666666-6666-4666-8666-666666666666", category_slug: "bebidas", category_name: "Bebidas", name: "Refrigerante Lata", description: "Lata gelada 350ml (Coca-Cola, Guaraná, Sprite).", price: 6.00, featured: false, badge: null, image_url: null },
+    { id: "77777777-7777-4777-8777-777777777777", category_slug: "bebidas", category_name: "Bebidas", name: "Água Mineral", description: "Garrafa 500ml sem gás.", price: 4.00, featured: false, badge: null, image_url: null },
+    { id: "88888888-8888-4888-8888-888888888888", category_slug: "promocoes", category_name: "Promoções", name: "Pancho + Bebida", description: "1 Pancho Especial acompanhado de 1 refrigerante lata bem gelado.", price: 25.90, original_price: 31.90, featured: true, badge: "-20%", image_url: null }
 ];
 
 /* ----------------------------------------------------------

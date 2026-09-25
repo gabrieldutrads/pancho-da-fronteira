@@ -22,6 +22,16 @@ function getSupabase() {
 
 window.getSupabase = getSupabase;
 
+function isValidUuid(value) {
+    if (typeof value !== "string") return false;
+    return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(value.trim());
+}
+
+function normalizeUuidOrNull(value) {
+    if (value === null || value === undefined || value === "") return null;
+    return isValidUuid(String(value)) ? String(value).trim() : null;
+}
+
 /* ----------------------------------------------------------
    CATEGORIES
 ---------------------------------------------------------- */
@@ -83,11 +93,11 @@ async function createOrder({ userId, customerName, customerPhone, deliveryType,
     const { data: order, error: orderError } = await sb
         .from("orders")
         .insert({
-            user_id: userId,
+            user_id: normalizeUuidOrNull(userId),
             customer_name: customerName,
             customer_phone: customerPhone,
             delivery_type: deliveryType,
-            address_id: addressId || null,
+            address_id: normalizeUuidOrNull(addressId),
             address_snapshot: addressSnapshot || null,
             payment_method: paymentMethod,
             subtotal,
@@ -104,7 +114,7 @@ async function createOrder({ userId, customerName, customerPhone, deliveryType,
     // Inserir itens
     const orderItems = items.map(item => ({
         order_id:     order.id,
-        product_id:   item.id || null,
+        product_id:   normalizeUuidOrNull(item?.id),
         product_name: item.name,
         quantity:     item.quantity,
         unit_price:   item.price,
@@ -202,7 +212,7 @@ async function adminFetchAllOrders({ status, search, limit = 50 } = {}) {
     if (!sb) return [];
     let query = sb
         .from("orders")
-        .select("*, order_items(*), profiles(nome, telefone)")
+        .select("*, order_items(*)")
         .order("created_at", { ascending: false })
         .limit(limit);
     if (status) query = query.eq("status", status);

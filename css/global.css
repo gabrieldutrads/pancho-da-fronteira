@@ -624,6 +624,8 @@ ul, ol         { list-style: none; }
 /* ----------------------------------------------------------
    EMPTY STATE
 ---------------------------------------------------------- */
+[hidden] { display: none !important; }
+
 .empty-state {
     display: flex;
     flex-direction: column;
