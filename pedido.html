@@ -72,6 +72,9 @@
 
                 <!-- Formulário de checkout -->
                 <div id="checkoutContent">
+                    <p style="margin: 0 0 18px; color: var(--color-text-muted); font-size: 0.95rem;">
+                        Você pode finalizar este pedido sem criar uma conta agora.
+                    </p>
                     <!-- Steps -->
                     <div class="checkout-steps">
                         <div class="checkout-step active" id="step1Indicator">
@@ -321,9 +324,6 @@
     document.getElementById("tabCheckout").addEventListener("click", () => switchTab("checkout"));
     document.getElementById("tabOrders").addEventListener("click",   () => switchTab("orders"));
 
-    // Hash routing
-    if (location.hash === "#meus-pedidos") switchTab("orders");
-
     /* ===== STEPS ===== */
     function goStep(n) {
         [1,2,3].forEach(i => {
@@ -473,9 +473,12 @@
         listEl.innerHTML = "";
         emptyEl.hidden = true;
         loginEl.hidden = true;
+        emptyEl.style.display = "none";
+        loginEl.style.display = "none";
 
         if (!currentUser) {
             loginEl.hidden = false;
+            loginEl.style.display = "flex";
             return;
         }
 
@@ -484,7 +487,11 @@
         const orders = await fetchOrdersByUser(currentUser.id);
         listEl.innerHTML = "";
 
-        if (!orders.length) { emptyEl.hidden = false; return; }
+        if (!orders.length) {
+            emptyEl.hidden = false;
+            emptyEl.style.display = "flex";
+            return;
+        }
 
         orders.forEach(order => {
             const info = getStatusInfo(order.status);
@@ -554,6 +561,11 @@
             const profile = await fetchProfile(currentUser.id);
             if (profile?.nome)     document.getElementById("clienteName").value = profile.nome;
             if (profile?.telefone) document.getElementById("clientePhone").value = profile.telefone;
+        }
+
+        // Aguarda a sessão antes de carregar a aba de pedidos.
+        if (location.hash === "#meus-pedidos") {
+            switchTab("orders");
         }
 
         updateSummary();

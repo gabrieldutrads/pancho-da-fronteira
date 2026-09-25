@@ -199,6 +199,12 @@ async function initAdminOrdersPage() {
     const modalBody = document.getElementById("modalOrderBody");
     const closeModalBtn = document.getElementById("closeOrderModalBtn");
 
+    function closeOrderModal() {
+        if (!modal) return;
+        modal.hidden = true;
+        modalBody.innerHTML = "";
+    }
+
     tbody?.addEventListener("click", (e) => {
         const btn = e.target.closest(".view-order-btn");
         if (!btn) return;
@@ -246,8 +252,17 @@ async function initAdminOrdersPage() {
         modal.hidden = false;
     });
 
-    closeModalBtn?.addEventListener("click", () => {
-        if (modal) modal.hidden = true;
+    document.addEventListener("click", (event) => {
+        if (event.target.closest("#closeOrderModalBtn")) {
+            closeOrderModal();
+            return;
+        }
+        if (event.target === modal) closeOrderModal();
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal && !modal.hidden) {
+            closeOrderModal();
+        }
     });
 
     searchInput?.addEventListener("input", renderOrdersTable);

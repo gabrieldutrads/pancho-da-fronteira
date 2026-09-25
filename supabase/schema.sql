@@ -6,50 +6,51 @@
 -- Habilitar extensões necessárias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- ============================================================
--- ENUM: STATUS DO PEDIDO
--- ============================================================
-CREATE TYPE order_status AS ENUM (
-    'recebido',
-    'confirmado',
-    'preparando',
-    'pronto',
-    'saiu_para_entrega',
-    'entregue',
-    'cancelado'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
+    CREATE TYPE public.order_status AS ENUM (
+      'recebido',
+      'confirmado',
+      'preparando',
+      'pronto',
+      'saiu_para_entrega',
+      'entregue',
+      'cancelado'
+    );
+  END IF;
+END $$;
 
--- ============================================================
--- ENUM: TIPO DE ENTREGA
--- ============================================================
-CREATE TYPE delivery_type AS ENUM (
-    'entrega',
-    'retirada'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'delivery_type') THEN
+    CREATE TYPE public.delivery_type AS ENUM ('entrega', 'retirada');
+  END IF;
+END $$;
 
--- ============================================================
--- ENUM: FORMA DE PAGAMENTO
--- ============================================================
-CREATE TYPE payment_method AS ENUM (
-    'dinheiro',
-    'pix',
-    'cartao_debito',
-    'cartao_credito'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_method') THEN
+    CREATE TYPE public.payment_method AS ENUM (
+      'dinheiro',
+      'pix',
+      'cartao_debito',
+      'cartao_credito'
+    );
+  END IF;
+END $$;
 
--- ============================================================
--- ENUM: ROLE DO USUÁRIO
--- ============================================================
-CREATE TYPE user_role AS ENUM (
-    'customer',
-    'admin',
-    'manager'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+    CREATE TYPE public.user_role AS ENUM ('customer', 'admin', 'manager');
+  END IF;
+END $$;
 
 -- ============================================================
 -- TABELA: PROFILES
 -- ============================================================
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
     id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     nome        TEXT,
     telefone    TEXT,
@@ -62,7 +63,7 @@ CREATE TABLE public.profiles (
 -- ============================================================
 -- TABELA: CATEGORIES
 -- ============================================================
-CREATE TABLE public.categories (
+CREATE TABLE IF NOT EXISTS public.categories (
     id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name        TEXT NOT NULL,
     description TEXT,
@@ -77,7 +78,7 @@ CREATE TABLE public.categories (
 -- ============================================================
 -- TABELA: PRODUCTS
 -- ============================================================
-CREATE TABLE public.products (
+CREATE TABLE IF NOT EXISTS public.products (
     id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     category_id UUID REFERENCES public.categories(id) ON DELETE SET NULL,
     name        TEXT NOT NULL,
@@ -94,7 +95,7 @@ CREATE TABLE public.products (
 -- ============================================================
 -- TABELA: ADDRESSES
 -- ============================================================
-CREATE TABLE public.addresses (
+CREATE TABLE IF NOT EXISTS public.addresses (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id         UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     label           TEXT,
@@ -113,7 +114,7 @@ CREATE TABLE public.addresses (
 -- ============================================================
 -- TABELA: ORDERS
 -- ============================================================
-CREATE TABLE public.orders (
+CREATE TABLE IF NOT EXISTS public.orders (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_number        TEXT NOT NULL UNIQUE,
     user_id             UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -135,7 +136,7 @@ CREATE TABLE public.orders (
 -- ============================================================
 -- TABELA: ORDER_ITEMS
 -- ============================================================
-CREATE TABLE public.order_items (
+CREATE TABLE IF NOT EXISTS public.order_items (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id        UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     product_id      UUID REFERENCES public.products(id) ON DELETE SET NULL,
@@ -150,7 +151,7 @@ CREATE TABLE public.order_items (
 -- ============================================================
 -- TABELA: ORDER_STATUS_HISTORY
 -- ============================================================
-CREATE TABLE public.order_status_history (
+CREATE TABLE IF NOT EXISTS public.order_status_history (
     id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id    UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
     status      order_status NOT NULL,
@@ -162,7 +163,7 @@ CREATE TABLE public.order_status_history (
 -- ============================================================
 -- TABELA: STORE_SETTINGS
 -- ============================================================
-CREATE TABLE public.store_settings (
+CREATE TABLE IF NOT EXISTS public.store_settings (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name                TEXT NOT NULL DEFAULT 'Pancho da Fronteira',
     phone               TEXT,
@@ -276,15 +277,15 @@ CREATE TRIGGER on_order_status_change
 -- ============================================================
 -- ÍNDICES
 -- ============================================================
-CREATE INDEX idx_products_category ON public.products(category_id);
-CREATE INDEX idx_products_active ON public.products(active);
-CREATE INDEX idx_products_featured ON public.products(featured);
-CREATE INDEX idx_orders_user ON public.orders(user_id);
-CREATE INDEX idx_orders_status ON public.orders(status);
-CREATE INDEX idx_orders_created ON public.orders(created_at DESC);
-CREATE INDEX idx_order_items_order ON public.order_items(order_id);
-CREATE INDEX idx_addresses_user ON public.addresses(user_id);
-CREATE INDEX idx_status_history_order ON public.order_status_history(order_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_active ON public.products(active);
+CREATE INDEX IF NOT EXISTS idx_products_featured ON public.products(featured);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON public.orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON public.order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_addresses_user ON public.addresses(user_id);
+CREATE INDEX IF NOT EXISTS idx_status_history_order ON public.order_status_history(order_id);
 
 -- ============================================================
 -- ROW LEVEL SECURITY
@@ -315,6 +316,11 @@ $$ LANGUAGE SQL SECURITY DEFINER STABLE;
 -- ============================================================
 -- POLICIES: PROFILES
 -- ============================================================
+DROP POLICY IF EXISTS "Usuário pode ver próprio perfil" ON public.profiles;
+DROP POLICY IF EXISTS "Admin pode ver todos os perfis" ON public.profiles;
+DROP POLICY IF EXISTS "Usuário pode atualizar próprio perfil" ON public.profiles;
+DROP POLICY IF EXISTS "Admin pode atualizar qualquer perfil" ON public.profiles;
+
 CREATE POLICY "Usuário pode ver próprio perfil"
     ON public.profiles FOR SELECT
     USING (auth.uid() = id);
@@ -335,6 +341,12 @@ CREATE POLICY "Admin pode atualizar qualquer perfil"
 -- ============================================================
 -- POLICIES: CATEGORIES
 -- ============================================================
+DROP POLICY IF EXISTS "Qualquer um pode ver categorias ativas" ON public.categories;
+DROP POLICY IF EXISTS "Admin pode ver todas as categorias" ON public.categories;
+DROP POLICY IF EXISTS "Admin pode inserir categorias" ON public.categories;
+DROP POLICY IF EXISTS "Admin pode atualizar categorias" ON public.categories;
+DROP POLICY IF EXISTS "Admin pode excluir categorias" ON public.categories;
+
 CREATE POLICY "Qualquer um pode ver categorias ativas"
     ON public.categories FOR SELECT
     USING (active = TRUE);
@@ -358,6 +370,12 @@ CREATE POLICY "Admin pode excluir categorias"
 -- ============================================================
 -- POLICIES: PRODUCTS
 -- ============================================================
+DROP POLICY IF EXISTS "Qualquer um pode ver produtos ativos" ON public.products;
+DROP POLICY IF EXISTS "Admin pode ver todos os produtos" ON public.products;
+DROP POLICY IF EXISTS "Admin pode inserir produtos" ON public.products;
+DROP POLICY IF EXISTS "Admin pode atualizar produtos" ON public.products;
+DROP POLICY IF EXISTS "Admin pode excluir produtos" ON public.products;
+
 CREATE POLICY "Qualquer um pode ver produtos ativos"
     ON public.products FOR SELECT
     USING (active = TRUE);
@@ -381,6 +399,12 @@ CREATE POLICY "Admin pode excluir produtos"
 -- ============================================================
 -- POLICIES: ADDRESSES
 -- ============================================================
+DROP POLICY IF EXISTS "Usuário pode ver próprios endereços" ON public.addresses;
+DROP POLICY IF EXISTS "Admin pode ver todos os endereços" ON public.addresses;
+DROP POLICY IF EXISTS "Usuário pode criar endereço" ON public.addresses;
+DROP POLICY IF EXISTS "Usuário pode atualizar próprio endereço" ON public.addresses;
+DROP POLICY IF EXISTS "Usuário pode excluir próprio endereço" ON public.addresses;
+
 CREATE POLICY "Usuário pode ver próprios endereços"
     ON public.addresses FOR SELECT
     USING (auth.uid() = user_id);
@@ -404,6 +428,11 @@ CREATE POLICY "Usuário pode excluir próprio endereço"
 -- ============================================================
 -- POLICIES: ORDERS
 -- ============================================================
+DROP POLICY IF EXISTS "Usuário pode ver próprios pedidos" ON public.orders;
+DROP POLICY IF EXISTS "Admin pode ver todos os pedidos" ON public.orders;
+DROP POLICY IF EXISTS "Usuário autenticado ou visitante pode criar pedido" ON public.orders;
+DROP POLICY IF EXISTS "Admin pode atualizar qualquer pedido" ON public.orders;
+
 CREATE POLICY "Usuário pode ver próprios pedidos"
     ON public.orders FOR SELECT
     USING (auth.uid() = user_id);
@@ -412,9 +441,9 @@ CREATE POLICY "Admin pode ver todos os pedidos"
     ON public.orders FOR SELECT
     USING (public.is_admin());
 
-CREATE POLICY "Usuário autenticado pode criar pedido"
+CREATE POLICY "Usuário autenticado ou visitante pode criar pedido"
     ON public.orders FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    WITH CHECK (user_id IS NULL OR auth.uid() = user_id);
 
 CREATE POLICY "Admin pode atualizar qualquer pedido"
     ON public.orders FOR UPDATE
@@ -423,6 +452,10 @@ CREATE POLICY "Admin pode atualizar qualquer pedido"
 -- ============================================================
 -- POLICIES: ORDER_ITEMS
 -- ============================================================
+DROP POLICY IF EXISTS "Usuário pode ver próprios itens" ON public.order_items;
+DROP POLICY IF EXISTS "Admin pode ver todos os itens" ON public.order_items;
+DROP POLICY IF EXISTS "Usuário pode inserir itens em seu pedido ou pedido sem conta" ON public.order_items;
+
 CREATE POLICY "Usuário pode ver próprios itens"
     ON public.order_items FOR SELECT
     USING (
@@ -437,19 +470,23 @@ CREATE POLICY "Admin pode ver todos os itens"
     ON public.order_items FOR SELECT
     USING (public.is_admin());
 
-CREATE POLICY "Usuário pode inserir itens em seu pedido"
+CREATE POLICY "Usuário pode inserir itens em seu pedido ou pedido sem conta"
     ON public.order_items FOR INSERT
     WITH CHECK (
         EXISTS (
             SELECT 1 FROM public.orders
             WHERE orders.id = order_items.order_id
-            AND orders.user_id = auth.uid()
+            AND (orders.user_id IS NULL OR orders.user_id = auth.uid())
         )
     );
 
 -- ============================================================
 -- POLICIES: ORDER_STATUS_HISTORY
 -- ============================================================
+DROP POLICY IF EXISTS "Usuário pode ver histórico de seus pedidos" ON public.order_status_history;
+DROP POLICY IF EXISTS "Admin pode ver todo o histórico" ON public.order_status_history;
+DROP POLICY IF EXISTS "Admin pode inserir histórico" ON public.order_status_history;
+
 CREATE POLICY "Usuário pode ver histórico de seus pedidos"
     ON public.order_status_history FOR SELECT
     USING (
@@ -471,6 +508,10 @@ CREATE POLICY "Admin pode inserir histórico"
 -- ============================================================
 -- POLICIES: STORE_SETTINGS
 -- ============================================================
+DROP POLICY IF EXISTS "Qualquer um pode ver configurações da loja" ON public.store_settings;
+DROP POLICY IF EXISTS "Admin pode atualizar configurações" ON public.store_settings;
+DROP POLICY IF EXISTS "Admin pode inserir configurações" ON public.store_settings;
+
 CREATE POLICY "Qualquer um pode ver configurações da loja"
     ON public.store_settings FOR SELECT
     USING (TRUE);
