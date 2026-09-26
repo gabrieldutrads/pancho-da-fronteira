@@ -1,6 +1,6 @@
 /* ============================================================
-   PANCHO DA FRONTEIRA Ã¢â‚¬â€ ADMIN.JS
-   LÃƒÂ³gica e controladores do Painel Administrativo.
+   PANCHO DA FRONTEIRA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ADMIN.JS
+   LÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³gica e controladores do Painel Administrativo.
 ============================================================ */
 
 /* ----------------------------------------------------------
@@ -46,7 +46,7 @@ async function initAdminDashboard() {
             profiles = await adminFetchAllProfiles();
         }
 
-        // EstatÃƒÂ­sticas
+        // EstatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas
         const totalRevenue = orders.reduce((sum, o) => sum + (o.status !== 'cancelado' ? Number(o.total || 0) : 0), 0);
         const todayStr = new Date().toISOString().split("T")[0];
         const ordersToday = orders.filter(o => o.created_at && o.created_at.startsWith(todayStr)).length;
@@ -62,7 +62,7 @@ async function initAdminDashboard() {
         const prodEl = document.getElementById("dashProductsCount");
         if (prodEl) prodEl.textContent = String(activeProducts || products.length);
 
-        // Tabela de ÃƒÅ¡ltimos Pedidos no Dashboard
+        // Tabela de ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ltimos Pedidos no Dashboard
         const tbody = document.getElementById("dashRecentOrdersBody");
         if (tbody) {
             tbody.innerHTML = "";
@@ -87,12 +87,12 @@ async function initAdminDashboard() {
             }
         }
     } catch (e) {
-        console.warn("[Admin Dashboard] Erro ao carregar mÃƒÂ©tricas:", e);
+        console.warn("[Admin Dashboard] Erro ao carregar mÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©tricas:", e);
     }
 }
 
 /* ----------------------------------------------------------
-   GESTÃƒÆ’O DE PEDIDOS (admin/pedidos.html)
+   GESTÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢O DE PEDIDOS (admin/pedidos.html)
 ---------------------------------------------------------- */
 async function initAdminOrdersPage() {
     const tbody = document.getElementById("ordersTableBody");
@@ -149,18 +149,18 @@ async function initAdminOrdersPage() {
                 <td><strong>${escapeHtml(o.order_number || o.id.slice(0,8))}</strong></td>
                 <td><small>${dateStr}</small></td>
                 <td>${escapeHtml(o.customer_name)}<br><small style="color:var(--color-text-muted);">${escapeHtml(o.customer_phone || '')}</small></td>
-                <td><span class="status-badge ${o.delivery_type === 'entrega' ? 'status-confirmed' : 'status-inactive'}">${o.delivery_type === 'entrega' ? 'Ã°Å¸â€ºÂµ Entrega' : 'Ã°Å¸ÂÂ  Retirada'}</span></td>
+                <td><span class="status-badge ${o.delivery_type === 'entrega' ? 'status-confirmed' : 'status-inactive'}">${o.delivery_type === 'entrega' ? 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂºÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµ Entrega' : 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  Retirada'}</span></td>
                 <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(itemsText)}">${itemsText}</td>
                 <td><strong>${o.total == null ? 'Taxa a confirmar' : (window.formatPrice ? window.formatPrice(o.total) : 'R$ ' + o.total)}</strong></td>
                 <td>
                     <select class="form-select status-changer" data-order-id="${o.id}" style="padding:4px 8px; font-size:0.8rem; font-weight:600;">
-                        <option value="recebido" ${o.status === 'recebido' ? 'selected' : ''}>Ã°Å¸â€œâ€¹ Recebido</option>
-                        <option value="confirmado" ${o.status === 'confirmado' ? 'selected' : ''}>Ã¢Å“â€¦ Confirmado</option>
-                        <option value="preparando" ${o.status === 'preparando' ? 'selected' : ''}>Ã°Å¸ÂÂ³ Em preparo</option>
-                        <option value="pronto" ${o.status === 'pronto' ? 'selected' : ''}>Ã¢Å“â€Ã¯Â¸Â Pronto</option>
-                        <option value="saiu_para_entrega" ${o.status === 'saiu_para_entrega' ? 'selected' : ''}>Ã°Å¸â€ºÂµ Saiu p/ Entrega</option>
-                        <option value="entregue" ${o.status === 'entregue' ? 'selected' : ''}>Ã°Å¸ÂÂ  Entregue</option>
-                        <option value="cancelado" ${o.status === 'cancelado' ? 'selected' : ''}>Ã¢ÂÅ’ Cancelado</option>
+                        <option value="recebido" ${o.status === 'recebido' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¹ Recebido</option>
+                        <option value="confirmado" ${o.status === 'confirmado' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ Confirmado</option>
+                        <option value="preparando" ${o.status === 'preparando' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³ Em preparo</option>
+                        <option value="pronto" ${o.status === 'pronto' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Pronto</option>
+                        <option value="saiu_para_entrega" ${o.status === 'saiu_para_entrega' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂºÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµ Saiu p/ Entrega</option>
+                        <option value="entregue" ${o.status === 'entregue' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  Entregue</option>
+                        <option value="cancelado" ${o.status === 'cancelado' ? 'selected' : ''}>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Cancelado</option>
                     </select>
                 </td>
                 <td>
@@ -173,7 +173,7 @@ async function initAdminOrdersPage() {
         });
     }
 
-    // MudanÃƒÂ§a de Status
+    // MudanÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§a de Status
     tbody?.addEventListener("change", async (e) => {
         const select = e.target.closest(".status-changer");
         if (!select) return;
@@ -225,17 +225,17 @@ async function initAdminOrdersPage() {
 
         modalBody.innerHTML = `
             <p><strong>Cliente:</strong> ${escapeHtml(order.customer_name)} (${escapeHtml(order.customer_phone)})</p>
-            <p><strong>Forma de Entrega:</strong> ${order.delivery_type === 'entrega' ? 'Ã°Å¸â€ºÂµ Entrega em EndereÃ§o' : 'Ã°Å¸ÂÂ  Retirada no BalcÃƒÂ£o'}</p>
+            <p><strong>Forma de Entrega:</strong> ${order.delivery_type === 'entrega' ? 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂºÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµ Entrega em EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o' : 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  Retirada no BalcÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o'}</p>
             ${order.address_snapshot ? `
                 <div style="background:var(--color-surface-strong); padding:10px; border-radius:var(--radius-sm); margin:10px 0;">
-                    <strong>EndereÃ§o de Entrega:</strong><br>
+                    <strong>EndereÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o de Entrega:</strong><br>
                     ${escapeHtml(order.address_snapshot.street)}, ${escapeHtml(order.address_snapshot.number)} ${order.address_snapshot.complement ? '- ' + escapeHtml(order.address_snapshot.complement) : ''}<br>
                     Bairro: ${escapeHtml(order.address_snapshot.neighborhood)}<br>
                     ${order.address_snapshot.reference ? `<small>Ponto de Ref: ${escapeHtml(order.address_snapshot.reference)}</small>` : ''}
                 </div>
             ` : ''}
             <p><strong>Forma de Pagamento:</strong> ${order.payment_method?.toUpperCase()}</p>
-            ${order.notes ? `<p><strong>ObservaÃƒÂ§ÃƒÂµes Gerais:</strong> ${escapeHtml(order.notes)}</p>` : ''}
+            ${order.notes ? `<p><strong>ObservaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes Gerais:</strong> ${escapeHtml(order.notes)}</p>` : ''}
             
             <h4 style="margin:16px 0 8px;">Itens Pedidos:</h4>
             ${itemsHtml}
@@ -275,7 +275,7 @@ async function initAdminOrdersPage() {
                 closeOrderModal();
                 showToast("Taxa e total do pedido confirmados.", "success");
             } catch (error) {
-                showToast("NÃƒÂ£o foi possÃƒÂ­vel confirmar a taxa: " + error.message, "error");
+                showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel confirmar a taxa: " + error.message, "error");
             }
             return;
         }
@@ -299,7 +299,7 @@ async function initAdminOrdersPage() {
 }
 
 /* ----------------------------------------------------------
-   GESTÃƒÆ’O DE CLIENTES (admin/clientes.html)
+   GESTÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢O DE CLIENTES (admin/clientes.html)
 ---------------------------------------------------------- */
 async function initAdminClientsPage() {
     const tbody = document.getElementById("clientsTableBody");
@@ -338,7 +338,7 @@ async function initAdminClientsPage() {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td><strong>${escapeHtml(p.nome || 'Cliente sem nome')}</strong></td>
-                <td>${escapeHtml(p.telefone || 'NÃƒÂ£o informado')}</td>
+                <td>${escapeHtml(p.telefone || 'NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o informado')}</td>
                 <td><span class="status-badge ${p.role === 'admin' ? 'status-confirmed' : 'status-inactive'}">${p.role}</span></td>
                 <td><small>${window.formatDate ? window.formatDate(p.created_at) : p.created_at}</small></td>
             `;
@@ -351,7 +351,7 @@ async function initAdminClientsPage() {
 }
 
 /* ----------------------------------------------------------
-   CONFIGURAÃƒâ€¡Ãƒâ€¢ES DA LOJA (admin/configuracoes.html)
+   CONFIGURAÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ES DA LOJA (admin/configuracoes.html)
 ---------------------------------------------------------- */
 async function initAdminSettingsPage() {
     const form = document.getElementById("storeSettingsForm");
@@ -375,7 +375,7 @@ async function initAdminSettingsPage() {
             }
         }
     } catch (error) {
-        console.warn("[Settings] Usando configuraÃ§Ãµes disponÃƒÂ­veis localmente", error);
+        console.warn("[Settings] Using available configuration", error);
     }
 
     if (zonesInput) zonesInput.value = JSON.stringify(operations.delivery_zones, null, 2);
@@ -384,7 +384,7 @@ async function initAdminSettingsPage() {
     form.addEventListener("submit", async event => {
         event.preventDefault();
         if (!zonesInput || !hoursInput) {
-            if (typeof showToast === "function") showToast("NÃƒÂ£o foi possÃƒÂ­vel carregar entrega e horÃ¡rios.", "error");
+            if (typeof showToast === "function") showToast("Could not load delivery and opening settings.", "error");
             return;
         }
         if (saveButton) { saveButton.disabled = true; saveButton.setAttribute("aria-busy", "true"); }
@@ -405,7 +405,7 @@ async function initAdminSettingsPage() {
         try {
             deliveryZones = JSON.parse(zonesInput.value);
             schedule = JSON.parse(hoursInput.value);
-            if (!Array.isArray(deliveryZones) || !schedule.opening_hours || !Array.isArray(schedule.opening_exceptions)) throw new Error("Estrutura de zonas ou horÃ¡rios incompleta.");
+            if (!Array.isArray(deliveryZones) || !schedule.opening_hours || !Array.isArray(schedule.opening_exceptions)) throw new Error("Zone or opening settings are incomplete.");
             if (!deliveryZones.length) throw new Error("Cadastre ao menos uma zona de entrega.");
             const names = new Set();
             const invalidZone = deliveryZones.find(zone => {
@@ -418,15 +418,15 @@ async function initAdminSettingsPage() {
             });
             if (invalidZone) throw new Error("Confira nome, tipo, taxa e aliases das zonas. Os nomes precisam ser diferentes.");
             const requiredDays = ["segunda", "quarta", "quinta", "sexta", "sabado"];
-            if (requiredDays.some(day => !schedule.opening_hours[day])) throw new Error("Faltam dias obrigatÃ³rios na configuraÃ§Ã£o dos horÃ¡rios.");
+            if (requiredDays.some(day => !schedule.opening_hours[day])) throw new Error("Some required weekdays are missing from the schedule.");
             for (const [day, hours] of Object.entries(schedule.opening_hours)) {
-                if (hours?.active === true && ((hours.open && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.open)) || (hours.close && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.close)))) throw new Error(`HorÃƒÂ¡rio invÃ¡lido em ${day}. Use HH:MM.`);
+                if (hours?.active === true && ((hours.open && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.open)) || (hours.close && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.close)))) throw new Error(`Invalid opening time for ${day}. Use HH:MM.`);
             }
             for (const exception of schedule.opening_exceptions) {
-                if (!exception || (exception.date && !/^\d{4}-\d{2}-\d{2}$/.test(exception.date))) throw new Error("ExceÃ§Ãµes devem conter datas no formato AAAA-MM-DD.");
+                if (!exception || (exception.date && !/^\d{4}-\d{2}-\d{2}$/.test(exception.date))) throw new Error("Exception dates must use YYYY-MM-DD.");
             }
         } catch (error) {
-            if (typeof showToast === "function") showToast("Revise as configuraÃ§Ãµes: " + error.message, "warning", 6000);
+            if (typeof showToast === "function") showToast("Review settings: " + error.message, "warning", 6000);
             if (saveButton) { saveButton.disabled = false; saveButton.removeAttribute("aria-busy"); }
             return;
         }
@@ -445,7 +445,7 @@ async function initAdminSettingsPage() {
             } else {
                 operations = await saveOperationalSettings({ delivery_zones: deliveryZones, opening_hours: schedule.opening_hours, opening_exceptions: schedule.opening_exceptions });
             }
-            if (typeof showToast === "function") showToast("ConfiguraÃ§Ãµes salvas com sucesso!", "success");
+            if (typeof showToast === "function") showToast("ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!", "success");
         } catch (error) {
             if (typeof showToast === "function") showToast("Erro ao salvar: " + error.message, "error");
         } finally {
@@ -479,7 +479,7 @@ async function initAdminProductsPage() {
         list.innerHTML = shown.length ? shown.map(product => `
             <article class="admin-product-item">
                 <div class="admin-product-text"><h3>${escapeHtml(product.name)}</h3>
-                <p>${escapeHtml(product.categories?.name || "Sem categoria")} Ã‚Â· ${window.formatPrice(Number(product.price))} Ã‚Â· ${product.active ? "DisponÃƒÂ­vel" : "Desativado"}</p></div>
+                <p>${escapeHtml(product.categories?.name || "Sem categoria")} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${window.formatPrice(Number(product.price))} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${product.active ? "DisponÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel" : "Desativado"}</p></div>
                 <div class="admin-product-actions"><button type="button" class="btn btn-ghost btn-sm" data-edit-product="${escapeHtml(product.id)}">Editar</button>
                 <button type="button" class="btn btn-ghost btn-sm" data-toggle-product="${escapeHtml(product.id)}" data-active="${product.active !== false}">${product.active === false ? "Ativar" : "Desativar"}</button></div>
             </article>`).join("") : '<p>Nenhum produto cadastrado.</p>';
@@ -491,7 +491,7 @@ async function initAdminProductsPage() {
                 `<option value="${escapeHtml(category.id)}">${escapeHtml(category.name)}${category.active === false ? " (inativa)" : ""}</option>`).join("");
             render();
             window.dispatchEvent(new Event("productsChanged"));
-        } catch (error) { showToast("NÃƒÂ£o foi possÃƒÂ­vel carregar os produtos: " + error.message, "error"); }
+        } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel carregar os produtos: " + error.message, "error"); }
     }
 
     form.addEventListener("submit", async event => {
@@ -506,7 +506,7 @@ async function initAdminProductsPage() {
                 categoryId = category.id;
             }
             const price = Number(byId("adminProductPrice").value);
-            if (!Number.isFinite(price) || price < 0) throw new Error("O preÃƒÂ§o deve ser um valor vÃƒÂ¡lido maior ou igual a zero.");
+            if (!Number.isFinite(price) || price < 0) throw new Error("O preÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§o deve ser um valor vÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡lido maior ou igual a zero.");
             const productId = byId("adminProductId").value;
             await adminUpsertProduct({
                 ...(productId ? { id: productId } : {}),
@@ -518,10 +518,10 @@ async function initAdminProductsPage() {
                 active: byId("adminProductActive").checked,
                 featured: byId("adminProductFeatured").checked
             });
-            showToast("Produto salvo no catÃƒÂ¡logo.", "success");
+            showToast("Produto salvo no catÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡logo.", "success");
             resetForm();
             await reload();
-        } catch (error) { showToast("NÃƒÂ£o foi possÃƒÂ­vel salvar o produto: " + error.message, "error", 6000); }
+        } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel salvar o produto: " + error.message, "error", 6000); }
     });
 
     list.addEventListener("click", async event => {
@@ -544,9 +544,9 @@ async function initAdminProductsPage() {
             try {
                 const active = toggleButton.dataset.active !== "true";
                 await adminSetProductActive(toggleButton.dataset.toggleProduct, active);
-                showToast(active ? "Produto reativado." : "Produto desativado no catÃƒÂ¡logo.", "success");
+                showToast(active ? "Produto reativado." : "Produto desativado no catÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡logo.", "success");
                 await reload();
-            } catch (error) { showToast("NÃƒÂ£o foi possÃƒÂ­vel alterar a disponibilidade: " + error.message, "error"); }
+            } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel alterar a disponibilidade: " + error.message, "error"); }
         }
     });
     search?.addEventListener("input", render);
@@ -560,7 +560,7 @@ async function initAdminProductsPage() {
 }
 
 /* ----------------------------------------------------------
-   GRUPOS DE OPÃƒâ€¡Ãƒâ€¢ES REUTILIZÃƒÂVEIS (aÃƒÂ§aÃƒÂ­, molhos e adicionais)
+   GRUPOS DE OPÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ES REUTILIZÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂVEIS (aÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§aÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­, molhos e adicionais)
 ---------------------------------------------------------- */
 async function initAdminOptionGroupsPage() {
     const groupForm = document.getElementById("optionGroupForm");
@@ -588,16 +588,16 @@ async function initAdminOptionGroupsPage() {
             groupList.innerHTML = groups.length ? groups.map(group => `
                 <article class="admin-product-item">
                     <div class="admin-product-text"><h3>${escapeHtml(group.name)}${group.active ? "" : " (inativo)"}</h3>
-                    <p>${group.selection_type === "single" ? "Uma escolha" : "MÃƒÂºltiplas escolhas"} Ã‚Â· ${(group.options || []).length} opÃƒÂ§ÃƒÂµes Ã‚Â· ${group.required ? "ObrigatÃƒÂ³rio" : "Opcional"}</p></div>
+                    <p>${group.selection_type === "single" ? "Uma escolha" : "MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âºltiplas escolhas"} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${(group.options || []).length} opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${group.required ? "ObrigatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³rio" : "Opcional"}</p></div>
                     <button type="button" class="btn btn-ghost btn-sm" data-edit-option-group="${escapeHtml(group.id)}">Editar</button>
                 </article>`).join("") : '<p>Nenhum grupo cadastrado ainda.</p>';
             linksList.innerHTML = links.length ? links.map(link => `
                 <article class="admin-product-item">
                     <div class="admin-product-text"><strong>${escapeHtml(link.products?.name || "Produto")}</strong><p>${escapeHtml(link.option_groups?.name || "Grupo")}</p></div>
                     <button type="button" class="btn btn-ghost btn-sm" data-unlink-product="${escapeHtml(link.product_id)}" data-unlink-group="${escapeHtml(link.group_id)}">Desassociar</button>
-                </article>`).join("") : '<p>Nenhuma associaÃƒÂ§ÃƒÂ£o cadastrada.</p>';
+                </article>`).join("") : '<p>Nenhuma associaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o cadastrada.</p>';
         } catch (error) {
-            showToast("NÃƒÂ£o foi possÃƒÂ­vel carregar os grupos. Confira se o schema do Supabase foi aplicado: " + error.message, "error", 7000);
+            showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel carregar os grupos. Confira se o schema do Supabase foi aplicado: " + error.message, "error", 7000);
         }
     }
 
@@ -621,7 +621,7 @@ async function initAdminOptionGroupsPage() {
         event.preventDefault();
         try {
             const options = JSON.parse(byId("optionGroupChoices").value);
-            if (!Array.isArray(options)) throw new Error("As opÃƒÂ§ÃƒÂµes precisam estar em uma lista JSON.");
+            if (!Array.isArray(options)) throw new Error("As opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes precisam estar em uma lista JSON.");
             await adminUpsertOptionGroup({
                 id: byId("optionGroupId").value || null,
                 name: byId("optionGroupName").value,
@@ -635,7 +635,7 @@ async function initAdminOptionGroupsPage() {
             groupForm.reset();
             byId("optionGroupId").value = "";
             byId("optionGroupChoices").value = "";
-            showToast("Grupo de opÃƒÂ§ÃƒÂµes salvo.", "success");
+            showToast("Grupo de opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes salvo.", "success");
             await reload();
         } catch (error) {
             showToast("Confira o grupo: " + error.message, "warning", 6000);
