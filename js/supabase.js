@@ -272,10 +272,7 @@ async function adminUpsertProduct(product) {
 }
 
 async function adminDeleteProduct(id) {
-    const sb = getSupabase();
-    if (!sb) throw new Error("Supabase não configurado.");
-    const { error } = await sb.from("products").delete().eq("id", id);
-    if (error) throw new Error(error.message);
+    return adminSetProductActive(id, false);
 }
 
 async function adminFetchAllCategories() {
@@ -304,7 +301,7 @@ async function adminUpsertCategory(category) {
 async function adminDeleteCategory(id) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
-    const { error } = await sb.from("categories").delete().eq("id", id);
+    const { error } = await sb.from("categories").update({ active: false }).eq("id", id);
     if (error) throw new Error(error.message);
 }
 
@@ -317,6 +314,13 @@ async function adminFetchAllProfiles() {
         .order("created_at", { ascending: false });
     if (error) return [];
     return data || [];
+}
+
+async function adminSetProductActive(id, active) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    const { error } = await sb.from("products").update({ active: Boolean(active) }).eq("id", id);
+    if (error) throw new Error(error.message);
 }
 
 async function adminFetchAllOptionGroups() {
@@ -334,14 +338,14 @@ async function adminUpsertOptionGroup(group) {
     const type = group.selection_type === "single" ? "single" : "multiple";
     const options = (Array.isArray(group.options) ? group.options : []).map(option => ({
         name: String(option.name || "").trim(),
-        price_delta: Number(option.price_delta) || 0,
+        price_delta: Number(option.price_delta ?? 0),
         active: option.active !== false
     })).filter(option => option.name);
     if (!name || !options.length || options.some(option => !Number.isFinite(option.price_delta) || option.price_delta < 0)) {
         throw new Error("Informe o nome do grupo e ao menos uma opção com preço válido.");
     }
-    const min = Math.max(0, Number(group.min_selection) || 0);
-    const max = type === "single" ? 1 : Math.max(min, Number(group.max_selection) || options.length);
+    const min = Math.max(Boolean(group.required) ? 1 : 0, Number(group.min_selection) || 0);
+    const max = type === "single" ? 1 : Math.min(options.length, Math.max(min, Number(group.max_selection) || options.length));
     if (min > options.length) throw new Error("A seleção mínima supera a quantidade de opções.");
     const payload = { name, selection_type: type, required: Boolean(group.required), min_selection: min, max_selection: max, options, active: group.active !== false };
     let query = sb.from("option_groups");
@@ -411,7 +415,7 @@ Object.assign(window, {
     createOrder, fetchOrdersByUser, fetchOrderById, updateOrderStatus, adminConfirmOrderDeliveryFee,
     fetchAddressesByUser, saveAddress,
     fetchStoreSettings,
-    adminFetchAllOrders, adminFetchAllProducts, adminUpsertProduct, adminDeleteProduct,
+    adminFetchAllOrders, adminFetchAllProducts, adminUpsertProduct, adminDeleteProduct, adminSetProductActive,
     adminFetchAllCategories, adminUpsertCategory, adminDeleteCategory,
     adminFetchAllProfiles, adminFetchAllOptionGroups, adminUpsertOptionGroup, adminLinkOptionGroup, adminFetchProductOptionLinks, adminUnlinkOptionGroup, adminUpdateStoreSettings,
     uploadImage,

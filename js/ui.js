@@ -271,3 +271,11 @@ document.addEventListener("DOMContentLoaded", () => {
     syncCartBadge();
 });
 window.addEventListener("storage", syncCartBadge);
+
+// Register the root-scoped worker from public and admin pages alike.
+window.addEventListener("load", () => {
+    const uiScript = Array.from(document.scripts).find(script => script.src.includes("/js/ui.js"));
+    if (!uiScript || !("serviceWorker" in navigator)) return;
+    const workerUrl = new URL("../service-worker.js", uiScript.src);
+    navigator.serviceWorker.register(workerUrl).catch(error => console.warn("Service worker indisponível:", error.message));
+});

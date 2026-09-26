@@ -154,4 +154,5 @@ Como o projeto é 100% estático integrado diretamente à nuvem do Supabase, voc
 - Entregas grátis: Loteamentos Jardins 1, 2 e 3, Parque das Rosas e Tabuleiro. Bela Vista: R$ 5,00. Demais localidades: taxa pendente de confirmação; o pedido pode ser registrado com subtotal e total pendente.
 - Retirada não cobra entrega. Domingo, terça-feira e o primeiro sábado do mês são fechados. Quarta a sábado usam horários configurados. Segunda-feira permanece sem definição até a loja configurá-la.
 - A tela Admin > Configurações permite editar zonas e horários como JSON. Execute `supabase/schema.sql` no projeto Supabase para criar as novas colunas e permitir pedidos com taxa pendente.
-- O horário exato de atendimento não foi fornecido; os valores permanecem configuráveis e não são presumidos. Categorias e produtos aceitam itens de açaí sem criar produtos de demonstração.
+- Em Admin > Produtos, cadastre categorias e produtos sem restrição ao tipo de comida. Grupos de opções reutilizáveis permitem definir escolhas, limites e preços adicionais e associá-los a vários produtos. O checkout mostra essas opções e inclui os adicionais no preço e na cópia do pedido.
+- O horário exato de atendimento não foi fornecido; os valores permanecem configuráveis e não são presumidos. A segunda-feira só passa a valer quando `configured` for marcado no JSON de funcionamento.

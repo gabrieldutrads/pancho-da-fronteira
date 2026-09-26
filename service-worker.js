@@ -1,21 +1,35 @@
-const CACHE_NAME = "pancho-cache-v1";
+const CACHE_NAME = "pancho-cache-v2";
 const STATIC_ASSETS = [
-    "/",
-    "/index.html",
-    "/cardapio.html",
-    "/carrinho.html",
-    "/css/global.css",
-    "/css/home.css",
-    "/css/cardapio.css",
-    "/css/carrinho.css",
-    "/js/main.js",
-    "/js/cart.js"
+    "./",
+    "./index.html",
+    "./cardapio.html",
+    "./carrinho.html",
+    "./pedido.html",
+    "./produto.html",
+    "./manifest.json",
+    "./assets/icon.svg",
+    "./css/global.css",
+    "./css/home.css",
+    "./css/cardapio.css",
+    "./css/carrinho.css",
+    "./css/pedido.css",
+    "./css/produto.css",
+    "./css/auth.css",
+    "./js/config.js",
+    "./js/supabase.js",
+    "./js/auth.js",
+    "./js/ui.js",
+    "./js/operacoes.js",
+    "./js/cart.js",
+    "./js/produtos.js",
+    "./js/whatsapp.js"
 ];
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(STATIC_ASSETS).catch(() => {});
+            const assets = STATIC_ASSETS.map(asset => new URL(asset, self.registration.scope).toString());
+            return cache.addAll(assets).catch(() => {});
         })
     );
     self.skipWaiting();

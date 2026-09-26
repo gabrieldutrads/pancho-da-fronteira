@@ -60,16 +60,15 @@
                 <div class="product-details">
                     <span class="section-tag" id="productBadge"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span> Destaque da Casa</span>
                     <h1 class="product-detail-name">Carregando produto...</h1>
-                    <p class="product-subtitle">Preparado na hora com ingredientes frescos e receita de família.</p>
+                    <p class="product-subtitle">Confira os detalhes e personalize seu pedido.</p>
 
                     <div class="product-rating">
-                        <span>Feito na hora</span>
-                        <small>Personalize seu pedido com seus adicionais favoritos.</small>
+                        <span>Seu pedido</span>
+                        <small>As opções disponíveis e os valores aparecem aqui.</small>
                     </div>
 
                     <div class="product-price-row">
                         <strong id="productPrice">R$ 0,00</strong>
-                        <span>Entrega rápida em ~25 min</span>
                     </div>
 
                     <p class="product-description" id="productDescription">
@@ -77,23 +76,7 @@
                     </p>
 
                     <div class="product-options">
-                        <div>
-                            <span class="option-label">Escolha o Molho Principal</span>
-                            <div class="option-chips" data-multiple="false">
-                                <button type="button" class="chip active">Molho Especial da Casa</button>
-                                <button type="button" class="chip">Barbecue Artesanal</button>
-                                <button type="button" class="chip">Maionese Verde</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <span class="option-label">Adicionais Extras</span>
-                            <div class="option-chips" data-multiple="true">
-                                <button type="button" class="chip">+ Bacon Crocante</button>
-                                <button type="button" class="chip">+ Queijo Derretido</button>
-                                <button type="button" class="chip">+ Batata Palha</button>
-                            </div>
-                        </div>
+                        <div id="productOptionGroups" aria-live="polite"></div>
 
                         <div class="form-group" style="margin-top: 15px;">
                             <label class="form-label" for="productNotes">Observações do seu lanche:</label>
@@ -117,27 +100,6 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE INFORMAÇÕES DE QUALIDADE -->
-        <section class="product-info-section">
-            <div class="container info-grid">
-                <div class="info-card">
-                    <h2>Nossos Ingredientes</h2>
-                    <ul>
-                        <li>Pão artesanal tostado na chapa</li>
-                        <li>Salsicha premium e carnes selecionadas</li>
-                        <li>Salada fresca com vegetais locais</li>
-                        <li>Molhos caseiros sem conservantes</li>
-                    </ul>
-                </div>
-
-                <div class="info-card highlight">
-                    <h2>Por que nosso sabor é inconfundível</h2>
-                    <p>
-                        Todo pancho é montado no exato momento do seu pedido, garantindo que o pão chegue crocante, a temperatura perfeita e o sabor autêntico da fronteira.
-                    </p>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer class="footer">

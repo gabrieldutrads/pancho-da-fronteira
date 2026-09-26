@@ -243,6 +243,37 @@ async function initProductDetailPage() {
     const priceEl = document.getElementById("productPrice");
     if (priceEl) priceEl.textContent = window.formatPrice ? window.formatPrice(product.price) : `R$ ${product.price.toFixed(2)}`;
 
+    let optionGroups = [];
+    try {
+        optionGroups = typeof fetchProductOptionGroups === "function" ? await fetchProductOptionGroups(product.id) : [];
+    } catch (error) { console.error("[Product] option groups:", error); }
+    const optionsContainer = document.getElementById("productOptionGroups");
+    if (optionGroups.length === 0) {
+        const hint = document.querySelector(".product-rating small");
+        if (hint) hint.textContent = "Este produto não tem opções adicionais cadastradas.";
+    }
+    if (optionsContainer) {
+        optionsContainer.innerHTML = optionGroups.map((group, groupIndex) => {
+            const choices = (Array.isArray(group.options) ? group.options : []).filter(option => option.active !== false);
+            const inputType = group.selection_type === "single" ? "radio" : "checkbox";
+            if (!choices.length) return "";
+            return `<fieldset class="product-option-group" data-min="${Number(group.min_selection) || (group.required ? 1 : 0)}" data-max="${Number(group.max_selection) || choices.length}">
+                <legend class="option-label">${escapeHtml(group.name)}${group.required ? " (obrigatório)" : " (opcional)"}</legend>
+                <div class="option-chips">${choices.map((option, choiceIndex) => `
+                    <label class="chip option-choice"><input type="${inputType}" name="option-${groupIndex}" value="${choiceIndex}" data-option-name="${escapeHtml(option.name)}" data-price="${Math.max(0, Number(option.price_delta) || 0)}">
+                    <span>${escapeHtml(option.name)}</span>${Number(option.price_delta) > 0 ? `<small>+ ${window.formatPrice(Number(option.price_delta))}</small>` : ""}</label>
+                `).join("")}</div>
+            </fieldset>`;
+        }).join("");
+    }
+    const getSelectedOptions = () => Array.from(document.querySelectorAll("#productOptionGroups .product-option-group"))
+        .map(fieldset => ({ fieldset, selected: Array.from(fieldset.querySelectorAll("input:checked")) }));
+    const updateProductPrice = () => {
+        const extras = getSelectedOptions().flatMap(group => group.selected).reduce((sum, input) => sum + Number(input.dataset.price || 0), 0);
+        if (priceEl) priceEl.textContent = window.formatPrice(Number(product.price) + extras);
+    };
+    optionsContainer?.addEventListener("change", updateProductPrice);
+
     const descEl = document.getElementById("productDescription");
     if (descEl) descEl.textContent = product.description;
 
@@ -280,15 +311,26 @@ async function initProductDetailPage() {
             }
             const notes = document.getElementById("productNotes")?.value.trim() || "";
 
-            // Opções selecionadas (chips ativos)
-            const activeOptions = Array.from(document.querySelectorAll(".chip.active")).map(c => c.textContent.trim());
-            const fullNotes = [notes, activeOptions.length > 0 ? `Opções: ${activeOptions.join(", ")}` : ""].filter(Boolean).join(" | ");
+            const groups = getSelectedOptions();
+            const invalid = groups.find(({ fieldset, selected }) => selected.length < Number(fieldset.dataset.min) || selected.length > Number(fieldset.dataset.max));
+            if (invalid) {
+                showToast(`Escolha entre ${invalid.fieldset.dataset.min} e ${invalid.fieldset.dataset.max} opções no grupo ${invalid.fieldset.querySelector("legend")?.textContent || "obrigatório"}.`, "warning", 5000);
+                return;
+            }
+            const selected = groups.flatMap(group => group.selected);
+            const extrasPrice = selected.reduce((sum, input) => sum + Number(input.dataset.price || 0), 0);
+            const optionNotes = selected.map(input => {
+                const groupName = input.closest(".product-option-group")?.querySelector("legend")?.textContent.replace(/ \((obrigatório|opcional)\)$/, "") || "Opção";
+                const extra = Number(input.dataset.price || 0);
+                return `${groupName}: ${input.dataset.optionName}${extra ? ` (+${window.formatPrice(extra)})` : ""}`;
+            });
+            const fullNotes = [notes, optionNotes.join("; ")].filter(Boolean).join(" | ");
 
             if (typeof addToCart === "function") {
                 addToCart({
                     id: product.id,
                     name: product.name,
-                    price: product.price,
+                    price: Number(product.price) + extrasPrice,
                     image: product.image_url,
                     notes: fullNotes,
                     quantity: qty
@@ -300,21 +342,6 @@ async function initProductDetailPage() {
         });
     }
 
-    // Seleção de Chips (Molhos / Adicionais)
-    document.querySelectorAll(".option-chips").forEach(group => {
-        group.addEventListener("click", (e) => {
-            const chip = e.target.closest(".chip");
-            if (!chip) return;
-            // Se o grupo permitir múltiplo ou single
-            const isSingle = group.dataset.multiple !== "true";
-            if (isSingle) {
-                group.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-                chip.classList.add("active");
-            } else {
-                chip.classList.toggle("active");
-            }
-        });
-    });
 }
 
 // Auto-inicializar ao carregar

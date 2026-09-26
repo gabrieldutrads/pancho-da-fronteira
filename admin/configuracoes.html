@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Configurações da Loja — Pancho da Fronteira">
+    <meta name="description" content="Configurações da Loja - Pancho da Fronteira">
+    <title>Configurações | Painel Administrativo</title>
     <title>Configurações | Painel Administrativo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
             <header class="admin-topbar">
                 <button type="button" class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Abrir menu"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span></button>
                 <div class="admin-breadcrumb">
-                    <span>Administração</span>
+                    <span>AdministraÃ§Ã£o</span>
                     <strong>/</strong>
                     <strong>Configurações da Loja</strong>
                 </div>
@@ -65,57 +65,34 @@
             <div class="admin-content">
                 <div class="page-header">
                     <div>
-                        <span class="page-eyebrow">Parâmetros do Negócio</span>
+                        <span class="page-eyebrow">Painel da loja</span>
                         <h1>Configurações</h1>
-                        <p>Ajuste os dados da empresa, taxas de entrega e horários de funcionamento.</p>
+                        <p>Gerencie os dados de contato, as taxas por bairro e os horÃƒÂ¡rios em um sÃƒÂ³ lugar.</p>
                     </div>
                 </div>
 
-                <div class="admin-panel" style="max-width: 720px;">
-                    <form id="storeSettingsForm" style="display:flex; flex-direction:column; gap:20px;">
-                        <div class="form-group">
-                            <label class="form-label" for="storeName">Nome do Estabelecimento</label>
-                            <input type="text" id="storeName" class="form-input" value="Pancho da Fronteira" required>
+                <form id="storeSettingsForm" class="settings-layout">
+                    <section class="admin-panel settings-card" aria-labelledby="storeDetailsTitle">
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">01</span><div><h2 id="storeDetailsTitle">Dados da loja</h2><p>InformaÃƒÂ§ÃƒÂµes exibidas para seus clientes.</p></div></div>
+                        <div class="settings-fields">
+                            <div class="form-group"><label class="form-label" for="storeName">Nome do estabelecimento</label><input type="text" id="storeName" class="form-input" value="Pancho da Fronteira" autocomplete="organization" required></div>
+                            <div class="form-group"><label class="form-label" for="storePhone">Telefone / WhatsApp</label><input type="tel" id="storePhone" class="form-input" value="4888712496" placeholder="(55) 99999-9999" autocomplete="tel"><small>Use o nÃƒÂºmero com DDD para facilitar o contato.</small></div>
+                            <div class="form-group settings-field-wide"><label class="form-label" for="storeAddress">EndereÃƒÂ§o da loja</label><input type="text" id="storeAddress" class="form-input" placeholder="Rua, nÃƒÂºmero, bairro e cidade" autocomplete="street-address"></div>
+                            <div class="form-group settings-field-wide"><label class="form-label" for="storeDesc">DescriÃƒÂ§ÃƒÂ£o da loja</label><textarea id="storeDesc" class="form-textarea" rows="3" placeholder="Conte aos clientes o que torna sua loja especial."></textarea></div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label" for="storePhone">Telefone / WhatsApp</label>
-                                <input type="tel" id="storePhone" class="form-input" placeholder="(55) 99999-9999">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="deliveryZonesConfig">Zonas e taxas (JSON)</label>
-                            <textarea id="deliveryZonesConfig" class="form-textarea" rows="12" spellcheck="false"></textarea>
-                            <small>Tipos aceitos: FREE, FIXED e CONSULT. Edite aliases para associar os nomes usados pelos clientes.</small>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="openingHoursConfig">Funcionamento (JSON)</label>
-                            <textarea id="openingHoursConfig" class="form-textarea" rows="10" spellcheck="false"></textarea>
-                            <small>Configure horários e exceções com data. Para definir segunda-feira, ajuste active e configured para true ou false. Sem configured: true, segunda continua sem regra. Domingo, terça e primeiro sábado permanecem fechados.</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="storeAddress">Endereço da Sede</label>
-                            <input type="text" id="storeAddress" class="form-input" value="Rua das Fronteiras, 245 • Centro, Uruguaiana - RS">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="storeHours">Horário de Funcionamento</label>
-                            <input type="text" id="storeHours" class="form-input" value="Segunda a Domingo: 18h às 23h">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="storeDesc">Descrição da Loja</label>
-                            <textarea id="storeDesc" class="form-textarea" rows="3">Panchos preparados com carinho, sabor e aquele toque especial que faz você querer voltar.</textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" style="align-self:flex-start; margin-top:10px;">
-                            Salvar Configurações
-                        </button>
-                    </form>
-                </div>
+                    </section>
+                    <section class="admin-panel settings-card" aria-labelledby="deliverySettingsTitle">
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">02</span><div><h2 id="deliverySettingsTitle">Entrega por bairro</h2><p>Defina a taxa e os nomes aceitos para cada localidade.</p></div></div>
+                        <div class="settings-card-body"><div class="settings-notice"><strong>Como editar</strong><span>Informe uma zona por item. Tipos: <b>FREE</b> (grÃƒÂ¡tis), <b>FIXED</b> (valor fixo) ou <b>CONSULT</b> (confirmar com o cliente). Use aliases separados por vÃƒÂ­rgula.</span></div>
+                            <div class="form-group"><label class="form-label" for="deliveryZonesConfig">Zonas e taxas</label><textarea id="deliveryZonesConfig" class="form-textarea settings-code" rows="13" spellcheck="false" autocapitalize="off" required></textarea></div></div>
+                    </section>
+                    <section class="admin-panel settings-card" aria-labelledby="hoursSettingsTitle">
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">03</span><div><h2 id="hoursSettingsTitle">HorÃƒÂ¡rios e exceÃƒÂ§ÃƒÂµes</h2><p>Configure os dias e horÃƒÂ¡rios em que a loja aceita pedidos.</p></div></div>
+                        <div class="settings-card-body"><div class="settings-notice settings-notice-warning"><strong>Dias com regra especial</strong><span>Domingo, terÃƒÂ§a-feira e o primeiro sÃƒÂ¡bado do mÃƒÆ’Ã‚Âªs ficam fechados automaticamente. O horÃƒÂ¡rio de segunda permanece indefinido atÃƒÂ© ser configurado.</span></div>
+                            <div class="form-group"><label class="form-label" for="openingHoursConfig">Funcionamento e exceÃƒÂ§ÃƒÂµes</label><textarea id="openingHoursConfig" class="form-textarea settings-code" rows="13" spellcheck="false" autocapitalize="off" required></textarea><small>ExceÃƒÂ§ÃƒÂµes por data usam AAAA-MM-DD. Use os exemplos preenchidos como modelo para preservar a estrutura.</small></div></div>
+                    </section>
+                    <div class="settings-savebar"><p>Confira os dados antes de salvar para manter pedidos e entregas corretos.</p><button type="submit" class="btn btn-primary settings-save-button">Salvar configuraÃƒÂ§ÃƒÂµes</button></div>
+                </form>
             </div>
         </main>
     </div>

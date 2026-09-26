@@ -65,16 +65,20 @@ function resolveDeliveryFee(locality, settings) {
 
 function isStoreOpen(date = new Date(), settings) {
     const operations = mergeOperations(settings || {});
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Sao_Paulo", weekday: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+    }).formatToParts(date).map(part => [part.type, part.value]));
+    const weekdayIndex = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[parts.weekday];
     const dayKeys = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
-    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    const dateKey = `${parts.year}-${parts.month}-${parts.day}`;
     if (operations.opening_exceptions.some(item => item.date === dateKey && item.active === false)) return false;
-    if (date.getDay() === 0 || date.getDay() === 2) return false;
-    if (date.getDay() === 6 && date.getDate() <= 7 && operations.opening_exceptions.some(x => x.type === "first_saturday_closed" && x.active !== false)) return false;
-    const day = operations.opening_hours[dayKeys[date.getDay()]];
+    if (weekdayIndex === 0 || weekdayIndex === 2) return false;
+    if (weekdayIndex === 6 && Number(parts.day) <= 7 && operations.opening_exceptions.some(x => x.type === "first_saturday_closed" && x.active !== false)) return false;
+    const day = operations.opening_hours[dayKeys[weekdayIndex]];
     if (!day || day.active === null || day.active === undefined) return null;
     if (!day.active) return false;
     if (!day.open || !day.close) return null;
-    const now = date.getHours() * 60 + date.getMinutes();
+    const now = Number(parts.hour) * 60 + Number(parts.minute);
     const [openHour, openMinute] = day.open.split(":").map(Number);
     const [closeHour, closeMinute] = day.close.split(":").map(Number);
     if (![openHour, openMinute, closeHour, closeMinute].every(Number.isFinite)) return null;
