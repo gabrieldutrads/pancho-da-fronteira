@@ -125,8 +125,9 @@ CREATE TABLE IF NOT EXISTS public.orders (
     address_snapshot    JSONB,
     payment_method      payment_method NOT NULL DEFAULT 'dinheiro',
     subtotal            NUMERIC(10,2) NOT NULL DEFAULT 0,
-    delivery_fee        NUMERIC(10,2) NOT NULL DEFAULT 0,
-    total               NUMERIC(10,2) NOT NULL DEFAULT 0,
+    delivery_fee        NUMERIC(10,2) DEFAULT 0,
+    delivery_fee_status TEXT NOT NULL DEFAULT 'confirmed' CHECK (delivery_fee_status IN ('confirmed', 'pending')),
+    total               NUMERIC(10,2) DEFAULT 0,
     notes               TEXT,
     status              order_status NOT NULL DEFAULT 'recebido',
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -176,12 +177,46 @@ CREATE TABLE IF NOT EXISTS public.store_settings (
     facebook            TEXT,
     description         TEXT,
     logo_url            TEXT,
-    delivery_fee        NUMERIC(10,2) NOT NULL DEFAULT 6.90,
+    delivery_fee        NUMERIC(10,2) NOT NULL DEFAULT 0,
+    delivery_zones      JSONB NOT NULL DEFAULT '[{"name":"Loteamento Jardins 1","aliases":["Jardins 1","Loteamento Jardins 1"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 2","aliases":["Jardins 2","Loteamento Jardins 2"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 3","aliases":["Jardins 3","Loteamento Jardins 3"],"fee_type":"FREE","fee":0,"active":true},{"name":"Parque das Rosas","aliases":["Parque das Rosas"],"fee_type":"FREE","fee":0,"active":true},{"name":"Tabuleiro","aliases":["Tabuleiro"],"fee_type":"FREE","fee":0,"active":true},{"name":"Bela Vista","aliases":["Bela Vista"],"fee_type":"FIXED","fee":5,"active":true},{"name":"Demais localidades","aliases":[],"fee_type":"CONSULT","fee":null,"active":true}]'::jsonb,
     min_order_value     NUMERIC(10,2) NOT NULL DEFAULT 0,
-    opening_hours       JSONB DEFAULT '{"segunda":{"open":"18:00","close":"23:00","active":true},"terca":{"open":"18:00","close":"23:00","active":true},"quarta":{"open":"18:00","close":"23:00","active":true},"quinta":{"open":"18:00","close":"23:00","active":true},"sexta":{"open":"18:00","close":"23:00","active":true},"sabado":{"open":"18:00","close":"23:00","active":true},"domingo":{"open":"18:00","close":"23:00","active":true}}',
+    opening_hours       JSONB NOT NULL DEFAULT '{"segunda":{"open":null,"close":null,"active":null,"configured":false},"terca":{"open":null,"close":null,"active":false},"quarta":{"open":null,"close":null,"active":true},"quinta":{"open":null,"close":null,"active":true},"sexta":{"open":null,"close":null,"active":true},"sabado":{"open":null,"close":null,"active":true},"domingo":{"open":null,"close":null,"active":false}}'::jsonb,
+    opening_exceptions  JSONB NOT NULL DEFAULT '[{"type":"first_saturday_closed","active":true}]'::jsonb,
     store_open          BOOLEAN NOT NULL DEFAULT TRUE,
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Grupos de opções reutilizáveis (molhos, tamanhos, adicionais, acompanhamentos).
+CREATE TABLE IF NOT EXISTS public.option_groups (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name            TEXT NOT NULL,
+    selection_type  TEXT NOT NULL DEFAULT 'multiple' CHECK (selection_type IN ('single', 'multiple')),
+    required        BOOLEAN NOT NULL DEFAULT FALSE,
+    min_selection   INTEGER NOT NULL DEFAULT 0 CHECK (min_selection >= 0),
+    max_selection   INTEGER NOT NULL DEFAULT 99 CHECK (max_selection >= min_selection),
+    options         JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(options) = 'array'),
+    active          BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.product_option_groups (
+    product_id  UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+    group_id    UUID NOT NULL REFERENCES public.option_groups(id) ON DELETE CASCADE,
+    sort_order  INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (product_id, group_id)
+);
+
+-- Permite registrar um pedido cujo bairro exige confirmação manual da taxa.
+ALTER TABLE public.orders ALTER COLUMN delivery_fee DROP NOT NULL;
+ALTER TABLE public.orders ALTER COLUMN total DROP NOT NULL;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS delivery_fee_status TEXT NOT NULL DEFAULT 'confirmed';
+
+-- Mantém bancos existentes compatíveis com a configuração operacional por loja.
+ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS delivery_zones JSONB NOT NULL DEFAULT '[{"name":"Loteamento Jardins 1","aliases":["Jardins 1","Loteamento Jardins 1"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 2","aliases":["Jardins 2","Loteamento Jardins 2"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 3","aliases":["Jardins 3","Loteamento Jardins 3"],"fee_type":"FREE","fee":0,"active":true},{"name":"Parque das Rosas","aliases":["Parque das Rosas"],"fee_type":"FREE","fee":0,"active":true},{"name":"Tabuleiro","aliases":["Tabuleiro"],"fee_type":"FREE","fee":0,"active":true},{"name":"Bela Vista","aliases":["Bela Vista"],"fee_type":"FIXED","fee":5,"active":true},{"name":"Demais localidades","aliases":[],"fee_type":"CONSULT","fee":null,"active":true}]'::jsonb);
+ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS opening_hours JSONB NOT NULL DEFAULT '{"segunda":{"open":null,"close":null,"active":null,"configured":false},"terca":{"open":null,"close":null,"active":false},"quarta":{"open":null,"close":null,"active":true},"quinta":{"open":null,"close":null,"active":true},"sexta":{"open":null,"close":null,"active":true},"sabado":{"open":null,"close":null,"active":true},"domingo":{"open":null,"close":null,"active":false}}'::jsonb);
+ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS opening_exceptions JSONB NOT NULL DEFAULT '[{"type":"first_saturday_closed","active":true}]'::jsonb;
+
 
 -- ============================================================
 -- FUNÇÃO: updated_at automático
@@ -195,26 +230,37 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers updated_at
+DROP TRIGGER IF EXISTS set_profiles_updated_at ON public.profiles;
 CREATE TRIGGER set_profiles_updated_at
     BEFORE UPDATE ON public.profiles
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_categories_updated_at ON public.categories;
 CREATE TRIGGER set_categories_updated_at
     BEFORE UPDATE ON public.categories
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_products_updated_at ON public.products;
 CREATE TRIGGER set_products_updated_at
     BEFORE UPDATE ON public.products
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_option_groups_updated_at ON public.option_groups;
+CREATE TRIGGER set_option_groups_updated_at
+    BEFORE UPDATE ON public.option_groups
+    FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS set_addresses_updated_at ON public.addresses;
 CREATE TRIGGER set_addresses_updated_at
     BEFORE UPDATE ON public.addresses
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_orders_updated_at ON public.orders;
 CREATE TRIGGER set_orders_updated_at
     BEFORE UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS set_store_settings_updated_at ON public.store_settings;
 CREATE TRIGGER set_store_settings_updated_at
     BEFORE UPDATE ON public.store_settings
     FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
@@ -225,16 +271,18 @@ CREATE TRIGGER set_store_settings_updated_at
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, nome, role)
+    INSERT INTO public.profiles (id, nome, telefone, role)
     VALUES (
         NEW.id,
         COALESCE(NEW.raw_user_meta_data->>'nome', split_part(NEW.email, '@', 1)),
+        NULLIF(NEW.raw_user_meta_data->>'telefone', ''),
         'customer'
     );
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
@@ -252,6 +300,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS set_order_number ON public.orders;
 CREATE TRIGGER set_order_number
     BEFORE INSERT ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.generate_order_number();
@@ -270,6 +319,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS on_order_status_change ON public.orders;
 CREATE TRIGGER on_order_status_change
     AFTER UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.log_order_status_change();
@@ -280,6 +330,7 @@ CREATE TRIGGER on_order_status_change
 CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_active ON public.products(active);
 CREATE INDEX IF NOT EXISTS idx_products_featured ON public.products(featured);
+CREATE INDEX IF NOT EXISTS idx_product_option_groups_group ON public.product_option_groups(group_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user ON public.orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_created ON public.orders(created_at DESC);
@@ -300,6 +351,8 @@ ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_status_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.store_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.option_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_option_groups ENABLE ROW LEVEL SECURITY;
 
 -- ----------------------------------------
 -- HELPER: verificar se usuário é admin
@@ -395,6 +448,30 @@ CREATE POLICY "Admin pode atualizar produtos"
 CREATE POLICY "Admin pode excluir produtos"
     ON public.products FOR DELETE
     USING (public.is_admin());
+
+-- Grupos de opções: catálogo pode ler apenas grupos ativos; somente admin altera.
+DROP POLICY IF EXISTS "Público pode ver grupos ativos" ON public.option_groups;
+DROP POLICY IF EXISTS "Admin pode ver todos os grupos" ON public.option_groups;
+DROP POLICY IF EXISTS "Admin pode inserir grupos" ON public.option_groups;
+DROP POLICY IF EXISTS "Admin pode atualizar grupos" ON public.option_groups;
+DROP POLICY IF EXISTS "Admin pode excluir grupos" ON public.option_groups;
+CREATE POLICY "Público pode ver grupos ativos" ON public.option_groups FOR SELECT USING (active = TRUE);
+CREATE POLICY "Admin pode ver todos os grupos" ON public.option_groups FOR SELECT USING (public.is_admin());
+CREATE POLICY "Admin pode inserir grupos" ON public.option_groups FOR INSERT WITH CHECK (public.is_admin());
+CREATE POLICY "Admin pode atualizar grupos" ON public.option_groups FOR UPDATE USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Admin pode excluir grupos" ON public.option_groups FOR DELETE USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Público pode ver vínculos de grupos ativos" ON public.product_option_groups;
+DROP POLICY IF EXISTS "Admin pode ver todos os vínculos de grupos" ON public.product_option_groups;
+DROP POLICY IF EXISTS "Admin pode inserir vínculos de grupos" ON public.product_option_groups;
+DROP POLICY IF EXISTS "Admin pode atualizar vínculos de grupos" ON public.product_option_groups;
+DROP POLICY IF EXISTS "Admin pode excluir vínculos de grupos" ON public.product_option_groups;
+CREATE POLICY "Público pode ver vínculos de grupos ativos" ON public.product_option_groups FOR SELECT
+    USING (EXISTS (SELECT 1 FROM public.option_groups g WHERE g.id = group_id AND g.active = TRUE));
+CREATE POLICY "Admin pode ver todos os vínculos de grupos" ON public.product_option_groups FOR SELECT USING (public.is_admin());
+CREATE POLICY "Admin pode inserir vínculos de grupos" ON public.product_option_groups FOR INSERT WITH CHECK (public.is_admin());
+CREATE POLICY "Admin pode atualizar vínculos de grupos" ON public.product_option_groups FOR UPDATE USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Admin pode excluir vínculos de grupos" ON public.product_option_groups FOR DELETE USING (public.is_admin());
 
 -- ============================================================
 -- POLICIES: ADDRESSES
@@ -546,6 +623,6 @@ INSERT INTO public.store_settings (
     'Uruguaiana',
     'RS',
     'Panchos preparados com carinho, sabor e aquele toque especial que faz você querer voltar.',
-    6.90,
+    0,
     0
 );

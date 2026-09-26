@@ -11,7 +11,19 @@ const CART_KEY = "panchoCart";
 ---------------------------------------------------------- */
 function readCart() {
     try {
-        return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        const value = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        if (!Array.isArray(value)) return [];
+        return value.filter((item) => item && typeof item === "object")
+            .map((item) => ({
+                id: typeof item.id === "string" ? item.id : null,
+                name: String(item.name || "Produto").slice(0, 160),
+                price: Number(item.price),
+                image: typeof item.image === "string" ? item.image : null,
+                notes: String(item.notes || "").slice(0, 500),
+                quantity: Number(item.quantity),
+            }))
+            .filter((item) => Number.isFinite(item.price) && item.price >= 0
+                && Number.isInteger(item.quantity) && item.quantity > 0);
     } catch {
         return [];
     }
@@ -27,6 +39,13 @@ function writeCart(cart) {
    ADICIONAR AO CARRINHO
 ---------------------------------------------------------- */
 function addToCart({ id, name, price, image, notes = "", quantity = 1 }) {
+    price = Number(price);
+    quantity = Number(quantity);
+    if (!name || !Number.isFinite(price) || price < 0 || !Number.isInteger(quantity) || quantity < 1) {
+        throw new Error("Produto ou quantidade inválida.");
+    }
+    name = String(name).slice(0, 160);
+    notes = String(notes || "").slice(0, 500);
     const cart = readCart();
     // Chave única = id do produto (se houver) + notes (para mesma observação)
     const key = id ? `${id}::${notes}` : `${name}::${notes}`;
@@ -83,7 +102,7 @@ function getCartTotals(deliveryFee = 0) {
 /* ----------------------------------------------------------
    RENDERIZAR CARRINHO (carrinho.html)
 ---------------------------------------------------------- */
-function renderCart(deliveryFee = 6.90) {
+function renderCart(deliveryFee = null) {
     const container    = document.getElementById("cartItems");
     const emptyEl      = document.getElementById("emptyCart");
     const subtotalEl   = document.getElementById("subtotalValue");
@@ -109,21 +128,21 @@ function renderCart(deliveryFee = 6.90) {
             article.innerHTML = `
                 <div class="item-image">
                     ${item.image
-                        ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
+                        ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy">`
                         : `<div class="item-placeholder"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></div>`
                     }
                 </div>
                 <div class="item-info">
-                    <h3>${item.name}</h3>
+                    <h3>${escapeHtml(item.name)}</h3>
                     <p class="item-unit-price">${formatPrice(item.price)} cada</p>
-                    ${item.notes ? `<p class="item-notes">📝 ${item.notes}</p>` : ""}
+                    ${item.notes ? `<p class="item-notes">📝 ${escapeHtml(item.notes)}</p>` : ""}
                     <div class="item-meta">
                         <div class="quantity-controls">
                             <button type="button" class="quantity-btn" data-action="decrease" data-index="${index}" aria-label="Diminuir quantidade">−</button>
                             <span class="quantity-value">${item.quantity}</span>
                             <button type="button" class="quantity-btn" data-action="increase" data-index="${index}" aria-label="Aumentar quantidade">+</button>
                         </div>
-                        <button type="button" class="remove-btn" data-action="remove" data-index="${index}" aria-label="Remover ${item.name}">
+                        <button type="button" class="remove-btn" data-action="remove" data-index="${index}" aria-label="Remover ${escapeHtml(item.name)}">
                             <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M7 7l1 12h8l1-12"/></svg>
                         </button>
                     </div>
@@ -135,9 +154,9 @@ function renderCart(deliveryFee = 6.90) {
     }
 
     // Totais
-    const { subtotal, deliveryFee: fee, total } = getCartTotals(deliveryFee);
+    const { subtotal, deliveryFee: fee, total } = getCartTotals(deliveryFee ?? 0);
     if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
-    if (shippingEl) shippingEl.textContent = fee > 0 ? formatPrice(fee) : "Grátis";
+    if (shippingEl) shippingEl.textContent = deliveryFee === null ? "Calculada no checkout" : (fee > 0 ? formatPrice(fee) : "Grátis");
     if (totalEl)    totalEl.textContent    = formatPrice(total);
 
     syncCartBadge?.();
@@ -150,7 +169,7 @@ function initCartPage() {
     const container = document.getElementById("cartItems");
     if (!container) return;
 
-    container.addEventListener("click", (e) => {
+    container.addEventListener("click", async (e) => {
         const btn = e.target.closest("button");
         if (!btn) return;
         const { action, index } = btn.dataset;
@@ -159,6 +178,14 @@ function initCartPage() {
         if (action === "increase") { adjustCartQuantity(idx, 1); renderCart(); }
         if (action === "decrease") { adjustCartQuantity(idx, -1); renderCart(); }
         if (action === "remove")   {
+            const item = readCart()[idx];
+            const confirmed = await showConfirm({
+                title: "Remover item",
+                message: `Deseja remover ${item?.name || "este item"} do carrinho?`,
+                confirmText: "Remover",
+                danger: true,
+            });
+            if (!confirmed) return;
             removeFromCart(idx);
             renderCart();
             showToast("Item removido do carrinho.", "info", 2000);
@@ -235,5 +262,7 @@ Object.assign(window, {
 // Auto-inicializar
 document.addEventListener("DOMContentLoaded", () => {
     initAddButtons();
-    if (document.getElementById("cartItems")) initCartPage();
+    if (document.getElementById("cartItems")) {
+        initCartPage();
+    }
 });

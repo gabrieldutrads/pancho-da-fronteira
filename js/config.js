@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const APP_CONFIG = {
    name: "Pancho da Fronteira",
    cartKey: "panchoCart",
-   defaultDeliveryFee: 6.90,
+   defaultDeliveryFee: 0,
    currency: "BRL",
    locale: "pt-BR",
    orderNumberPrefix: "#PF-",

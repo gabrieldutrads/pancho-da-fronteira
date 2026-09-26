@@ -85,7 +85,7 @@ async function fetchProductById(id) {
    ORDERS
 ---------------------------------------------------------- */
 async function createOrder({ userId, customerName, customerPhone, deliveryType,
-    addressId, addressSnapshot, paymentMethod, subtotal, deliveryFee, total, notes, items }) {
+    addressId, addressSnapshot, paymentMethod, subtotal, deliveryFee, deliveryFeeStatus, total, notes, items }) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
 
@@ -102,6 +102,7 @@ async function createOrder({ userId, customerName, customerPhone, deliveryType,
             payment_method: paymentMethod,
             subtotal,
             delivery_fee: deliveryFee,
+            delivery_fee_status: deliveryFeeStatus || "confirmed",
             total,
             notes: notes || null,
             status: "recebido",
@@ -160,6 +161,31 @@ async function updateOrderStatus(orderId, status) {
         .update({ status })
         .eq("id", orderId);
     if (error) throw new Error(error.message);
+}
+
+async function fetchProductOptionGroups(productId) {
+    const sb = getSupabase();
+    if (!sb || !isValidUuid(productId)) return [];
+    const { data, error } = await sb.from("product_option_groups")
+        .select("sort_order, option_groups!inner(*)")
+        .eq("product_id", productId)
+        .eq("option_groups.active", true)
+        .order("sort_order");
+    if (error) { console.error("[Supabase] product options:", error.message); return []; }
+    return (data || []).map(row => ({ ...row.option_groups, sort_order: row.sort_order }));
+}
+
+async function adminConfirmOrderDeliveryFee(orderId, fee) {
+    const sb = getSupabase();
+    fee = Number(fee);
+    if (!sb) throw new Error("Supabase não configurado.");
+    if (!Number.isFinite(fee) || fee < 0) throw new Error("Informe uma taxa válida.");
+    const { data: order, error: readError } = await sb.from("orders").select("subtotal, delivery_fee_status").eq("id", orderId).single();
+    if (readError) throw new Error(readError.message);
+    if (!order || order.delivery_fee_status !== "pending") throw new Error("Este pedido não está aguardando confirmação da taxa.");
+    const { data, error } = await sb.from("orders").update({ delivery_fee: fee, delivery_fee_status: "confirmed", total: Number(order.subtotal) + fee }).eq("id", orderId).select().single();
+    if (error) throw new Error(error.message);
+    return data;
 }
 
 /* ----------------------------------------------------------
@@ -293,6 +319,63 @@ async function adminFetchAllProfiles() {
     return data || [];
 }
 
+async function adminFetchAllOptionGroups() {
+    const sb = getSupabase();
+    if (!sb) return [];
+    const { data, error } = await sb.from("option_groups").select("*").order("name");
+    if (error) throw new Error(error.message);
+    return data || [];
+}
+
+async function adminUpsertOptionGroup(group) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    const name = String(group.name || "").trim();
+    const type = group.selection_type === "single" ? "single" : "multiple";
+    const options = (Array.isArray(group.options) ? group.options : []).map(option => ({
+        name: String(option.name || "").trim(),
+        price_delta: Number(option.price_delta) || 0,
+        active: option.active !== false
+    })).filter(option => option.name);
+    if (!name || !options.length || options.some(option => !Number.isFinite(option.price_delta) || option.price_delta < 0)) {
+        throw new Error("Informe o nome do grupo e ao menos uma opção com preço válido.");
+    }
+    const min = Math.max(0, Number(group.min_selection) || 0);
+    const max = type === "single" ? 1 : Math.max(min, Number(group.max_selection) || options.length);
+    if (min > options.length) throw new Error("A seleção mínima supera a quantidade de opções.");
+    const payload = { name, selection_type: type, required: Boolean(group.required), min_selection: min, max_selection: max, options, active: group.active !== false };
+    let query = sb.from("option_groups");
+    query = group.id ? query.update(payload).eq("id", group.id) : query.insert(payload);
+    const { data, error } = await query.select().single();
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+async function adminLinkOptionGroup(productId, groupId, sortOrder = 0) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    if (!isValidUuid(productId) || !isValidUuid(groupId)) throw new Error("Selecione um produto e um grupo válidos.");
+    const { error } = await sb.from("product_option_groups").upsert({ product_id: productId, group_id: groupId, sort_order: Number(sortOrder) || 0 });
+    if (error) throw new Error(error.message);
+}
+
+async function adminFetchProductOptionLinks() {
+    const sb = getSupabase();
+    if (!sb) return [];
+    const { data, error } = await sb.from("product_option_groups")
+        .select("product_id, group_id, sort_order, products(name), option_groups(name)")
+        .order("sort_order");
+    if (error) throw new Error(error.message);
+    return data || [];
+}
+
+async function adminUnlinkOptionGroup(productId, groupId) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    const { error } = await sb.from("product_option_groups").delete().eq("product_id", productId).eq("group_id", groupId);
+    if (error) throw new Error(error.message);
+}
+
 async function adminUpdateStoreSettings(settings) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
@@ -324,12 +407,12 @@ async function uploadImage(bucket, path, file) {
 
 // Expor globalmente
 Object.assign(window, {
-    fetchCategories, fetchProducts, fetchProductById,
-    createOrder, fetchOrdersByUser, fetchOrderById, updateOrderStatus,
+    fetchCategories, fetchProducts, fetchProductById, fetchProductOptionGroups,
+    createOrder, fetchOrdersByUser, fetchOrderById, updateOrderStatus, adminConfirmOrderDeliveryFee,
     fetchAddressesByUser, saveAddress,
     fetchStoreSettings,
     adminFetchAllOrders, adminFetchAllProducts, adminUpsertProduct, adminDeleteProduct,
     adminFetchAllCategories, adminUpsertCategory, adminDeleteCategory,
-    adminFetchAllProfiles, adminUpdateStoreSettings,
+    adminFetchAllProfiles, adminFetchAllOptionGroups, adminUpsertOptionGroup, adminLinkOptionGroup, adminFetchProductOptionLinks, adminUnlinkOptionGroup, adminUpdateStoreSettings,
     uploadImage,
 });

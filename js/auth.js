@@ -21,7 +21,11 @@ window.getCurrentSession = getCurrentSession;
 ---------------------------------------------------------- */
 async function initAuth({ onLogin, onLogout, requireAuth = false, requireAdmin = false } = {}) {
     const sb = getSupabase();
-    if (!sb) return;
+    if (!sb) {
+        if (requireAdmin) window.location.href = "/admin/login.html";
+        else if (requireAuth) window.location.href = "/login.html";
+        return;
+    }
 
     // Pegar sessão atual
     const { data: { session } } = await sb.auth.getSession();
@@ -35,10 +39,15 @@ async function initAuth({ onLogin, onLogout, requireAuth = false, requireAdmin =
         return;
     }
 
-    if (requireAdmin && _currentUser) {
+    if (requireAdmin && !_currentUser) {
+        window.location.href = "/admin/login.html";
+        return;
+    }
+
+    if (requireAdmin) {
         const isAdmin = await checkIsAdmin(_currentUser.id);
         if (!isAdmin) {
-            window.location.href = "/index.html";
+            window.location.href = "/admin/login.html?unauthorized=true";
             return;
         }
     }

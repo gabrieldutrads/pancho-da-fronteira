@@ -83,10 +83,17 @@
                                 <label class="form-label" for="storePhone">Telefone / WhatsApp</label>
                                 <input type="tel" id="storePhone" class="form-input" placeholder="(55) 99999-9999">
                             </div>
-                            <div class="form-group">
-                                <label class="form-label" for="storeDeliveryFee">Taxa Padrão de Entrega (R$)</label>
-                                <input type="number" id="storeDeliveryFee" class="form-input" step="0.50" value="6.90" required>
-                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="deliveryZonesConfig">Zonas e taxas (JSON)</label>
+                            <textarea id="deliveryZonesConfig" class="form-textarea" rows="12" spellcheck="false"></textarea>
+                            <small>Tipos aceitos: FREE, FIXED e CONSULT. Edite aliases para associar os nomes usados pelos clientes.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="openingHoursConfig">Funcionamento (JSON)</label>
+                            <textarea id="openingHoursConfig" class="form-textarea" rows="10" spellcheck="false"></textarea>
+                            <small>Configure horários e exceções com data. Para definir segunda-feira, ajuste active e configured para true ou false. Sem configured: true, segunda continua sem regra. Domingo, terça e primeiro sábado permanecem fechados.</small>
                         </div>
 
                         <div class="form-group">
@@ -119,6 +126,7 @@
     <script src="../js/supabase.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ui.js"></script>
+    <script src="../js/operacoes.js"></script>
     <script src="../js/admin.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {

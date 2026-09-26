@@ -147,3 +147,11 @@ Como o projeto é 100% estático integrado diretamente à nuvem do Supabase, voc
 - ✅ **Acompanhamento ao Vivo**: Timeline visual do pedido (Recebido ➔ Em preparo ➔ Saiu p/ Entrega ➔ Entregue).
 - ✅ **Painel do Restaurante**: Gestão ao vivo de pedidos com alteração de status em um clique.
 - ✅ **Segurança RLS**: Clientes só acessam seus próprios pedidos e apenas administradores podem alterar o cardápio.
+
+## Regras operacionais
+
+- `js/operacoes.js` concentra cálculo de entrega e consulta de funcionamento. Sem Supabase, as configurações operacionais ficam no `localStorage` (`panchoOperations`). Com Supabase, ficam em `store_settings`.
+- Entregas grátis: Loteamentos Jardins 1, 2 e 3, Parque das Rosas e Tabuleiro. Bela Vista: R$ 5,00. Demais localidades: taxa pendente de confirmação; o pedido pode ser registrado com subtotal e total pendente.
+- Retirada não cobra entrega. Domingo, terça-feira e o primeiro sábado do mês são fechados. Quarta a sábado usam horários configurados. Segunda-feira permanece sem definição até a loja configurá-la.
+- A tela Admin > Configurações permite editar zonas e horários como JSON. Execute `supabase/schema.sql` no projeto Supabase para criar as novas colunas e permitir pedidos com taxa pendente.
+- O horário exato de atendimento não foi fornecido; os valores permanecem configuráveis e não são presumidos. Categorias e produtos aceitam itens de açaí sem criar produtos de demonstração.

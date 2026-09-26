@@ -172,10 +172,58 @@
                         </article>
                     </div>
                 </section>
+
+                <section class="admin-panel" id="optionGroupsPanel" style="margin-top:24px;">
+                    <div class="panel-title">
+                        <h2>Grupos de opções reutilizáveis</h2>
+                        <p>Cadastre tamanhos, frutas e adicionais uma vez e associe os grupos aos produtos que usam essas opções.</p>
+                    </div>
+                    <div class="admin-form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:18px;">
+                        <form id="optionGroupForm" class="form-group" style="display:grid;gap:12px;">
+                            <input type="hidden" id="optionGroupId">
+                            <label class="form-label" for="optionGroupName">Nome do grupo</label>
+                            <input id="optionGroupName" class="form-input" required maxlength="80" placeholder="Ex.: Tamanho">
+                            <label class="form-label" for="optionGroupType">Tipo de escolha</label>
+                            <select id="optionGroupType" class="form-select"><option value="single">Uma opção</option><option value="multiple">Múltiplas opções</option></select>
+                            <div class="form-row">
+                                <div><label class="form-label" for="optionGroupMin">Mínimo</label><input id="optionGroupMin" class="form-input" type="number" min="0" value="0"></div>
+                                <div><label class="form-label" for="optionGroupMax">Máximo</label><input id="optionGroupMax" class="form-input" type="number" min="1" value="10"></div>
+                            </div>
+                            <label><input id="optionGroupRequired" type="checkbox"> Seleção obrigatória</label>
+                            <label class="form-label" for="optionGroupChoices">Opções (JSON)</label>
+                            <textarea id="optionGroupChoices" class="form-textarea" rows="6" required spellcheck="false" placeholder='[{"name":"Granola","price_delta":2.5}]'></textarea>
+                            <label><input id="optionGroupActive" type="checkbox" checked> Grupo ativo</label>
+                            <div class="form-row"><button class="btn btn-primary" type="submit">Salvar grupo</button><button class="btn btn-ghost" type="reset">Novo grupo</button></div>
+                        </form>
+                        <div>
+                            <h3>Associar grupo a um produto</h3>
+                            <form id="productOptionGroupForm" style="display:grid;gap:12px;margin:12px 0 20px;">
+                                <select id="optionProductSelect" class="form-select" required><option value="">Escolha um produto</option></select>
+                                <select id="optionGroupSelect" class="form-select" required><option value="">Escolha um grupo</option></select>
+                                <button class="btn btn-secondary" type="submit">Associar</button>
+                            </form>
+                            <h3>Grupos cadastrados</h3>
+                            <div id="optionGroupsList" class="admin-product-list" aria-live="polite"></div>
+                            <h3 style="margin-top:18px;">Associações</h3>
+                            <div id="productOptionLinksList" class="admin-product-list" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
     <script src="../js/admin.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            await initAuth({ requireAdmin: true });
+            if (typeof initAdminOptionGroupsPage === "function") initAdminOptionGroupsPage();
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar</title><link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/auth.css"></head><body class="auth"><main><div>♙</div><h1>Entrar</h1><p>Acesse sua conta.</p><input type="email" placeholder="📧 E-mail"><input type="password" placeholder="🔒 Senha"><button class="btn">→</button><a href="cadastro.html">Criar conta</a></main></body></html>
-=======
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -126,12 +123,22 @@
     <script src="./js/ui.js"></script>
     <script>
     (async () => {
+        const safeReturnTo = (candidate, fallback) => {
+            try {
+                const target = new URL(candidate || fallback, window.location.origin);
+                return target.origin === window.location.origin
+                    ? `${target.pathname}${target.search}${target.hash}`
+                    : fallback;
+            } catch {
+                return fallback;
+            }
+        };
         // Redirecionar se já logado
         const sb = getSupabase();
         if (sb) {
             const { data: { session } } = await sb.auth.getSession();
             if (session) {
-                const returnTo = new URLSearchParams(location.search).get("returnTo") || "/index.html";
+                const returnTo = safeReturnTo(new URLSearchParams(location.search).get("returnTo"), "./index.html");
                 window.location.href = returnTo;
                 return;
             }
@@ -147,9 +154,9 @@
         const errorBox    = document.getElementById("authError");
         const errorMsg    = document.getElementById("authErrorMsg");
 
-        const guestReturnTo = new URLSearchParams(location.search).get("returnTo") || "/pedido.html";
+        const guestReturnTo = safeReturnTo(new URLSearchParams(location.search).get("returnTo"), "./pedido.html");
         if (guestLink) {
-            guestLink.href = guestReturnTo.startsWith("/") ? guestReturnTo : "./pedido.html";
+            guestLink.href = guestReturnTo;
         }
 
         function showError(msg) {
@@ -207,4 +214,3 @@
 
 </body>
 </html>
->>>>>>> c77000fd24e04bc45907cdf497926a535474d57a

@@ -39,7 +39,7 @@ function showToast(message, type = "info", duration = 3500) {
 
     toast.innerHTML = `
         <span class="toast-icon">${icons[type] || icons.info}</span>
-        <span class="toast-message">${message}</span>
+        <span class="toast-message">${escapeHtml(message)}</span>
         <button class="toast-close" aria-label="Fechar">&times;</button>
     `;
 
@@ -58,6 +58,14 @@ function showToast(message, type = "info", duration = 3500) {
 
 window.showToast = showToast;
 
+// Escape values from Supabase and localStorage before placing them in HTML.
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>\"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+    })[character]);
+}
+window.escapeHtml = escapeHtml;
+
 /* ----------------------------------------------------------
    MODAL DE CONFIRMAÇÃO
 ---------------------------------------------------------- */
@@ -72,8 +80,8 @@ function showConfirm({ title = "Confirmar ação", message, confirmText = "Confi
         overlay.className = "modal-overlay";
         overlay.innerHTML = `
             <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-                <h3 id="confirmTitle">${title}</h3>
-                <p>${message}</p>
+                <h3 id="confirmTitle">${escapeHtml(title)}</h3>
+                <p>${escapeHtml(message)}</p>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" id="confirmCancel">${cancelText}</button>
                     <button class="btn ${danger ? "btn-danger" : "btn-primary"}" id="confirmOk">${confirmText}</button>
@@ -180,10 +188,10 @@ function createEmptyState({ icon = "🍽️", title = "Nada por aqui", message =
     const el = document.createElement("div");
     el.className = "empty-state";
     el.innerHTML = `
-        <div class="empty-state-icon">${icon}</div>
-        <h3>${title}</h3>
-        ${message ? `<p>${message}</p>` : ""}
-        ${actionText && actionHref ? `<a href="${actionHref}" class="btn btn-primary">${actionText}</a>` : ""}
+        <div class="empty-state-icon">${escapeHtml(icon)}</div>
+        <h3>${escapeHtml(title)}</h3>
+        ${message ? `<p>${escapeHtml(message)}</p>` : ""}
+        ${actionText && actionHref ? `<a href="${escapeHtml(actionHref)}" class="btn btn-primary">${escapeHtml(actionText)}</a>` : ""}
     `;
     return el;
 }

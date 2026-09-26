@@ -68,7 +68,9 @@ async function getProductDetail(idOrSlug) {
     }
 
     // Procura no fallback
-    const found = FALLBACK_PRODUCTS.find(p => p.id === idOrSlug || p.name.toLowerCase() === decodeURIComponent(idOrSlug).toLowerCase());
+    const normalizedId = String(idOrSlug).toLowerCase();
+    const found = FALLBACK_PRODUCTS.find(p => p.id.toLowerCase() === normalizedId
+        || p.name.toLowerCase() === normalizedId);
     return found || null;
 }
 
@@ -91,7 +93,7 @@ async function renderFullMenu() {
             ${categories.map(cat => `
                 <button class="filter-button" data-category="${cat.id || cat.name.toLowerCase()}">
                     <span class="icon" aria-hidden="true">${cat.icon && cat.icon.includes('<svg') ? cat.icon : '<svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg>'}</span>
-                    ${cat.name}
+                    ${escapeHtml(cat.name)}
                 </button>
             `).join("")}
         `;
@@ -115,26 +117,26 @@ async function renderFullMenu() {
                     <div>
                         <span class="category-label">
                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span>
-                            ${cat.label || cat.name}
+                            ${escapeHtml(cat.label || cat.name)}
                         </span>
-                        <h2>${cat.name}</h2>
+                        <h2>${escapeHtml(cat.name)}</h2>
                     </div>
-                    ${cat.description ? `<p>${cat.description}</p>` : ""}
+                    ${cat.description ? `<p>${escapeHtml(cat.description)}</p>` : ""}
                 </div>
 
                 <div class="products-grid">
                     ${catProducts.map(prod => `
-                        <article class="product-card ${prod.original_price ? 'product-card-promotion' : ''}" data-category="${catKey}" data-name="${prod.name}">
-                            <a href="./produto.html?id=${encodeURIComponent(prod.id || prod.name)}" class="product-image-link" aria-label="Ver detalhes de ${prod.name}">
+                        <article class="product-card ${prod.original_price ? 'product-card-promotion' : ''}" data-category="${escapeHtml(catKey)}" data-name="${escapeHtml(prod.name)}">
+                            <a href="./produto.html?id=${encodeURIComponent(prod.id || prod.name)}" class="product-image-link" aria-label="Ver detalhes de ${escapeHtml(prod.name)}">
                                 <div class="product-image">
                                     ${prod.image_url 
-                                        ? `<img src="${prod.image_url}" alt="${prod.name}" loading="lazy">` 
+                                        ? `<img src="${escapeHtml(prod.image_url)}" alt="${escapeHtml(prod.name)}" loading="lazy">`
                                         : `<div class="product-placeholder"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></div>`
                                     }
                                     ${prod.badge || prod.featured ? `
                                         <span class="product-badge">
                                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.4 5.9.9-4.3 4.2 1 5.8-5.3-2.8-5.3 2.8 1-5.8L3.4 9.1l5.9-.9L12 2.8Z"/></svg></span>
-                                            ${prod.badge || 'Destaque'}
+                                            ${escapeHtml(prod.badge || 'Destaque')}
                                         </span>
                                     ` : ''}
                                 </div>
@@ -142,16 +144,16 @@ async function renderFullMenu() {
 
                             <div class="product-info">
                                 <a href="./produto.html?id=${encodeURIComponent(prod.id || prod.name)}">
-                                    <h3>${prod.name}</h3>
+                                    <h3>${escapeHtml(prod.name)}</h3>
                                 </a>
-                                <p>${prod.description || ''}</p>
+                                <p>${escapeHtml(prod.description || '')}</p>
 
                                 <div class="product-bottom">
                                     <div class="price-container">
                                         ${prod.original_price ? `<del>${window.formatPrice ? window.formatPrice(prod.original_price) : 'R$ ' + prod.original_price.toFixed(2)}</del>` : ''}
                                         <strong class="product-price">${window.formatPrice ? window.formatPrice(prod.price) : 'R$ ' + prod.price.toFixed(2)}</strong>
                                     </div>
-                                    <button class="add-button" data-id="${prod.id || ''}" data-product="${prod.name}" data-price="${prod.price}" title="Adicionar ao carrinho" aria-label="Adicionar ${prod.name}">
+                                    <button class="add-button" data-id="${escapeHtml(prod.id || '')}" data-product="${escapeHtml(prod.name)}" data-price="${Number(prod.price) || 0}" title="Adicionar ao carrinho" aria-label="Adicionar ${escapeHtml(prod.name)}">
                                         +
                                     </button>
                                 </div>
@@ -227,7 +229,11 @@ async function initProductDetailPage() {
     const productId = urlParams.get("id") || "1";
 
     const product = await getProductDetail(productId);
-    if (!product) return;
+    if (!product) {
+        const container = document.getElementById("productDetailContainer");
+        if (container) container.innerHTML = '<div class="empty-state"><h2>Produto indisponível</h2><p>Este produto não existe ou não está disponível no momento.</p><a class="btn btn-primary" href="./cardapio.html">Voltar ao cardápio</a></div>';
+        return;
+    }
 
     // Atualizar títulos e SEO
     document.title = `${product.name} | Pancho da Fronteira`;
@@ -239,6 +245,15 @@ async function initProductDetailPage() {
 
     const descEl = document.getElementById("productDescription");
     if (descEl) descEl.textContent = product.description;
+
+    const visualEl = document.querySelector(".product-visual");
+    if (visualEl && product.image_url) {
+        const image = document.createElement("img");
+        image.src = product.image_url;
+        image.alt = product.name;
+        image.loading = "eager";
+        visualEl.replaceChildren(image);
+    }
 
     const badgeEl = document.getElementById("productBadge");
     if (badgeEl) {
@@ -259,6 +274,10 @@ async function initProductDetailPage() {
 
         addBtn.addEventListener("click", () => {
             const qty = parseInt(document.getElementById("productQuantity")?.value || "1", 10);
+            if (!Number.isInteger(qty) || qty < 1 || qty > 20) {
+                showToast("Escolha uma quantidade entre 1 e 20.", "warning");
+                return;
+            }
             const notes = document.getElementById("productNotes")?.value.trim() || "";
 
             // Opções selecionadas (chips ativos)
