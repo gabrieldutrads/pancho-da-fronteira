@@ -213,8 +213,8 @@ ALTER TABLE public.orders ALTER COLUMN total DROP NOT NULL;
 ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS delivery_fee_status TEXT NOT NULL DEFAULT 'confirmed';
 
 -- Mantém bancos existentes compatíveis com a configuração operacional por loja.
-ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS delivery_zones JSONB NOT NULL DEFAULT '[{"name":"Loteamento Jardins 1","aliases":["Jardins 1","Loteamento Jardins 1"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 2","aliases":["Jardins 2","Loteamento Jardins 2"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 3","aliases":["Jardins 3","Loteamento Jardins 3"],"fee_type":"FREE","fee":0,"active":true},{"name":"Parque das Rosas","aliases":["Parque das Rosas"],"fee_type":"FREE","fee":0,"active":true},{"name":"Tabuleiro","aliases":["Tabuleiro"],"fee_type":"FREE","fee":0,"active":true},{"name":"Bela Vista","aliases":["Bela Vista"],"fee_type":"FIXED","fee":5,"active":true},{"name":"Demais localidades","aliases":[],"fee_type":"CONSULT","fee":null,"active":true}]'::jsonb);
-ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS opening_hours JSONB NOT NULL DEFAULT '{"segunda":{"open":null,"close":null,"active":null,"configured":false},"terca":{"open":null,"close":null,"active":false},"quarta":{"open":null,"close":null,"active":true},"quinta":{"open":null,"close":null,"active":true},"sexta":{"open":null,"close":null,"active":true},"sabado":{"open":null,"close":null,"active":true},"domingo":{"open":null,"close":null,"active":false}}'::jsonb);
+ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS delivery_zones JSONB NOT NULL DEFAULT '[{"name":"Loteamento Jardins 1","aliases":["Jardins 1","Loteamento Jardins 1"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 2","aliases":["Jardins 2","Loteamento Jardins 2"],"fee_type":"FREE","fee":0,"active":true},{"name":"Loteamento Jardins 3","aliases":["Jardins 3","Loteamento Jardins 3"],"fee_type":"FREE","fee":0,"active":true},{"name":"Parque das Rosas","aliases":["Parque das Rosas"],"fee_type":"FREE","fee":0,"active":true},{"name":"Tabuleiro","aliases":["Tabuleiro"],"fee_type":"FREE","fee":0,"active":true},{"name":"Bela Vista","aliases":["Bela Vista"],"fee_type":"FIXED","fee":5,"active":true},{"name":"Demais localidades","aliases":[],"fee_type":"CONSULT","fee":null,"active":true}]'::jsonb;
+ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS opening_hours JSONB NOT NULL DEFAULT '{"segunda":{"open":null,"close":null,"active":null,"configured":false},"terca":{"open":null,"close":null,"active":false},"quarta":{"open":null,"close":null,"active":true},"quinta":{"open":null,"close":null,"active":true},"sexta":{"open":null,"close":null,"active":true},"sabado":{"open":null,"close":null,"active":true},"domingo":{"open":null,"close":null,"active":false}}'::jsonb;
 ALTER TABLE public.store_settings ADD COLUMN IF NOT EXISTS opening_exceptions JSONB NOT NULL DEFAULT '[{"type":"first_saturday_closed","active":true}]'::jsonb;
 
 
@@ -615,7 +615,8 @@ CREATE POLICY "Admin pode inserir configurações"
 INSERT INTO public.store_settings (
     name, phone, whatsapp, address, city, state,
     description, delivery_fee, min_order_value
-) VALUES (
+)
+SELECT
     'Pancho da Fronteira',
     NULL,
     NULL,
@@ -625,4 +626,4 @@ INSERT INTO public.store_settings (
     'Panchos preparados com carinho, sabor e aquele toque especial que faz você querer voltar.',
     0,
     0
-);
+WHERE NOT EXISTS (SELECT 1 FROM public.store_settings);

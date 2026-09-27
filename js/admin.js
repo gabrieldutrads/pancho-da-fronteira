@@ -169,6 +169,20 @@ async function initAdminOrdersPage() {
                     </button>
                 </td>
             `;
+            const deliveryBadge = tr.querySelector(".status-badge");
+            if (deliveryBadge) deliveryBadge.textContent = o.delivery_type === "entrega" ? "Entrega" : "Retirada";
+            const statusLabels = {
+                recebido: "Recebido",
+                confirmado: "Confirmado",
+                preparando: "Em preparo",
+                pronto: "Pronto",
+                saiu_para_entrega: "Saiu para entrega",
+                entregue: "Entregue",
+                cancelado: "Cancelado"
+            };
+            tr.querySelectorAll(".status-changer option").forEach(option => {
+                option.textContent = statusLabels[option.value] || option.value;
+            });
             tbody.appendChild(tr);
         });
     }
@@ -255,6 +269,13 @@ async function initAdminOrdersPage() {
                 </div>
             </div>
         `;
+
+        const deliveryLine = Array.from(modalBody.querySelectorAll("p")).find(line => line.textContent.includes("Forma de Entrega:"));
+        if (deliveryLine) deliveryLine.innerHTML = `<strong>Forma de entrega:</strong> ${order.delivery_type === "entrega" ? "Entrega em endereco" : "Retirada no balcao"}`;
+        const addressHeading = Array.from(modalBody.querySelectorAll("strong")).find(label => label.textContent.startsWith("Endere"));
+        if (addressHeading) addressHeading.textContent = "Endereco de entrega:";
+        const notesHeading = Array.from(modalBody.querySelectorAll("strong")).find(label => label.textContent.startsWith("Observ"));
+        if (notesHeading) notesHeading.textContent = "Observacoes gerais:";
 
         modal.hidden = false;
     });
