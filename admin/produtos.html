@@ -69,6 +69,7 @@
                     <div>
                         <span class="page-eyebrow">Catálogo</span>
                         <h1>Produtos</h1>
+                    </section>
                         <p>Cadastre, edite e organize os itens do cardápio.</p>
                     </div>
                     <button type="button" id="newProductButton" class="admin-button admin-button-primary"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span> Novo produto</button>
@@ -164,46 +165,51 @@
                             </div>
                         </article>
                     </div>
-                    <form id="adminProductForm" class="admin-panel" style="display:grid;gap:12px;margin-top:20px;">
+                    <form id="adminProductForm" class="admin-product-form" hidden>
                         <h3 id="adminProductFormTitle">Cadastrar produto</h3>
                         <input type="hidden" id="adminProductId">
-                        <div class="form-row">
+                        <div class="form-row admin-product-fields">
                             <div><label class="form-label" for="adminProductName">Nome</label><input id="adminProductName" class="form-input" required maxlength="120"></div>
                             <div><label class="form-label" for="adminProductPrice">Preço (R$)</label><input id="adminProductPrice" class="form-input" type="number" min="0" step="0.01" required></div>
                         </div>
-                        <div class="form-row">
+                        <div class="form-row admin-product-fields">
                             <div><label class="form-label" for="adminProductCategory">Categoria</label><select id="adminProductCategory" class="form-select"><option value="">Sem categoria</option></select></div>
                             <div><label class="form-label" for="adminProductNewCategory">Ou crie uma categoria</label><input id="adminProductNewCategory" class="form-input" placeholder="Ex.: Açaí"></div>
                         </div>
                         <div><label class="form-label" for="adminProductDescription">Descrição</label><textarea id="adminProductDescription" class="form-textarea" rows="3"></textarea></div>
                         <div><label class="form-label" for="adminProductImage">URL da imagem (opcional)</label><input id="adminProductImage" class="form-input" type="url"></div>
-                        <div class="form-row"><label><input id="adminProductActive" type="checkbox" checked> Disponível no cardápio</label><label><input id="adminProductFeatured" type="checkbox"> Destacar na vitrine</label></div>
-                        <div class="form-row"><button class="btn btn-primary" type="submit">Salvar produto</button><button class="btn btn-ghost" id="cancelProductEdit" type="button">Limpar</button></div>
+                        <div class="admin-product-form-options"><label><input id="adminProductActive" type="checkbox" checked> Disponível no cardápio</label><label><input id="adminProductFeatured" type="checkbox"> Destacar na vitrine</label></div>
+                        <div class="form-row admin-product-form-actions"><button class="btn btn-primary" type="submit">Salvar produto</button><button class="btn btn-ghost" id="cancelProductEdit" type="button">Limpar</button></div>
                     </form>
                 </section>
 
                 <section class="admin-panel" id="optionGroupsPanel" style="margin-top:24px;">
-                    <div class="panel-title">
-                        <h2>Grupos de opções reutilizáveis</h2>
-                        <p>Cadastre tamanhos, frutas e adicionais uma vez e associe os grupos aos produtos que usam essas opções.</p>
+                    <div class="panel-title admin-option-groups-heading">
+                        <div>
+                            <h2>Grupos de opções reutilizáveis</h2>
+                            <p>Cadastre tamanhos, frutas e adicionais uma vez e associe os grupos aos produtos que usam essas opções.</p>
+                        </div>
+                        <button type="button" id="newOptionGroupButton" class="btn btn-primary btn-sm">Novo grupo</button>
                     </div>
-                    <div class="admin-form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:18px;">
-                        <form id="optionGroupForm" class="form-group" style="display:grid;gap:12px;">
+                    <section id="optionGroupFormCard" class="admin-option-group-card" hidden>
+                        <h3 id="optionGroupFormTitle">Novo grupo de opções</h3>
+                        <form id="optionGroupForm" class="admin-option-group-form">
                             <input type="hidden" id="optionGroupId">
-                            <label class="form-label" for="optionGroupName">Nome do grupo</label>
-                            <input id="optionGroupName" class="form-input" required maxlength="80" placeholder="Ex.: Tamanho">
-                            <label class="form-label" for="optionGroupType">Tipo de escolha</label>
-                            <select id="optionGroupType" class="form-select"><option value="single">Uma opção</option><option value="multiple">Múltiplas opções</option></select>
-                            <div class="form-row">
-                                <div><label class="form-label" for="optionGroupMin">Mínimo</label><input id="optionGroupMin" class="form-input" type="number" min="0" value="0"></div>
-                                <div><label class="form-label" for="optionGroupMax">Máximo</label><input id="optionGroupMax" class="form-input" type="number" min="1" value="10"></div>
+                            <div class="admin-option-group-fields">
+                                <div><label class="form-label" for="optionGroupName">Nome do grupo</label><input id="optionGroupName" class="form-input" required maxlength="80" placeholder="Ex.: Tamanho"></div>
+                                <div><label class="form-label" for="optionGroupType">Tipo de escolha</label><select id="optionGroupType" class="form-select"><option value="single">Uma opção</option><option value="multiple">Múltiplas opções</option></select></div>
+                                <div class="form-row">
+                                    <div><label class="form-label" for="optionGroupMin">Mínimo</label><input id="optionGroupMin" class="form-input" type="number" min="0" value="0"></div>
+                                    <div><label class="form-label" for="optionGroupMax">Máximo</label><input id="optionGroupMax" class="form-input" type="number" min="1" value="10"></div>
+                                </div>
+                                <label class="admin-option-checkbox"><input id="optionGroupRequired" type="checkbox"> Seleção obrigatória</label>
+                                <div class="admin-option-group-choices"><label class="form-label" for="optionGroupChoices">Opções (JSON)</label><textarea id="optionGroupChoices" class="form-textarea" rows="6" required spellcheck="false" placeholder='[{"name":"Granola","price_delta":2.5}]'></textarea></div>
+                                <label class="admin-option-checkbox"><input id="optionGroupActive" type="checkbox" checked> Grupo ativo</label>
                             </div>
-                            <label><input id="optionGroupRequired" type="checkbox"> Seleção obrigatória</label>
-                            <label class="form-label" for="optionGroupChoices">Opções (JSON)</label>
-                            <textarea id="optionGroupChoices" class="form-textarea" rows="6" required spellcheck="false" placeholder='[{"name":"Granola","price_delta":2.5}]'></textarea>
-                            <label><input id="optionGroupActive" type="checkbox" checked> Grupo ativo</label>
-                            <div class="form-row"><button class="btn btn-primary" type="submit">Salvar grupo</button><button class="btn btn-ghost" type="reset">Novo grupo</button></div>
+                            <div class="admin-option-group-actions"><button class="btn btn-primary" type="submit">Salvar grupo</button><button class="btn btn-ghost" id="cancelOptionGroupEdit" type="button">Cancelar</button></div>
                         </form>
+                    </section>
+                    <div class="admin-option-groups-content">
                         <div>
                             <h3>Associar grupo a um produto</h3>
                             <form id="productOptionGroupForm" style="display:grid;gap:12px;margin:12px 0 20px;">

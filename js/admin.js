@@ -490,6 +490,7 @@ async function initAdminProductsPage() {
         form.reset();
         byId("adminProductId").value = "";
         byId("adminProductFormTitle").textContent = "Cadastrar produto";
+        form.hidden = true;
     }
     function render() {
         const query = search?.value.trim().toLocaleLowerCase("pt-BR") || "";
@@ -498,11 +499,12 @@ async function initAdminProductsPage() {
         byId("productCountActive").textContent = String(products.filter(product => product.active !== false).length);
         byId("productCountFeatured").textContent = String(products.filter(product => product.featured).length);
         list.innerHTML = shown.length ? shown.map(product => `
-            <article class="admin-product-item">
+            <article class="admin-product-item admin-product-card">
                 <div class="admin-product-text"><h3>${escapeHtml(product.name)}</h3>
-                <p>${escapeHtml(product.categories?.name || "Sem categoria")} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${window.formatPrice(Number(product.price))} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${product.active ? "DisponÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel" : "Desativado"}</p></div>
+                <p>${escapeHtml(product.categories?.name || "Sem categoria")} · ${window.formatPrice(Number(product.price))} · ${product.active ? "Disponível" : "Desativado"}</p></div>
                 <div class="admin-product-actions"><button type="button" class="btn btn-ghost btn-sm" data-edit-product="${escapeHtml(product.id)}">Editar</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-toggle-product="${escapeHtml(product.id)}" data-active="${product.active !== false}">${product.active === false ? "Ativar" : "Desativar"}</button></div>
+                <button type="button" class="btn btn-ghost btn-sm" data-toggle-product="${escapeHtml(product.id)}" data-active="${product.active !== false}">${product.active === false ? "Ativar" : "Desativar"}</button>
+                <button type="button" class="btn btn-danger btn-sm" data-delete-product="${escapeHtml(product.id)}">Excluir</button></div>
             </article>`).join("") : '<p>Nenhum produto cadastrado.</p>';
     }
     async function reload() {
@@ -512,7 +514,7 @@ async function initAdminProductsPage() {
                 `<option value="${escapeHtml(category.id)}">${escapeHtml(category.name)}${category.active === false ? " (inativa)" : ""}</option>`).join("");
             render();
             window.dispatchEvent(new Event("productsChanged"));
-        } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel carregar os produtos: " + error.message, "error"); }
+        } catch (error) { showToast("Não foi possível carregar os produtos: " + error.message, "error"); }
     }
 
     form.addEventListener("submit", async event => {
@@ -527,7 +529,7 @@ async function initAdminProductsPage() {
                 categoryId = category.id;
             }
             const price = Number(byId("adminProductPrice").value);
-            if (!Number.isFinite(price) || price < 0) throw new Error("O preÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§o deve ser um valor vÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡lido maior ou igual a zero.");
+            if (!Number.isFinite(price) || price < 0) throw new Error("O preço deve ser um valor válido maior ou igual a zero.");
             const productId = byId("adminProductId").value;
             await adminUpsertProduct({
                 ...(productId ? { id: productId } : {}),
@@ -539,15 +541,35 @@ async function initAdminProductsPage() {
                 active: byId("adminProductActive").checked,
                 featured: byId("adminProductFeatured").checked
             });
-            showToast("Produto salvo no catÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡logo.", "success");
+            showToast("Produto salvo no catálogo.", "success");
             resetForm();
             await reload();
-        } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel salvar o produto: " + error.message, "error", 6000); }
+        } catch (error) { showToast("Não foi possível salvar o produto: " + error.message, "error", 6000); }
     });
 
     list.addEventListener("click", async event => {
         const editButton = event.target.closest("[data-edit-product]");
         const toggleButton = event.target.closest("[data-toggle-product]");
+        const deleteButton = event.target.closest("[data-delete-product]");
+        if (deleteButton) {
+            const product = products.find(item => item.id === deleteButton.dataset.deleteProduct);
+            if (!product) return;
+            const confirmed = await showConfirm({
+                title: "Excluir produto?",
+                message: `O produto \"${product.name}\" será removido do catálogo. Os dados dos pedidos antigos serão preservados.`,
+                confirmText: "Excluir",
+                danger: true
+            });
+            if (!confirmed) return;
+            try {
+                await adminDeleteProduct(product.id);
+                showToast("Produto excluído do catálogo.", "success");
+                await reload();
+            } catch (error) {
+                showToast("Não foi possível excluir o produto: " + error.message, "error", 6000);
+            }
+            return;
+        }
         if (editButton) {
             const product = products.find(item => item.id === editButton.dataset.editProduct);
             if (!product) return;
@@ -560,20 +582,22 @@ async function initAdminProductsPage() {
             byId("adminProductActive").checked = product.active !== false;
             byId("adminProductFeatured").checked = Boolean(product.featured);
             byId("adminProductFormTitle").textContent = "Editar produto";
+            form.hidden = false;
             form.scrollIntoView({ behavior: "smooth", block: "center" });
         } else if (toggleButton) {
             try {
                 const active = toggleButton.dataset.active !== "true";
                 await adminSetProductActive(toggleButton.dataset.toggleProduct, active);
-                showToast(active ? "Produto reativado." : "Produto desativado no catÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡logo.", "success");
+                showToast(active ? "Produto reativado." : "Produto desativado no catálogo.", "success");
                 await reload();
-            } catch (error) { showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel alterar a disponibilidade: " + error.message, "error"); }
+            } catch (error) { showToast("Não foi possível alterar a disponibilidade: " + error.message, "error"); }
         }
     });
     search?.addEventListener("input", render);
     byId("cancelProductEdit")?.addEventListener("click", resetForm);
     byId("newProductButton")?.addEventListener("click", () => {
         resetForm();
+        form.hidden = false;
         form.scrollIntoView({ behavior: "smooth", block: "center" });
         byId("adminProductName").focus();
     });
@@ -593,9 +617,16 @@ async function initAdminOptionGroupsPage() {
     const linksList = byId("productOptionLinksList");
     const productSelect = byId("optionProductSelect");
     const groupSelect = byId("optionGroupSelect");
+    const groupFormCard = byId("optionGroupFormCard");
     let groups = [];
     let products = [];
     let links = [];
+
+    function resetGroupForm() {
+        groupForm.reset();
+        byId("optionGroupId").value = "";
+        byId("optionGroupFormTitle").textContent = "Novo grupo de opções";
+    }
 
     async function reload() {
         try {
@@ -607,18 +638,18 @@ async function initAdminOptionGroupsPage() {
             groupSelect.innerHTML = '<option value="">Escolha um grupo ativo</option>' + groups.filter(group => group.active)
                 .map(group => `<option value="${escapeHtml(group.id)}">${escapeHtml(group.name)}</option>`).join("");
             groupList.innerHTML = groups.length ? groups.map(group => `
-                <article class="admin-product-item">
+                <article class="admin-product-item admin-product-card">
                     <div class="admin-product-text"><h3>${escapeHtml(group.name)}${group.active ? "" : " (inativo)"}</h3>
-                    <p>${group.selection_type === "single" ? "Uma escolha" : "MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âºltiplas escolhas"} ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${(group.options || []).length} opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${group.required ? "ObrigatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³rio" : "Opcional"}</p></div>
+                    <p>${group.selection_type === "single" ? "Uma escolha" : "Múltiplas escolhas"} · ${(group.options || []).length} opções · ${group.required ? "Obrigatório" : "Opcional"}</p></div>
                     <button type="button" class="btn btn-ghost btn-sm" data-edit-option-group="${escapeHtml(group.id)}">Editar</button>
                 </article>`).join("") : '<p>Nenhum grupo cadastrado ainda.</p>';
             linksList.innerHTML = links.length ? links.map(link => `
-                <article class="admin-product-item">
+                <article class="admin-product-item admin-product-card">
                     <div class="admin-product-text"><strong>${escapeHtml(link.products?.name || "Produto")}</strong><p>${escapeHtml(link.option_groups?.name || "Grupo")}</p></div>
                     <button type="button" class="btn btn-ghost btn-sm" data-unlink-product="${escapeHtml(link.product_id)}" data-unlink-group="${escapeHtml(link.group_id)}">Desassociar</button>
-                </article>`).join("") : '<p>Nenhuma associaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o cadastrada.</p>';
+                </article>`).join("") : '<p>Nenhuma associação cadastrada.</p>';
         } catch (error) {
-            showToast("NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o foi possÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­vel carregar os grupos. Confira se o schema do Supabase foi aplicado: " + error.message, "error", 7000);
+            showToast("Não foi possível carregar os grupos. Confira se o esquema do Supabase foi aplicado: " + error.message, "error", 7000);
         }
     }
 
@@ -635,14 +666,28 @@ async function initAdminOptionGroupsPage() {
         byId("optionGroupRequired").checked = group.required;
         byId("optionGroupActive").checked = group.active;
         byId("optionGroupChoices").value = JSON.stringify(group.options || [], null, 2);
+        byId("optionGroupFormTitle").textContent = "Editar grupo de opções";
+        groupFormCard.hidden = false;
+        groupFormCard.scrollIntoView({ behavior: "smooth", block: "center" });
         byId("optionGroupName").focus();
+    });
+
+    byId("newOptionGroupButton")?.addEventListener("click", () => {
+        resetGroupForm();
+        groupFormCard.hidden = false;
+        groupFormCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        byId("optionGroupName").focus();
+    });
+    byId("cancelOptionGroupEdit")?.addEventListener("click", () => {
+        resetGroupForm();
+        groupFormCard.hidden = true;
     });
 
     groupForm.addEventListener("submit", async event => {
         event.preventDefault();
         try {
             const options = JSON.parse(byId("optionGroupChoices").value);
-            if (!Array.isArray(options)) throw new Error("As opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes precisam estar em uma lista JSON.");
+            if (!Array.isArray(options)) throw new Error("As opções precisam estar em uma lista JSON.");
             await adminUpsertOptionGroup({
                 id: byId("optionGroupId").value || null,
                 name: byId("optionGroupName").value,
@@ -653,10 +698,9 @@ async function initAdminOptionGroupsPage() {
                 active: byId("optionGroupActive").checked,
                 options
             });
-            groupForm.reset();
-            byId("optionGroupId").value = "";
-            byId("optionGroupChoices").value = "";
-            showToast("Grupo de opÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes salvo.", "success");
+            resetGroupForm();
+            groupFormCard.hidden = true;
+            showToast("Grupo de opções salvo.", "success");
             await reload();
         } catch (error) {
             showToast("Confira o grupo: " + error.message, "warning", 6000);

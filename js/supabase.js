@@ -272,7 +272,10 @@ async function adminUpsertProduct(product) {
 }
 
 async function adminDeleteProduct(id) {
-    return adminSetProductActive(id, false);
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    const { error } = await sb.from("products").delete().eq("id", id);
+    if (error) throw new Error(error.message);
 }
 
 async function adminFetchAllCategories() {
