@@ -366,6 +366,31 @@ async function adminLinkOptionGroup(productId, groupId, sortOrder = 0) {
     if (error) throw new Error(error.message);
 }
 
+async function adminLinkOptionGroupsToProducts(productIds, groupIds) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    if (!Array.isArray(productIds) || !Array.isArray(groupIds) || !productIds.length || !groupIds.length ||
+        [...productIds, ...groupIds].some(id => !isValidUuid(id))) {
+        throw new Error("Selecione produtos e grupos válidos.");
+    }
+
+    const associations = productIds.flatMap(productId => groupIds.map((groupId, sortOrder) => ({
+        product_id: productId,
+        group_id: groupId,
+        sort_order: sortOrder
+    })));
+    let savedCount = 0;
+
+    for (let index = 0; index < associations.length; index += 100) {
+        const batch = associations.slice(index, index + 100);
+        const { error } = await sb.from("product_option_groups").upsert(batch);
+        if (error) throw new Error(`Foram salvos ${savedCount} de ${associations.length} vínculos. ${error.message}`);
+        savedCount += batch.length;
+    }
+
+    return savedCount;
+}
+
 async function adminFetchProductOptionLinks() {
     const sb = getSupabase();
     if (!sb) return [];
@@ -420,6 +445,6 @@ Object.assign(window, {
     fetchStoreSettings,
     adminFetchAllOrders, adminFetchAllProducts, adminUpsertProduct, adminDeleteProduct, adminSetProductActive,
     adminFetchAllCategories, adminUpsertCategory, adminDeleteCategory,
-    adminFetchAllProfiles, adminFetchAllOptionGroups, adminUpsertOptionGroup, adminLinkOptionGroup, adminFetchProductOptionLinks, adminUnlinkOptionGroup, adminUpdateStoreSettings,
+    adminFetchAllProfiles, adminFetchAllOptionGroups, adminUpsertOptionGroup, adminLinkOptionGroup, adminLinkOptionGroupsToProducts, adminFetchProductOptionLinks, adminUnlinkOptionGroup, adminUpdateStoreSettings,
     uploadImage,
 });

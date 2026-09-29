@@ -482,6 +482,7 @@ async function initAdminProductsPage() {
     const list = document.getElementById("adminProductsList");
     if (!form || !list) return;
     const byId = id => document.getElementById(id);
+    const dialog = byId("adminProductDialog");
     const search = byId("productSearchInput");
     let products = [];
     let categories = [];
@@ -490,7 +491,7 @@ async function initAdminProductsPage() {
         form.reset();
         byId("adminProductId").value = "";
         byId("adminProductFormTitle").textContent = "Cadastrar produto";
-        form.hidden = true;
+        if (dialog.open) dialog.close();
     }
     function render() {
         const query = search?.value.trim().toLocaleLowerCase("pt-BR") || "";
@@ -582,8 +583,8 @@ async function initAdminProductsPage() {
             byId("adminProductActive").checked = product.active !== false;
             byId("adminProductFeatured").checked = Boolean(product.featured);
             byId("adminProductFormTitle").textContent = "Editar produto";
-            form.hidden = false;
-            form.scrollIntoView({ behavior: "smooth", block: "center" });
+            dialog.showModal();
+            byId("adminProductName").focus();
         } else if (toggleButton) {
             try {
                 const active = toggleButton.dataset.active !== "true";
@@ -595,10 +596,10 @@ async function initAdminProductsPage() {
     });
     search?.addEventListener("input", render);
     byId("cancelProductEdit")?.addEventListener("click", resetForm);
+    byId("closeProductDialog")?.addEventListener("click", resetForm);
     byId("newProductButton")?.addEventListener("click", () => {
         resetForm();
-        form.hidden = false;
-        form.scrollIntoView({ behavior: "smooth", block: "center" });
+        dialog.showModal();
         byId("adminProductName").focus();
     });
     await reload();
@@ -615,17 +616,90 @@ async function initAdminOptionGroupsPage() {
     const byId = id => document.getElementById(id);
     const groupList = byId("optionGroupsList");
     const linksList = byId("productOptionLinksList");
-    const productSelect = byId("optionProductSelect");
-    const groupSelect = byId("optionGroupSelect");
+    const associationProductList = byId("optionProductsForGroups");
+    const selectAllProducts = byId("selectAllOptionProducts");
+    const productSelectionCount = byId("optionProductSelectionCount");
+    const associationGroupList = byId("optionGroupsForProduct");
+    const selectAllGroups = byId("selectAllOptionGroups");
+    const selectionCount = byId("optionGroupSelectionCount");
     const groupFormCard = byId("optionGroupFormCard");
+    const choicesList = byId("optionGroupChoicesList");
     let groups = [];
     let products = [];
     let links = [];
+
+    function readOptionChoices() {
+        return Array.from(choicesList.querySelectorAll(".admin-option-choice-row"), row => ({
+            name: row.querySelector("[data-choice-name]").value.trim(),
+            price_delta: Number(row.querySelector("[data-choice-price]").value)
+        }));
+    }
+
+    function renderOptionChoices(options = [{}]) {
+        const choices = options.length ? options : [{}];
+        choicesList.innerHTML = choices.map((option, index) => {
+            const price = Number(option.price_delta ?? 0);
+            return `
+                <div class="admin-option-choice-row">
+                    <div>
+                        <label class="form-label" for="optionChoiceName${index}">Nome da opção</label>
+                        <input id="optionChoiceName${index}" class="form-input" data-choice-name required maxlength="80" value="${escapeHtml(option.name || "")}" placeholder="Ex.: Granola">
+                    </div>
+                    <div>
+                        <label class="form-label" for="optionChoicePrice${index}">Adicional (R$)</label>
+                        <input id="optionChoicePrice${index}" class="form-input" data-choice-price type="number" min="0" step="0.01" required value="${Number.isFinite(price) ? price : 0}">
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm admin-option-choice-remove" data-remove-option-choice aria-label="Remover opção ${index + 1}">Remover</button>
+                </div>`;
+        }).join("");
+    }
 
     function resetGroupForm() {
         groupForm.reset();
         byId("optionGroupId").value = "";
         byId("optionGroupFormTitle").textContent = "Novo grupo de opções";
+        renderOptionChoices();
+    }
+
+    function updateGroupSelectionCount() {
+        const checkboxes = Array.from(associationGroupList.querySelectorAll("[data-association-group]"));
+        const selectedCount = checkboxes.filter(checkbox => checkbox.checked).length;
+        selectAllGroups.checked = checkboxes.length > 0 && selectedCount === checkboxes.length;
+        selectAllGroups.indeterminate = selectedCount > 0 && selectedCount < checkboxes.length;
+        selectionCount.textContent = `${selectedCount} ${selectedCount === 1 ? "grupo selecionado" : "grupos selecionados"}`;
+    }
+
+    function updateProductSelectionCount() {
+        const checkboxes = Array.from(associationProductList.querySelectorAll("[data-association-product]"));
+        const selectedCount = checkboxes.filter(checkbox => checkbox.checked).length;
+        selectAllProducts.checked = checkboxes.length > 0 && selectedCount === checkboxes.length;
+        selectAllProducts.indeterminate = selectedCount > 0 && selectedCount < checkboxes.length;
+        productSelectionCount.textContent = `${selectedCount} ${selectedCount === 1 ? "produto selecionado" : "produtos selecionados"}`;
+    }
+
+    function renderAssociationProducts() {
+        associationProductList.innerHTML = products.length ? products.map(product => `
+            <label class="admin-association-group-option">
+                <input type="checkbox" data-association-product value="${escapeHtml(product.id)}">
+                <span>${escapeHtml(product.name)}${product.active === false ? " (inativo)" : ""}</span>
+            </label>`).join("") : '<p class="admin-association-empty">Nenhum produto cadastrado.</p>';
+        selectAllProducts.checked = false;
+        selectAllProducts.indeterminate = false;
+        selectAllProducts.disabled = !products.length;
+        updateProductSelectionCount();
+    }
+
+    function renderAssociationGroups() {
+        const activeGroups = groups.filter(group => group.active);
+        associationGroupList.innerHTML = activeGroups.length ? activeGroups.map(group => `
+            <label class="admin-association-group-option">
+                <input type="checkbox" data-association-group value="${escapeHtml(group.id)}">
+                <span>${escapeHtml(group.name)}</span>
+            </label>`).join("") : '<p class="admin-association-empty">Nenhum grupo ativo disponível.</p>';
+        selectAllGroups.checked = false;
+        selectAllGroups.indeterminate = false;
+        selectAllGroups.disabled = !activeGroups.length;
+        updateGroupSelectionCount();
     }
 
     async function reload() {
@@ -633,10 +707,8 @@ async function initAdminOptionGroupsPage() {
             [groups, products, links] = await Promise.all([
                 adminFetchAllOptionGroups(), adminFetchAllProducts(), adminFetchProductOptionLinks()
             ]);
-            productSelect.innerHTML = '<option value="">Escolha um produto</option>' + products.map(product =>
-                `<option value="${escapeHtml(product.id)}">${escapeHtml(product.name)}${product.active === false ? " (inativo)" : ""}</option>`).join("");
-            groupSelect.innerHTML = '<option value="">Escolha um grupo ativo</option>' + groups.filter(group => group.active)
-                .map(group => `<option value="${escapeHtml(group.id)}">${escapeHtml(group.name)}</option>`).join("");
+            renderAssociationProducts();
+            renderAssociationGroups();
             groupList.innerHTML = groups.length ? groups.map(group => `
                 <article class="admin-product-item admin-product-card">
                     <div class="admin-product-text"><h3>${escapeHtml(group.name)}${group.active ? "" : " (inativo)"}</h3>
@@ -665,29 +737,64 @@ async function initAdminOptionGroupsPage() {
         byId("optionGroupMax").value = group.max_selection;
         byId("optionGroupRequired").checked = group.required;
         byId("optionGroupActive").checked = group.active;
-        byId("optionGroupChoices").value = JSON.stringify(group.options || [], null, 2);
+        renderOptionChoices(group.options || []);
         byId("optionGroupFormTitle").textContent = "Editar grupo de opções";
-        groupFormCard.hidden = false;
-        groupFormCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        groupFormCard.showModal();
         byId("optionGroupName").focus();
+    });
+
+    byId("addOptionChoiceButton")?.addEventListener("click", () => {
+        const options = readOptionChoices();
+        options.push({ name: "", price_delta: 0 });
+        renderOptionChoices(options);
+        choicesList.lastElementChild?.querySelector("[data-choice-name]").focus();
+    });
+
+    choicesList.addEventListener("click", event => {
+        if (!event.target.closest("[data-remove-option-choice]")) return;
+        const row = event.target.closest(".admin-option-choice-row");
+        row?.remove();
+        if (!choicesList.children.length) renderOptionChoices();
     });
 
     byId("newOptionGroupButton")?.addEventListener("click", () => {
         resetGroupForm();
-        groupFormCard.hidden = false;
-        groupFormCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        groupFormCard.showModal();
         byId("optionGroupName").focus();
     });
     byId("cancelOptionGroupEdit")?.addEventListener("click", () => {
         resetGroupForm();
-        groupFormCard.hidden = true;
+        groupFormCard.close();
     });
+    byId("closeOptionGroupDialog")?.addEventListener("click", () => {
+        resetGroupForm();
+        groupFormCard.close();
+    });
+
+    selectAllGroups.addEventListener("change", () => {
+        associationGroupList.querySelectorAll("[data-association-group]").forEach(checkbox => {
+            checkbox.checked = selectAllGroups.checked;
+        });
+        updateGroupSelectionCount();
+    });
+
+    associationGroupList.addEventListener("change", updateGroupSelectionCount);
+    selectAllProducts.addEventListener("change", () => {
+        associationProductList.querySelectorAll("[data-association-product]").forEach(checkbox => {
+            checkbox.checked = selectAllProducts.checked;
+        });
+        updateProductSelectionCount();
+    });
+
+    associationProductList.addEventListener("change", updateProductSelectionCount);
 
     groupForm.addEventListener("submit", async event => {
         event.preventDefault();
         try {
-            const options = JSON.parse(byId("optionGroupChoices").value);
-            if (!Array.isArray(options)) throw new Error("As opções precisam estar em uma lista JSON.");
+            const options = readOptionChoices();
+            if (!options.length || options.some(option => !option.name || !Number.isFinite(option.price_delta) || option.price_delta < 0)) {
+                throw new Error("Adicione pelo menos uma opção com nome e valor válido.");
+            }
             await adminUpsertOptionGroup({
                 id: byId("optionGroupId").value || null,
                 name: byId("optionGroupName").value,
@@ -699,7 +806,7 @@ async function initAdminOptionGroupsPage() {
                 options
             });
             resetGroupForm();
-            groupFormCard.hidden = true;
+            groupFormCard.close();
             showToast("Grupo de opções salvo.", "success");
             await reload();
         } catch (error) {
@@ -710,10 +817,14 @@ async function initAdminOptionGroupsPage() {
     productForm.addEventListener("submit", async event => {
         event.preventDefault();
         try {
-            await adminLinkOptionGroup(productSelect.value, groupSelect.value);
-            showToast("Grupo associado ao produto.", "success");
+            const selectedProductIds = Array.from(associationProductList.querySelectorAll("[data-association-product]:checked"), checkbox => checkbox.value);
+            const selectedGroupIds = Array.from(associationGroupList.querySelectorAll("[data-association-group]:checked"), checkbox => checkbox.value);
+            if (!selectedProductIds.length) throw new Error("Selecione pelo menos um produto.");
+            if (!selectedGroupIds.length) throw new Error("Selecione pelo menos um grupo para associar.");
+            const successCount = await adminLinkOptionGroupsToProducts(selectedProductIds, selectedGroupIds);
             await reload();
-        } catch (error) { showToast(error.message, "warning"); }
+            showToast(`${successCount} vínculos associados a ${selectedProductIds.length} produto(s).`, "success");
+        } catch (error) { showToast(error.message, "warning", 7000); }
     });
 
     linksList.addEventListener("click", async event => {
