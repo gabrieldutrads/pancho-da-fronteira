@@ -75,13 +75,23 @@
                     </section>
                     <section class="admin-panel settings-card" aria-labelledby="deliverySettingsTitle">
                         <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">02</span><div><h2 id="deliverySettingsTitle">Entrega por bairro</h2><p>Defina a taxa e os nomes aceitos para cada localidade.</p></div></div>
-                        <div class="settings-card-body"><div class="settings-notice"><strong>Como editar</strong><span>Tipos: <b>FREE</b> (gr&#225;tis), <b>FIXED</b> (valor fixo) ou <b>CONSULT</b> (confirmar com o cliente). Separe aliases por v&#237;rgula.</span></div>
-                            <div class="form-group"><label class="form-label" for="deliveryZonesConfig">Zonas e taxas (JSON)</label><textarea id="deliveryZonesConfig" class="form-textarea settings-code" rows="13" spellcheck="false" autocapitalize="off" required></textarea></div></div>
+                        <div class="settings-card-body">
+                            <p class="settings-section-hint">Cadastre os bairros atendidos, os nomes alternativos e a taxa de entrega.</p>
+                            <div id="deliveryZonesList" class="settings-editor-list"></div>
+                            <button type="button" id="addDeliveryZoneButton" class="btn btn-ghost settings-add-button">Adicionar bairro</button>
+                        </div>
                     </section>
                     <section class="admin-panel settings-card" aria-labelledby="hoursSettingsTitle">
                         <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">03</span><div><h2 id="hoursSettingsTitle">Hor&#225;rios e exce&#231;&#245;es</h2><p>Configure os dias e hor&#225;rios em que a loja aceita pedidos.</p></div></div>
-                        <div class="settings-card-body"><div class="settings-notice settings-notice-warning"><strong>Dias com regra especial</strong><span>Domingo, ter&#231;a-feira e o primeiro s&#225;bado do m&#234;s ficam fechados automaticamente. Segunda permanece indefinida at&#233; ser configurada.</span></div>
-                            <div class="form-group"><label class="form-label" for="openingHoursConfig">Funcionamento e exce&#231;&#245;es (JSON)</label><textarea id="openingHoursConfig" class="form-textarea settings-code" rows="13" spellcheck="false" autocapitalize="off" required></textarea><small>Exce&#231;&#245;es por data usam AAAA-MM-DD.</small></div></div>
+                        <div class="settings-card-body">
+                            <div class="settings-notice settings-notice-warning"><strong>Dias com regra especial</strong><span>Domingo, ter&#231;a-feira e o primeiro s&#225;bado do m&#234;s ficam fechados automaticamente. Segunda permanece indefinida at&#233; ser configurada.</span></div>
+                            <p class="settings-section-hint">Escolha se a loja abre em cada dia e informe os hor&#225;rios.</p>
+                            <div id="openingHoursList" class="settings-hours-list"></div>
+                            <div class="settings-exceptions-section">
+                                <div class="settings-editor-heading"><div><h3>Datas especiais</h3><p>Adicione datas em que a loja ficar&#225; fechada.</p></div><button type="button" id="addOpeningExceptionButton" class="btn btn-ghost settings-add-button">Adicionar data</button></div>
+                                <div id="openingExceptionsList" class="settings-editor-list"></div>
+                            </div>
+                        </div>
                     </section>
                     <div class="settings-savebar"><p>Confira os dados antes de salvar para manter pedidos e entregas corretos.</p><button type="submit" class="btn btn-primary settings-save-button">Salvar configura&#231;&#245;es</button></div>
                 </form>

@@ -379,10 +379,110 @@ async function initAdminSettingsPage() {
     if (!form) return;
 
     const byId = id => document.getElementById(id);
-    const zonesInput = byId("deliveryZonesConfig");
-    const hoursInput = byId("openingHoursConfig");
+    const zonesList = byId("deliveryZonesList");
+    const hoursList = byId("openingHoursList");
+    const exceptionsList = byId("openingExceptionsList");
     const saveButton = form.querySelector('[type="submit"]');
+    const weekdays = [
+        { key: "segunda", label: "Segunda-feira" },
+        { key: "terca", label: "Terça-feira", fixedClosed: true },
+        { key: "quarta", label: "Quarta-feira" },
+        { key: "quinta", label: "Quinta-feira" },
+        { key: "sexta", label: "Sexta-feira" },
+        { key: "sabado", label: "Sábado" },
+        { key: "domingo", label: "Domingo", fixedClosed: true }
+    ];
     let operations = await loadOperationalSettings();
+
+    function updateDeliveryZoneRow(row) {
+        const feeType = row.querySelector("[data-zone-fee-type]").value;
+        const feeInput = row.querySelector("[data-zone-fee]");
+        row.querySelector("[data-zone-fee-field]").hidden = feeType !== "FIXED";
+        feeInput.disabled = feeType !== "FIXED";
+        feeInput.required = feeType === "FIXED";
+    }
+
+    function renderDeliveryZones(zones) {
+        zonesList.innerHTML = zones.map((zone, index) => `
+            <article class="settings-editor-item" data-zone-row>
+                <div class="settings-editor-item-heading"><strong>Bairro ${index + 1}</strong><button type="button" class="btn btn-ghost btn-sm" data-remove-zone>Remover</button></div>
+                <div class="settings-zone-fields">
+                    <div class="form-group"><label class="form-label" for="zoneName${index}">Nome do bairro</label><input id="zoneName${index}" class="form-input" data-zone-name required maxlength="100" value="${escapeHtml(zone.name || "")}" placeholder="Ex.: Centro"></div>
+                    <div class="form-group"><label class="form-label" for="zoneAliases${index}">Outros nomes (opcional)</label><input id="zoneAliases${index}" class="form-input" data-zone-aliases value="${escapeHtml((zone.aliases || []).join(", "))}" placeholder="Ex.: Centro, Centro da cidade"></div>
+                    <div class="form-group"><label class="form-label" for="zoneFeeType${index}">Taxa de entrega</label><select id="zoneFeeType${index}" class="form-select" data-zone-fee-type><option value="FREE"${zone.fee_type === "FREE" ? " selected" : ""}>Grátis</option><option value="FIXED"${zone.fee_type === "FIXED" ? " selected" : ""}>Valor fixo</option><option value="CONSULT"${zone.fee_type === "CONSULT" ? " selected" : ""}>Confirmar com o cliente</option></select></div>
+                    <div class="form-group" data-zone-fee-field><label class="form-label" for="zoneFee${index}">Valor (R$)</label><input id="zoneFee${index}" class="form-input" data-zone-fee type="number" min="0" step="0.01" value="${Number(zone.fee) || 0}"></div>
+                    <label class="settings-editor-toggle"><input type="checkbox" data-zone-active${zone.active !== false ? " checked" : ""}> Bairro disponível para entrega</label>
+                </div>
+            </article>`).join("");
+        zonesList.querySelectorAll("[data-zone-row]").forEach(updateDeliveryZoneRow);
+    }
+
+    function readDeliveryZones() {
+        return Array.from(zonesList.querySelectorAll("[data-zone-row]"), row => {
+            const feeType = row.querySelector("[data-zone-fee-type]").value;
+            return {
+                name: row.querySelector("[data-zone-name]").value.trim(),
+                aliases: row.querySelector("[data-zone-aliases]").value.split(",").map(alias => alias.trim()).filter(Boolean),
+                fee_type: feeType,
+                fee: feeType === "FIXED" ? Number(row.querySelector("[data-zone-fee]").value) : feeType === "FREE" ? 0 : null,
+                active: row.querySelector("[data-zone-active]").checked
+            };
+        });
+    }
+
+    function updateOpeningDay(row) {
+        if (row.dataset.fixedClosed === "true") return;
+        const open = row.querySelector("[data-day-status]").value === "open";
+        row.querySelectorAll("[data-day-time]").forEach(input => {
+            input.disabled = !open;
+            input.required = false;
+        });
+    }
+
+    function renderOpeningHours(hours) {
+        hoursList.innerHTML = weekdays.map(day => {
+            const schedule = hours[day.key] || {};
+            const status = day.key === "segunda" && schedule.configured !== true ? "unset" : schedule.active === true ? "open" : "closed";
+            return `
+                <div class="settings-hours-row" data-opening-day="${day.key}" data-fixed-closed="${Boolean(day.fixedClosed)}">
+                    <strong>${day.label}</strong>
+                    ${day.fixedClosed ? '<span class="settings-day-closed">Fechado automaticamente</span>' : `<select class="form-select" data-day-status aria-label="Funcionamento ${day.label}">${day.key === "segunda" ? `<option value="unset"${status === "unset" ? " selected" : ""}>Ainda não configurado</option>` : ""}<option value="open"${status === "open" ? " selected" : ""}>Aberto</option><option value="closed"${status === "closed" ? " selected" : ""}>Fechado</option></select>`}
+                    ${day.fixedClosed ? '<span class="settings-day-closed">Não recebe pedidos</span>' : `<label>Abre <input class="form-input" type="time" data-day-time="open" aria-label="Abre ${day.label}" value="${escapeHtml(schedule.open || "")}"></label><label>Fecha <input class="form-input" type="time" data-day-time="close" aria-label="Fecha ${day.label}" value="${escapeHtml(schedule.close || "")}"></label>`}
+                </div>`;
+        }).join("");
+        hoursList.querySelectorAll("[data-opening-day]").forEach(updateOpeningDay);
+    }
+
+    function readOpeningHours() {
+        return Object.fromEntries(weekdays.map(day => {
+            const row = hoursList.querySelector(`[data-opening-day="${day.key}"]`);
+            if (day.fixedClosed) return [day.key, { active: false, open: null, close: null }];
+            const status = row.querySelector("[data-day-status]").value;
+            if (status === "unset") return [day.key, { active: null, configured: false, open: null, close: null }];
+            return [day.key, {
+                active: status === "open",
+                ...(day.key === "segunda" ? { configured: true } : {}),
+                open: row.querySelector('[data-day-time="open"]').value || null,
+                close: row.querySelector('[data-day-time="close"]').value || null
+            }];
+        }));
+    }
+
+    function renderOpeningExceptions(exceptions) {
+        const dates = exceptions;
+        exceptionsList.innerHTML = dates.length ? dates.map((exception, index) => `
+            <div class="settings-exception-row" data-exception-row>
+                <div class="form-group"><label class="form-label" for="openingException${index}">Data em que a loja ficará fechada</label><input id="openingException${index}" class="form-input" type="date" data-exception-date required value="${escapeHtml(exception.date)}"></div>
+                <button type="button" class="btn btn-ghost btn-sm" data-remove-exception>Remover</button>
+            </div>`).join("") : '<p class="settings-empty-state">Nenhuma data especial cadastrada.</p>';
+    }
+
+    function readOpeningExceptions() {
+        return Array.from(exceptionsList.querySelectorAll("[data-exception-row]"), row => ({
+            date: row.querySelector("[data-exception-date]").value,
+            active: false
+        }));
+    }
 
     try {
         if (typeof fetchStoreSettings === "function") {
@@ -399,13 +499,48 @@ async function initAdminSettingsPage() {
         console.warn("[Settings] Using available configuration", error);
     }
 
-    if (zonesInput) zonesInput.value = JSON.stringify(operations.delivery_zones, null, 2);
-    if (hoursInput) hoursInput.value = JSON.stringify({ opening_hours: operations.opening_hours, opening_exceptions: operations.opening_exceptions }, null, 2);
+    renderDeliveryZones(operations.delivery_zones);
+    renderOpeningHours(operations.opening_hours);
+    renderOpeningExceptions(operations.opening_exceptions.filter(exception => exception?.date));
+
+    zonesList.addEventListener("change", event => {
+        if (!event.target.matches("[data-zone-fee-type]")) return;
+        updateDeliveryZoneRow(event.target.closest("[data-zone-row]"));
+    });
+    zonesList.addEventListener("click", event => {
+        if (!event.target.closest("[data-remove-zone]")) return;
+        const zones = readDeliveryZones();
+        zones.splice(Array.from(zonesList.querySelectorAll("[data-zone-row]")).indexOf(event.target.closest("[data-zone-row]")), 1);
+        renderDeliveryZones(zones);
+    });
+    byId("addDeliveryZoneButton").addEventListener("click", () => {
+        const zones = readDeliveryZones();
+        zones.push({ name: "", aliases: [], fee_type: "FREE", fee: 0, active: true });
+        renderDeliveryZones(zones);
+        zonesList.lastElementChild?.querySelector("[data-zone-name]").focus();
+    });
+
+    hoursList.addEventListener("change", event => {
+        if (!event.target.matches("[data-day-status]")) return;
+        updateOpeningDay(event.target.closest("[data-opening-day]"));
+    });
+    byId("addOpeningExceptionButton").addEventListener("click", () => {
+        const exceptions = readOpeningExceptions();
+        exceptions.push({ date: "", active: false });
+        renderOpeningExceptions(exceptions);
+        exceptionsList.lastElementChild?.querySelector("[data-exception-date]").focus();
+    });
+    exceptionsList.addEventListener("click", event => {
+        if (!event.target.closest("[data-remove-exception]")) return;
+        const exceptions = readOpeningExceptions();
+        exceptions.splice(Array.from(exceptionsList.querySelectorAll("[data-exception-row]")).indexOf(event.target.closest("[data-exception-row]")), 1);
+        renderOpeningExceptions(exceptions);
+    });
 
     form.addEventListener("submit", async event => {
         event.preventDefault();
-        if (!zonesInput || !hoursInput) {
-            if (typeof showToast === "function") showToast("Could not load delivery and opening settings.", "error");
+        if (!zonesList || !hoursList || !exceptionsList) {
+            if (typeof showToast === "function") showToast("Não foi possível carregar as configurações de entrega e horário.", "error");
             return;
         }
         if (saveButton) { saveButton.disabled = true; saveButton.setAttribute("aria-busy", "true"); }
@@ -424,9 +559,8 @@ async function initAdminSettingsPage() {
         let deliveryZones;
         let schedule;
         try {
-            deliveryZones = JSON.parse(zonesInput.value);
-            schedule = JSON.parse(hoursInput.value);
-            if (!Array.isArray(deliveryZones) || !schedule.opening_hours || !Array.isArray(schedule.opening_exceptions)) throw new Error("Zone or opening settings are incomplete.");
+            deliveryZones = readDeliveryZones();
+            schedule = { opening_hours: readOpeningHours(), opening_exceptions: readOpeningExceptions() };
             if (!deliveryZones.length) throw new Error("Cadastre ao menos uma zona de entrega.");
             const names = new Set();
             const invalidZone = deliveryZones.find(zone => {
@@ -435,19 +569,23 @@ async function initAdminSettingsPage() {
                 if (names.has(key)) return true;
                 names.add(key);
                 if (zone.fee_type === "FIXED" && (!Number.isFinite(Number(zone.fee)) || Number(zone.fee) < 0)) return true;
-                return zone.aliases !== undefined && !Array.isArray(zone.aliases);
+                return !Array.isArray(zone.aliases) || zone.aliases.some(alias => typeof alias !== "string");
             });
-            if (invalidZone) throw new Error("Confira nome, tipo, taxa e aliases das zonas. Os nomes precisam ser diferentes.");
-            const requiredDays = ["segunda", "quarta", "quinta", "sexta", "sabado"];
-            if (requiredDays.some(day => !schedule.opening_hours[day])) throw new Error("Some required weekdays are missing from the schedule.");
+            if (invalidZone) throw new Error("Confira os nomes, tipos de taxa e valores. Não repita nomes de bairros.");
+            if (weekdays.some(day => !schedule.opening_hours[day.key])) throw new Error("Confira os horários de todos os dias.");
             for (const [day, hours] of Object.entries(schedule.opening_hours)) {
-                if (hours?.active === true && ((hours.open && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.open)) || (hours.close && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.close)))) throw new Error(`Invalid opening time for ${day}. Use HH:MM.`);
+                if (hours?.active === true && ((hours.open && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.open)) || (hours.close && !/^([01]\d|2[0-3]):[0-5]\d$/.test(hours.close)))) {
+                    throw new Error(`Informe horários válidos para ${day}.`);
+                }
             }
+            const exceptionDates = new Set();
             for (const exception of schedule.opening_exceptions) {
-                if (!exception || (exception.date && !/^\d{4}-\d{2}-\d{2}$/.test(exception.date))) throw new Error("Exception dates must use YYYY-MM-DD.");
+                if (!exception.date || !/^\d{4}-\d{2}-\d{2}$/.test(exception.date)) throw new Error("Informe uma data válida para cada exceção.");
+                if (exceptionDates.has(exception.date)) throw new Error("Não repita a mesma data nas exceções.");
+                exceptionDates.add(exception.date);
             }
         } catch (error) {
-            if (typeof showToast === "function") showToast("Review settings: " + error.message, "warning", 6000);
+            if (typeof showToast === "function") showToast(error.message, "warning", 6000);
             if (saveButton) { saveButton.disabled = false; saveButton.removeAttribute("aria-busy"); }
             return;
         }
