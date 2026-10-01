@@ -20,6 +20,11 @@ function readCart() {
                 price: Number(item.price),
                 image: typeof item.image === "string" ? item.image : null,
                 notes: String(item.notes || "").slice(0, 500),
+                selectedOptions: Array.isArray(item.selectedOptions) ? item.selectedOptions.slice(0, 40).map(option => ({
+                    group: String(option.group || "").slice(0, 80),
+                    name: String(option.name || "").slice(0, 80),
+                    price_delta: Math.max(0, Number(option.price_delta) || 0),
+                })) : [],
                 quantity: Number(item.quantity),
             }))
             .filter((item) => Number.isFinite(item.price) && item.price >= 0
@@ -38,7 +43,7 @@ function writeCart(cart) {
 /* ----------------------------------------------------------
    ADICIONAR AO CARRINHO
 ---------------------------------------------------------- */
-function addToCart({ id, name, price, image, notes = "", quantity = 1 }) {
+function addToCart({ id, name, price, image, notes = "", quantity = 1, selectedOptions = [] }) {
     price = Number(price);
     quantity = Number(quantity);
     if (!name || !Number.isFinite(price) || price < 0 || !Number.isInteger(quantity) || quantity < 1) {
@@ -48,13 +53,18 @@ function addToCart({ id, name, price, image, notes = "", quantity = 1 }) {
     notes = String(notes || "").slice(0, 500);
     const cart = readCart();
     // Chave única = id do produto (se houver) + notes (para mesma observação)
-    const key = id ? `${id}::${notes}` : `${name}::${notes}`;
-    const existing = cart.find(i => (i.id ? `${i.id}::${i.notes}` : `${i.name}::${i.notes}`) === key);
+    const normalizedOptions = Array.isArray(selectedOptions) ? selectedOptions.map(option => ({
+        group: String(option.group || "").slice(0, 80), name: String(option.name || "").slice(0, 80),
+        price_delta: Math.max(0, Number(option.price_delta) || 0),
+    })) : [];
+    const optionKey = JSON.stringify(normalizedOptions);
+    const key = `${id || name}::${notes}::${optionKey}`;
+    const existing = cart.find(i => `${i.id || i.name}::${i.notes}::${JSON.stringify(i.selectedOptions || [])}` === key);
 
     if (existing) {
         existing.quantity += quantity;
     } else {
-        cart.push({ id: id || null, name, price: Number(price), image: image || null, notes, quantity });
+        cart.push({ id: id || null, name, price: Number(price), image: image || null, notes, selectedOptions: normalizedOptions, quantity });
     }
     writeCart(cart);
     return cart;

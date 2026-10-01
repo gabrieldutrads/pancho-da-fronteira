@@ -108,6 +108,48 @@ function showConfirm({ title = "Confirmar ação", message, confirmText = "Confi
 
 window.showConfirm = showConfirm;
 
+function requestCancelReason(orderNumber) {
+    return new Promise((resolve) => {
+        document.getElementById("cancelReasonModal")?.remove();
+        const overlay = document.createElement("div");
+        overlay.id = "cancelReasonModal";
+        overlay.className = "modal-overlay";
+        overlay.innerHTML = `
+            <form class="modal-box cancel-reason-modal" role="dialog" aria-modal="true" aria-labelledby="cancelReasonTitle">
+                <h3 id="cancelReasonTitle">Cancelar pedido ${escapeHtml(orderNumber)}</h3>
+                <p>Informe o motivo do cancelamento. Essa informação ficará registrada no pedido.</p>
+                <label class="cancel-reason-label" for="cancelReasonInput">Motivo do cancelamento</label>
+                <textarea id="cancelReasonInput" class="form-input" rows="4" maxlength="500" required placeholder="Ex.: cliente solicitou o cancelamento"></textarea>
+                <small class="cancel-reason-error" aria-live="polite"></small>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelReasonBack">Voltar</button>
+                    <button type="submit" class="btn btn-danger" id="cancelReasonSubmit">Cancelar pedido</button>
+                </div>
+            </form>`;
+        document.body.appendChild(overlay);
+        const input = overlay.querySelector("#cancelReasonInput");
+        const close = (reason) => {
+            overlay.remove();
+            resolve(reason);
+        };
+        overlay.querySelector("#cancelReasonBack").addEventListener("click", () => close(null));
+        overlay.addEventListener("click", (event) => { if (event.target === overlay) close(null); });
+        overlay.querySelector("form").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const reason = input.value.trim();
+            if (!reason) {
+                overlay.querySelector(".cancel-reason-error").textContent = "Digite o motivo para continuar.";
+                input.focus();
+                return;
+            }
+            close(reason);
+        });
+        input.focus();
+    });
+}
+
+window.requestCancelReason = requestCancelReason;
+
 /* ----------------------------------------------------------
    LOADING STATE (spinner global)
 ---------------------------------------------------------- */

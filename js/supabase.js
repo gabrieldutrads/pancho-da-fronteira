@@ -85,48 +85,24 @@ async function fetchProductById(id) {
    ORDERS
 ---------------------------------------------------------- */
 async function createOrder({ userId, customerName, customerPhone, deliveryType,
-    addressId, addressSnapshot, paymentMethod, subtotal, deliveryFee, deliveryFeeStatus, total, notes, items }) {
+    addressId, addressSnapshot, paymentMethod, subtotal, deliveryFee, deliveryFeeStatus, total, notes, items, whatsappOptIn = false }) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
 
-    // Criar pedido
-    const { data: order, error: orderError } = await sb
-        .from("orders")
-        .insert({
-            user_id: normalizeUuidOrNull(userId),
-            customer_name: customerName,
-            customer_phone: customerPhone,
-            delivery_type: deliveryType,
-            address_id: normalizeUuidOrNull(addressId),
-            address_snapshot: addressSnapshot || null,
-            payment_method: paymentMethod,
-            subtotal,
-            delivery_fee: deliveryFee,
-            delivery_fee_status: deliveryFeeStatus || "confirmed",
-            total,
-            notes: notes || null,
-            status: "recebido",
-        })
-        .select()
-        .single();
-
-    if (orderError) throw new Error(orderError.message);
-
-    // Inserir itens
-    const orderItems = items.map(item => ({
-        order_id:     order.id,
-        product_id:   normalizeUuidOrNull(item?.id),
-        product_name: item.name,
-        quantity:     item.quantity,
-        unit_price:   item.price,
-        subtotal:     item.price * item.quantity,
-        notes:        item.notes || null,
+    const orderData = {
+        user_id: normalizeUuidOrNull(userId), customer_name: customerName, customer_phone: customerPhone,
+        delivery_type: deliveryType, address_snapshot: addressSnapshot || null, payment_method: paymentMethod,
+        subtotal, delivery_fee: deliveryFee, delivery_fee_status: deliveryFeeStatus || "confirmed",
+        total, notes: notes || null, whatsapp_opt_in: Boolean(whatsappOptIn),
+    };
+    const orderItems = (items || []).map(item => ({
+        product_id: normalizeUuidOrNull(item?.id), product_name: item.name,
+        quantity: Number(item.quantity), unit_price: Math.max(0, Number(item.base_price ?? item.price) || 0), notes: item.notes || null,
+        selected_options: Array.isArray(item.selectedOptions) ? item.selectedOptions : [],
     }));
-
-    const { error: itemsError } = await sb.from("order_items").insert(orderItems);
-    if (itemsError) throw new Error(itemsError.message);
-
-    return order;
+    const { data, error } = await sb.rpc("create_order_with_items", { p_order: orderData, p_items: orderItems });
+    if (error) throw new Error(error.message);
+    return data;
 }
 
 async function fetchOrdersByUser(userId) {
@@ -153,14 +129,52 @@ async function fetchOrderById(orderId) {
     return data;
 }
 
-async function updateOrderStatus(orderId, status) {
+async function updateOrderStatus(orderId, status, notes = null) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
-    const { error } = await sb
-        .from("orders")
-        .update({ status })
-        .eq("id", orderId);
+    const { error } = await sb.rpc("admin_update_order_status", {
+        p_order_id: orderId,
+        p_status: status,
+        p_notes: notes,
+    });
     if (error) throw new Error(error.message);
+    const notification = await adminSendOrderNotification(orderId);
+    return notification || { status: "pending", sent: false };
+}
+
+async function adminSendOrderNotification(orderId) {
+    const sb = getSupabase();
+    if (!sb) return { status: "not_configured", sent: false };
+    const { data: queued, error: queueError } = await sb.rpc("admin_retry_order_notification", { p_order_id: orderId });
+    if (queueError) return { status: "pending", sent: false, reason: queueError.message };
+    if (!queued || !["pending", "failed"].includes(queued.status)) return queued;
+    const { data: notification, error: notificationError } = await sb.functions.invoke("send-order-notification", { body: { orderId } });
+    if (notificationError) return { status: "pending", sent: false, reason: notificationError.message };
+    return notification || { status: "pending", sent: false };
+}
+
+async function fetchUserNotifications(userId, limit = 30) {
+    const sb = getSupabase();
+    if (!sb || !isValidUuid(userId)) return [];
+    const { data, error } = await sb.from("notifications").select("id,order_id,event_type,title,message,read_at,created_at")
+        .eq("user_id", userId).order("created_at", { ascending: false }).limit(limit);
+    if (error) throw new Error(error.message);
+    return data || [];
+}
+
+async function markNotificationRead(notificationId) {
+    const sb = getSupabase();
+    if (!sb) throw new Error("Supabase não configurado.");
+    const { error } = await sb.from("notifications").update({ read_at: new Date().toISOString() }).eq("id", notificationId);
+    if (error) throw new Error(error.message);
+}
+
+async function getGuestOrderTracking(token) {
+    const sb = getSupabase();
+    if (!sb || !isValidUuid(token)) return null;
+    const { data, error } = await sb.rpc("get_guest_order_tracking", { p_token: token });
+    if (error) throw new Error(error.message);
+    return Array.isArray(data) ? data[0] || null : data;
 }
 
 async function fetchProductOptionGroups(productId) {
@@ -180,10 +194,7 @@ async function adminConfirmOrderDeliveryFee(orderId, fee) {
     fee = Number(fee);
     if (!sb) throw new Error("Supabase não configurado.");
     if (!Number.isFinite(fee) || fee < 0) throw new Error("Informe uma taxa válida.");
-    const { data: order, error: readError } = await sb.from("orders").select("subtotal, delivery_fee_status").eq("id", orderId).single();
-    if (readError) throw new Error(readError.message);
-    if (!order || order.delivery_fee_status !== "pending") throw new Error("Este pedido não está aguardando confirmação da taxa.");
-    const { data, error } = await sb.from("orders").update({ delivery_fee: fee, delivery_fee_status: "confirmed", total: Number(order.subtotal) + fee }).eq("id", orderId).select().single();
+    const { data, error } = await sb.rpc("admin_confirm_order_delivery_fee", { p_order_id: orderId, p_fee: fee });
     if (error) throw new Error(error.message);
     return data;
 }
@@ -311,10 +322,7 @@ async function adminDeleteCategory(id) {
 async function adminFetchAllProfiles() {
     const sb = getSupabase();
     if (!sb) return [];
-    const { data, error } = await sb
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+    const { data, error } = await sb.rpc("admin_list_profiles");
     if (error) return [];
     return data || [];
 }
@@ -441,6 +449,7 @@ async function uploadImage(bucket, path, file) {
 Object.assign(window, {
     fetchCategories, fetchProducts, fetchProductById, fetchProductOptionGroups,
     createOrder, fetchOrdersByUser, fetchOrderById, updateOrderStatus, adminConfirmOrderDeliveryFee,
+    fetchUserNotifications, markNotificationRead, getGuestOrderTracking, adminSendOrderNotification,
     fetchAddressesByUser, saveAddress,
     fetchStoreSettings,
     adminFetchAllOrders, adminFetchAllProducts, adminUpsertProduct, adminDeleteProduct, adminSetProductActive,

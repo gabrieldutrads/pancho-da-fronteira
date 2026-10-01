@@ -237,6 +237,33 @@ async function initProductDetailPage() {
 
     // Atualizar títulos e SEO
     document.title = `${product.name} | Pancho da Fronteira`;
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+        canonical.href = `${window.location.origin}/produto.html?id=${encodeURIComponent(product.id || productId)}`;
+    }
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.content = `${product.name}: ${product.description || "Conheça este item do cardápio"} Peça online no Pancho da Fronteira.`;
+    let productSchema = document.getElementById("productStructuredData");
+    if (!productSchema) {
+        productSchema = document.createElement("script");
+        productSchema.id = "productStructuredData";
+        productSchema.type = "application/ld+json";
+        document.head.appendChild(productSchema);
+    }
+    productSchema.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.name,
+        description: product.description || undefined,
+        image: product.image_url || undefined,
+        category: product.categories?.name || product.category_name || undefined,
+        offers: {
+            "@type": "Offer",
+            priceCurrency: "BRL",
+            price: Number(product.price).toFixed(2),
+            availability: product.active === false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+        },
+    });
     const nameEls = document.querySelectorAll(".product-detail-name");
     nameEls.forEach(el => el.textContent = product.name);
 
@@ -257,7 +284,7 @@ async function initProductDetailPage() {
             const choices = (Array.isArray(group.options) ? group.options : []).filter(option => option.active !== false);
             const inputType = group.selection_type === "single" ? "radio" : "checkbox";
             if (!choices.length) return "";
-            return `<fieldset class="product-option-group" data-min="${Number(group.min_selection) || (group.required ? 1 : 0)}" data-max="${Number(group.max_selection) || choices.length}">
+            return `<fieldset class="product-option-group" data-group-name="${escapeHtml(group.name)}" data-min="${Number(group.min_selection) || (group.required ? 1 : 0)}" data-max="${Number(group.max_selection) || choices.length}">
                 <legend class="option-label">${escapeHtml(group.name)}${group.required ? " (obrigatório)" : " (opcional)"}</legend>
                 <div class="option-chips">${choices.map((option, choiceIndex) => `
                     <label class="chip option-choice"><input type="${inputType}" name="option-${groupIndex}" value="${choiceIndex}" data-option-name="${escapeHtml(option.name)}" data-price="${Math.max(0, Number(option.price_delta) || 0)}">
@@ -325,6 +352,11 @@ async function initProductDetailPage() {
                 return `${groupName}: ${input.dataset.optionName}${extra ? ` (+${window.formatPrice(extra)})` : ""}`;
             });
             const fullNotes = [notes, optionNotes.join("; ")].filter(Boolean).join(" | ");
+            const selectedOptions = selected.map(input => ({
+                group: input.closest(".product-option-group")?.dataset.groupName || "Opção",
+                name: input.dataset.optionName,
+                price_delta: Number(input.dataset.price || 0),
+            }));
 
             if (typeof addToCart === "function") {
                 addToCart({
@@ -333,6 +365,7 @@ async function initProductDetailPage() {
                     price: Number(product.price) + extrasPrice,
                     image: product.image_url,
                     notes: fullNotes,
+                    selectedOptions,
                     quantity: qty
                 });
                 if (typeof showToast === "function") {

@@ -1,0 +1,12 @@
+# Pancho da Fronteira
+
+> Restaurante familiar com cardápio digital e pedidos online.
+
+## Páginas públicas
+- [Página inicial](https://SEU-DOMINIO-PUBLICO/): apresentação da marca, proposta, destaques e localização.
+- [Cardápio](https://SEU-DOMINIO-PUBLICO/cardapio.html): categorias e produtos disponíveis para pedido.
+
+## Orientações
+- Consulte o cardápio para obter produtos e disponibilidade atualizados.
+- Os valores, taxas de entrega e horários podem mudar; confirme as informações no próprio site.
+- Páginas de conta, checkout e administração são privadas ou transacionais e não são fontes públicas de conteúdo.

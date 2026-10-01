@@ -1,4 +1,4 @@
-# 🌭 Pancho da Fronteira — Sistema de Pedidos Online
+﻿# 🌭 Pancho da Fronteira — Sistema de Pedidos Online
 
 Sistema completo de cardápio digital, pedidos online e painel administrativo sob medida para a empresa familiar **Pancho da Fronteira**.
 
@@ -156,3 +156,14 @@ Como o projeto é 100% estático integrado diretamente à nuvem do Supabase, voc
 - A tela Admin > Configurações permite editar zonas e horários como JSON. Execute `supabase/schema.sql` no projeto Supabase para criar as novas colunas e permitir pedidos com taxa pendente.
 - Em Admin > Produtos, cadastre categorias e produtos sem restrição ao tipo de comida. Grupos de opções reutilizáveis permitem definir escolhas, limites e preços adicionais e associá-los a vários produtos. O checkout mostra essas opções e inclui os adicionais no preço e na cópia do pedido.
 - O horário exato de atendimento não foi fornecido; os valores permanecem configuráveis e não são presumidos. A segunda-feira só passa a valer quando `configured` for marcado no JSON de funcionamento.
+
+## Operação, notificações e pedidos
+
+- Execute `supabase/schema.sql` no SQL Editor para instalar as funções transacionais de pedido, rastreamento de visitante, permissões de perfil e notificações. A função cria pedido e itens em uma única transação e calcula os totais a partir dos itens e adicionais enviados.
+- Acesse `admin/cozinha.html` com uma conta administradora para acompanhar e atualizar pedidos em tempo real. Os status seguem recebido, em preparo, pronto, saiu para entrega (somente entrega) e entregue; retirada pode ser finalizada diretamente como entregue. Cancelamento exige motivo.
+- Cadastro pede e-mail, senha e telefone. A autorização para atualizações por WhatsApp é opcional; no checkout ela pode ser marcada por pedido. Notificações no site aparecem para clientes autenticados. Visitantes acompanham o pedido com token aleatório salvo no dispositivo.
+- Formas de pagamento são opções manuais configuráveis em Admin > Configurações. Não há integração de cobrança online.
+
+### WhatsApp Business Platform (Meta)
+
+O envio fica desativado até a configuração explícita. Para ativá-lo, configure no Supabase Edge Functions os secrets `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` e `WHATSAPP_API_VERSION`, e implante `supabase/functions/send-order-notification`. Não coloque esses segredos no HTML ou JavaScript público. Em Admin > Configurações, habilite o provedor Meta, escolha os eventos e cadastre os nomes exatos dos templates aprovados pela Meta. O modelo enviado espera o número do pedido como primeiro parâmetro de corpo. Sem consentimento, credenciais, template aprovado ou evento habilitado, o sistema registra que não enviou e não informa ao cliente que a mensagem foi enviada.

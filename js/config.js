@@ -16,7 +16,7 @@ const APP_CONFIG = {
    locale: "pt-BR",
    orderNumberPrefix: "#PF-",
    adminRoutes: ["/admin/index.html", "/admin/pedidos.html", "/admin/produtos.html",
-      "/admin/categorias.html", "/admin/clientes.html", "/admin/configuracoes.html"],
+      "/admin/categorias.html", "/admin/clientes.html", "/admin/configuracoes.html", "/admin/cozinha.html"],
 };
 
 // Expor globalmente

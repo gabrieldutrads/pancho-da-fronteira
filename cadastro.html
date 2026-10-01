@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Crie sua conta no Pancho da Fronteira e faça pedidos com facilidade.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://SEU-DOMINIO-PUBLICO/cadastro.html">
+    <meta name="description" content="Crie sua conta no Pancho da Fronteira e faÃ§a pedidos com facilidade.">
     <title>Criar conta | Pancho da Fronteira</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,10 +31,10 @@
                 </div>
             </div>
 
-            <!-- Cabeçalho -->
+            <!-- CabeÃ§alho -->
             <div class="auth-header">
                 <h1>Crie sua conta</h1>
-                <p>Rápido, gratuito e sem complicação.</p>
+                <p>RÃ¡pido, gratuito e sem complicaÃ§Ã£o.</p>
             </div>
 
             <!-- Erro / Sucesso -->
@@ -50,31 +52,22 @@
                 <span id="authSuccessMsg">Conta criada! Verifique seu e-mail.</span>
             </div>
 
-            <!-- Formulário -->
-            <form class="auth-form" id="signupForm" novalidate>
-
-                <div class="form-group">
-                    <label class="form-label" for="nomeInput">Seu nome <span>*</span></label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">
-                            <span class="icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                            </span>
-                        </span>
-                        <input type="text" id="nomeInput" name="nome" class="form-input" placeholder="João Silva" autocomplete="name" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="telefoneInput">Telefone / WhatsApp</label>
+            <!-- FormulÃ¡rio -->
+            <form class="auth-form" id="signupForm" novalidate><div class="form-group">
+                    <label class="form-label" for="telefoneInput">Telefone / WhatsApp <span>*</span></label>
                     <div class="input-wrapper">
                         <span class="input-icon">
                             <span class="icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                             </span>
                         </span>
-                        <input type="tel" id="telefoneInput" name="telefone" class="form-input" placeholder="(55) 99999-9999" autocomplete="tel">
+                        <input type="tel" id="telefoneInput" name="telefone" class="form-input" placeholder="(55) 99999-9999" autocomplete="tel" required>
                     </div>
+                </div>
+
+                <div class="checkbox-group whatsapp-consent">
+                    <input type="checkbox" id="whatsappOptIn">
+                    <label for="whatsappOptIn">Quero receber atualizações do pedido por WhatsApp. Posso alterar essa autorização depois.</label>
                 </div>
 
                 <div class="form-group">
@@ -97,7 +90,7 @@
                                 <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             </span>
                         </span>
-                        <input type="password" id="passwordInput" name="password" class="form-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required>
+                        <input type="password" id="passwordInput" name="password" class="form-input" placeholder="MÃ­nimo 6 caracteres" autocomplete="new-password" required>
                         <button type="button" class="input-toggle-password" id="togglePassword" aria-label="Mostrar senha">
                             <span class="icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -114,7 +107,7 @@
                 <div class="checkbox-group">
                     <input type="checkbox" id="termsCheck" required>
                     <label for="termsCheck">
-                        Concordo com os termos de uso e política de privacidade.
+                        Concordo com os termos de uso e polÃ­tica de privacidade.
                     </label>
                 </div>
 
@@ -125,12 +118,12 @@
             </form>
 
             <div class="auth-alt">
-                Já tem conta?
+                JÃ¡ tem conta?
                 <a href="./login.html">Entrar</a>
             </div>
 
             <div class="auth-alt" style="margin-top: 12px;">
-                <a href="./index.html">← Voltar ao início</a>
+                <a href="./index.html">â† Voltar ao inÃ­cio</a>
             </div>
 
         </div>
@@ -166,7 +159,7 @@
             passInput.type = passInput.type === "text" ? "password" : "text";
         });
 
-        // Força da senha
+        // ForÃ§a da senha
         passInput.addEventListener("input", () => {
             const v = passInput.value;
             const bars = [sb1, sb2, sb3];
@@ -184,13 +177,12 @@
             e.preventDefault();
             hideError();
 
-            const nome     = document.getElementById("nomeInput").value.trim();
             const telefone = document.getElementById("telefoneInput").value.trim();
             const email    = document.getElementById("emailInput").value.trim();
             const password = passInput.value;
             const terms    = document.getElementById("termsCheck").checked;
 
-            if (!nome)        { showError("Informe seu nome."); return; }
+            if (!telefone)   { showError("Informe seu telefone / WhatsApp."); return; }
             if (!email)       { showError("Informe seu e-mail."); return; }
             if (password.length < 6) { showError("Senha deve ter ao menos 6 caracteres."); return; }
             if (!terms)       { showError("Aceite os termos de uso para continuar."); return; }
@@ -199,7 +191,7 @@
             signupBtn.textContent = "Criando conta...";
 
             try {
-                await signUp({ email, password, nome, telefone });
+                await signUp({ email, password, telefone, whatsappOptIn: document.getElementById("whatsappOptIn").checked });
                 showSuccess("Conta criada! Confirme seu e-mail e depois entre.");
                 form.reset();
             } catch (err) {

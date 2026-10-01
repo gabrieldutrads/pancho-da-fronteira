@@ -97,7 +97,7 @@ window.checkIsAdmin = checkIsAdmin;
 /* ----------------------------------------------------------
    CADASTRO
 ---------------------------------------------------------- */
-async function signUp({ email, password, nome, telefone }) {
+async function signUp({ email, password, telefone, whatsappOptIn = false }) {
     const sb = getSupabase();
     if (!sb) throw new Error("Supabase não configurado.");
 
@@ -105,7 +105,7 @@ async function signUp({ email, password, nome, telefone }) {
         email,
         password,
         options: {
-            data: { nome, telefone },
+            data: { telefone: String(telefone || "").trim(), whatsapp_opt_in: Boolean(whatsappOptIn) },
         },
     });
 
@@ -149,13 +149,14 @@ async function resetPassword(email) {
 /* ----------------------------------------------------------
    ATUALIZAR PERFIL
 ---------------------------------------------------------- */
-async function updateProfile({ nome, telefone, avatarUrl }) {
+async function updateProfile({ nome, telefone, avatarUrl, whatsappOptIn }) {
     const sb = getSupabase();
     if (!sb || !_currentUser) throw new Error("Não autenticado.");
     const updates = {};
     if (nome !== undefined)      updates.nome       = nome;
     if (telefone !== undefined)  updates.telefone   = telefone;
     if (avatarUrl !== undefined) updates.avatar_url = avatarUrl;
+    if (whatsappOptIn !== undefined) updates.whatsapp_opt_in = Boolean(whatsappOptIn);
     const { error } = await sb.from("profiles").update(updates).eq("id", _currentUser.id);
     if (error) throw new Error(error.message);
 }

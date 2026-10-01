@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Cozinha | Pancho da Fronteira</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="kitchen-page">
+    <main class="kitchen-shell">
+        <header class="kitchen-header">
+            <div><span class="page-eyebrow">Operação ao vivo</span><h1>Painel da cozinha</h1><p>Pedidos atualizados automaticamente.</p></div>
+            <div class="kitchen-header-actions"><span id="kitchenConnection" class="kitchen-connection" role="status">Conectando…</span><button class="btn btn-secondary" id="kitchenRefresh" type="button">Atualizar</button><a class="btn btn-ghost" href="./pedidos.html">Administração</a></div>
+        </header>
+        <div id="kitchenBoard" class="kitchen-board" aria-live="polite"></div>
+        <p class="kitchen-live-note">Atualizações em tempo real via Supabase. Mantenha esta tela aberta durante a operação.</p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../js/config.js"></script><script src="../js/supabase.js"></script><script src="../js/auth.js"></script><script src="../js/ui.js"></script><script src="../js/admin.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            await initAuth({ requireAdmin: true });
+            initKitchenBoard();
+        });
+    </script>
+</body>
+</html>

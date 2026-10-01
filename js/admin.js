@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    PANCHO DA FRONTEIRA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ADMIN.JS
    LÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³gica e controladores do Painel Administrativo.
 ============================================================ */
@@ -180,8 +180,15 @@ async function initAdminOrdersPage() {
                 entregue: "Entregue",
                 cancelado: "Cancelado"
             };
+            const validNextStatuses = new Set(["cancelado"]);
+            if (["recebido", "confirmado"].includes(o.status)) validNextStatuses.add("preparando");
+            if (o.status === "preparando") validNextStatuses.add("pronto");
+            if (o.status === "pronto") validNextStatuses.add(o.delivery_type === "entrega" ? "saiu_para_entrega" : "entregue");
+            if (o.status === "saiu_para_entrega") validNextStatuses.add("entregue");
+            if (["entregue", "cancelado"].includes(o.status)) validNextStatuses.add(o.status);
             tr.querySelectorAll(".status-changer option").forEach(option => {
                 option.textContent = statusLabels[option.value] || option.value;
+                option.disabled = !validNextStatuses.has(option.value);
             });
             tbody.appendChild(tr);
         });
@@ -194,15 +201,30 @@ async function initAdminOrdersPage() {
 
         const orderId = select.dataset.orderId;
         const newStatus = select.value;
+        const target = allOrders.find(o => o.id === orderId);
+        const previousStatus = target?.status || "recebido";
+        let cancelReason = null;
+
+        if (newStatus === "cancelado") {
+            cancelReason = typeof requestCancelReason === "function"
+                ? await requestCancelReason(target?.order_number || orderId.slice(0, 8))
+                : window.prompt("Informe o motivo do cancelamento:");
+            if (!cancelReason) {
+                select.value = previousStatus;
+                return;
+            }
+        }
 
         try {
             if (typeof updateOrderStatus === "function") {
-                await updateOrderStatus(orderId, newStatus);
+                const notification = await updateOrderStatus(orderId, newStatus, cancelReason);
                 if (typeof showToast === "function") showToast("Status do pedido atualizado!", "success");
-                const target = allOrders.find(o => o.id === orderId);
+            if (notification?.status === "not_configured" && typeof showToast === "function") showToast("WhatsApp sem configuração ativa; nenhuma mensagem foi enviada.", "warning", 6000);
+            if (notification?.status === "failed" && typeof showToast === "function") showToast("Status atualizado, mas a mensagem do WhatsApp falhou.", "warning", 6000);
                 if (target) target.status = newStatus;
             }
         } catch (err) {
+            select.value = previousStatus;
             if (typeof showToast === "function") showToast("Erro ao atualizar status: " + err.message, "error");
         }
     });
@@ -359,7 +381,7 @@ async function initAdminClientsPage() {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td><strong>${escapeHtml(p.nome || 'Cliente sem nome')}</strong></td>
-                <td>${escapeHtml(p.telefone || 'NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o informado')}</td>
+                <td>${escapeHtml(p.telefone || 'Não informado')}</td>
                 <td><span class="status-badge ${p.role === 'admin' ? 'status-confirmed' : 'status-inactive'}">${p.role}</span></td>
                 <td><small>${window.formatDate ? window.formatDate(p.created_at) : p.created_at}</small></td>
             `;
@@ -372,7 +394,7 @@ async function initAdminClientsPage() {
 }
 
 /* ----------------------------------------------------------
-   CONFIGURAÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ES DA LOJA (admin/configuracoes.html)
+   CONFIGURAÇÕES DA LOJA (admin/configuracoes.html)
 ---------------------------------------------------------- */
 async function initAdminSettingsPage() {
     const form = document.getElementById("storeSettingsForm");
@@ -382,6 +404,7 @@ async function initAdminSettingsPage() {
     const zonesList = byId("deliveryZonesList");
     const hoursList = byId("openingHoursList");
     const exceptionsList = byId("openingExceptionsList");
+    const paymentMethodsList = byId("paymentMethodsList");
     const saveButton = form.querySelector('[type="submit"]');
     const weekdays = [
         { key: "segunda", label: "Segunda-feira" },
@@ -393,6 +416,20 @@ async function initAdminSettingsPage() {
         { key: "domingo", label: "Domingo", fixedClosed: true }
     ];
     let operations = await loadOperationalSettings();
+    let paymentMethods = [
+        { id: "dinheiro", label: "Dinheiro" }, { id: "pix", label: "PIX" },
+        { id: "cartao_debito", label: "Cartão de débito" }, { id: "cartao_credito", label: "Cartão de crédito" },
+    ];
+    let whatsappSettings = { provider: "meta", enabled: false, language: "pt_BR", templates: {} };
+    const whatsappEvents = [["recebido", "Pedido recebido"], ["preparando", "Em preparo"], ["pronto", "Pronto / retirada"], ["saiu_para_entrega", "Saiu para entrega"], ["entregue", "Finalizado"], ["cancelado", "Cancelado"]];
+    function renderPaymentMethods() {
+        const enabled = new Set(paymentMethods.filter(method => method.enabled !== false).map(method => method.id));
+        paymentMethodsList.innerHTML = paymentMethods.map(method => `<label class="settings-payment-method"><input type="checkbox" data-payment-method="${escapeHtml(method.id)}"${enabled.has(method.id) ? " checked" : ""}>${escapeHtml(method.label)}</label>`).join("");
+    }
+    function renderWhatsappSettings() {
+        byId("whatsappEnabled").checked = Boolean(whatsappSettings.enabled);
+        byId("whatsappTemplates").innerHTML = whatsappEvents.map(([id,label]) => `<div class="form-group"><label class="settings-editor-toggle"><input type="checkbox" data-whatsapp-event="${id}"${whatsappSettings.events?.[id] === false ? "" : " checked"}> Enviar: ${label}</label><label for="whatsappTemplate-${id}">Template aprovado</label><input id="whatsappTemplate-${id}" class="form-input" data-whatsapp-template="${id}" maxlength="100" value="${escapeHtml(whatsappSettings.templates?.[id] || "")}" placeholder="Nome cadastrado na Meta"></div>`).join("");
+    }
 
     function updateDeliveryZoneRow(row) {
         const feeType = row.querySelector("[data-zone-fee-type]").value;
@@ -492,6 +529,8 @@ async function initAdminSettingsPage() {
                 if (byId("storePhone")) byId("storePhone").value = settings.phone || settings.whatsapp || byId("storePhone").value;
                 if (byId("storeAddress")) byId("storeAddress").value = settings.address || "";
                 if (byId("storeDesc")) byId("storeDesc").value = settings.description || "";
+                if (Array.isArray(settings.payment_methods)) paymentMethods = settings.payment_methods;
+                if (settings.whatsapp_settings) whatsappSettings = settings.whatsapp_settings;
                 operations = await loadOperationalSettings(settings);
             }
         }
@@ -502,6 +541,8 @@ async function initAdminSettingsPage() {
     renderDeliveryZones(operations.delivery_zones);
     renderOpeningHours(operations.opening_hours);
     renderOpeningExceptions(operations.opening_exceptions.filter(exception => exception?.date));
+    renderPaymentMethods();
+    renderWhatsappSettings();
 
     zonesList.addEventListener("change", event => {
         if (!event.target.matches("[data-zone-fee-type]")) return;
@@ -559,6 +600,7 @@ async function initAdminSettingsPage() {
         let deliveryZones;
         let schedule;
         try {
+            if (!paymentMethodsList.querySelector("[data-payment-method]:checked")) throw new Error("Mantenha pelo menos uma forma de pagamento ativa.");
             deliveryZones = readDeliveryZones();
             schedule = { opening_hours: readOpeningHours(), opening_exceptions: readOpeningExceptions() };
             if (!deliveryZones.length) throw new Error("Cadastre ao menos uma zona de entrega.");
@@ -597,6 +639,18 @@ async function initAdminSettingsPage() {
                     delivery_zones: deliveryZones,
                     opening_hours: schedule.opening_hours,
                     opening_exceptions: schedule.opening_exceptions,
+                    payment_methods: Array.from(paymentMethodsList.querySelectorAll("[data-payment-method]"), input => ({
+                        id: input.dataset.paymentMethod,
+                        label: paymentMethods.find(method => method.id === input.dataset.paymentMethod)?.label || input.dataset.paymentMethod,
+                        enabled: input.checked,
+                    })),
+                    whatsapp_settings: {
+                        provider: "meta",
+                        enabled: byId("whatsappEnabled").checked,
+                        language: whatsappSettings.language || "pt_BR",
+                        events: Object.fromEntries(Array.from(byId("whatsappTemplates").querySelectorAll("[data-whatsapp-event]"), input => [input.dataset.whatsappEvent, input.checked])),
+                        templates: Object.fromEntries(Array.from(byId("whatsappTemplates").querySelectorAll("[data-whatsapp-template]"), input => [input.dataset.whatsappTemplate, input.value.trim()]).filter(([, value]) => value)),
+                    },
                     address: addr, description: desc
                 });
                 operations = await loadOperationalSettings({ delivery_zones: deliveryZones, opening_hours: schedule.opening_hours, opening_exceptions: schedule.opening_exceptions });
@@ -604,7 +658,7 @@ async function initAdminSettingsPage() {
             } else {
                 operations = await saveOperationalSettings({ delivery_zones: deliveryZones, opening_hours: schedule.opening_hours, opening_exceptions: schedule.opening_exceptions });
             }
-            if (typeof showToast === "function") showToast("ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes salvas com sucesso!", "success");
+            if (typeof showToast === "function") showToast("Configurações salvas com sucesso!", "success");
         } catch (error) {
             if (typeof showToast === "function") showToast("Erro ao salvar: " + error.message, "error");
         } finally {
@@ -615,6 +669,133 @@ async function initAdminSettingsPage() {
 /* ----------------------------------------------------------
    PRODUTOS E CATEGORIAS (sem excluir registros comerciais)
 ---------------------------------------------------------- */
+async function initAdminCategoriesPage() {
+    const grid = document.getElementById("categoriesGrid");
+    const form = document.getElementById("categoryForm");
+    if (!grid || !form) return;
+
+    const byId = id => document.getElementById(id);
+    const modal = byId("categoryModal");
+    const search = byId("categorySearch");
+    const filter = byId("statusFilter");
+    let categories = [];
+    let products = [];
+
+    const categoryIcon = () => '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h4l2 2h6A2.5 2.5 0 0 1 20.5 9.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5v-9Z"/></svg></span>';
+    function closeModal() {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+    }
+    function openModal(category = null) {
+        form.reset();
+        byId("categoryId")?.remove();
+        if (category) {
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.id = "categoryId";
+            hidden.name = "id";
+            hidden.value = category.id;
+            form.appendChild(hidden);
+            byId("categoryName").value = category.name || "";
+            byId("categoryDescription").value = category.description || "";
+            byId("categoryIcon").value = category.icon || "";
+            byId("categoryStatus").value = category.active === false ? "inactive" : "active";
+            byId("modalTitle").textContent = "Editar categoria";
+        } else {
+            byId("modalTitle").textContent = "Nova categoria";
+        }
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        byId("categoryName").focus();
+    }
+    function render() {
+        const query = search?.value.trim().toLocaleLowerCase("pt-BR") || "";
+        const status = filter?.value || "all";
+        const visible = categories.filter(category => {
+            const matchesName = !query || `${category.name} ${category.description || ""}`.toLocaleLowerCase("pt-BR").includes(query);
+            const active = category.active !== false;
+            return matchesName && (status === "all" || (status === "active" ? active : !active));
+        });
+
+        grid.innerHTML = visible.map(category => {
+            const active = category.active !== false;
+            const count = products.filter(product => product.category_id === category.id).length;
+            return `<article class="admin-category-card">
+                <div class="admin-category-header"><div class="admin-category-icon">${categoryIcon()}</div>
+                    <span class="category-order">${count} ${count === 1 ? "produto" : "produtos"}</span></div>
+                <div class="admin-category-body"><div class="admin-category-title-row"><h3>${escapeHtml(category.name)}</h3>
+                    <span class="status-badge ${active ? "status-active" : "status-inactive"}">${active ? "Ativa" : "Inativa"}</span></div>
+                    <p>${escapeHtml(category.description || "Sem descrição")}</p></div>
+                <div class="admin-category-footer"><span class="product-count">${categoryIcon()}<strong>${count}</strong> ${count === 1 ? "produto" : "produtos"}</span>
+                    <div class="category-actions"><button type="button" class="icon-action" title="Editar categoria" aria-label="Editar ${escapeHtml(category.name)}" data-category-edit="${escapeHtml(category.id)}">Editar</button>
+                    <button type="button" class="icon-action ${active ? "icon-action-danger" : ""}" title="${active ? "Arquivar" : "Ativar"} categoria" data-category-toggle="${escapeHtml(category.id)}">${active ? "Arquivar" : "Ativar"}</button></div></div>
+            </article>`;
+        }).join("");
+        byId("emptyCategories").hidden = visible.length > 0;
+        byId("totalCategories").textContent = String(categories.length);
+        byId("activeCategories").textContent = String(categories.filter(category => category.active !== false).length);
+        byId("totalProducts").textContent = String(products.length);
+        const counts = categories.map(category => ({ name: category.name, count: products.filter(product => product.category_id === category.id).length }));
+        const mostUsed = counts.sort((a, b) => b.count - a.count)[0];
+        byId("topCategory").textContent = mostUsed?.name || "—";
+    }
+    async function reload() {
+        try {
+            [categories, products] = await Promise.all([adminFetchAllCategories(), adminFetchAllProducts()]);
+            render();
+        } catch (error) {
+            showToast("Não foi possível carregar as categorias: " + error.message, "error");
+        }
+    }
+
+    byId("newCategoryButton").addEventListener("click", () => openModal());
+    byId("modalClose").addEventListener("click", closeModal);
+    byId("cancelModal").addEventListener("click", closeModal);
+    byId("modalOverlay").addEventListener("click", closeModal);
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && modal.classList.contains("open")) closeModal(); });
+    search?.addEventListener("input", render);
+    filter?.addEventListener("change", render);
+
+    grid.addEventListener("click", async event => {
+        const edit = event.target.closest("[data-category-edit]");
+        const toggle = event.target.closest("[data-category-toggle]");
+        if (edit) {
+            const category = categories.find(item => item.id === edit.dataset.categoryEdit);
+            if (category) openModal(category);
+        }
+        if (toggle) {
+            const category = categories.find(item => item.id === toggle.dataset.categoryToggle);
+            if (!category) return;
+            const active = category.active === false;
+            try {
+                await adminUpsertCategory({ id: category.id, name: category.name, description: category.description, icon: category.icon, sort_order: category.sort_order, active });
+                showToast(active ? "Categoria ativada." : "Categoria arquivada.", "success");
+                await reload();
+            } catch (error) { showToast("Não foi possível atualizar a categoria: " + error.message, "error"); }
+        }
+    });
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const id = byId("categoryId")?.value;
+        const name = byId("categoryName").value.trim();
+        if (!name) return;
+        const duplicate = categories.some(category => category.id !== id && category.name.toLocaleLowerCase("pt-BR") === name.toLocaleLowerCase("pt-BR"));
+        if (duplicate) { showToast("Já existe uma categoria com esse nome.", "warning"); return; }
+        const current = categories.find(category => category.id === id);
+        try {
+            await adminUpsertCategory({ ...(id ? { id } : {}), name, description: byId("categoryDescription").value.trim(), icon: byId("categoryIcon").value.trim() || null, active: byId("categoryStatus").value === "active", sort_order: current?.sort_order ?? categories.length });
+            closeModal();
+            showToast(id ? "Categoria atualizada." : "Categoria criada.", "success");
+            await reload();
+        } catch (error) { showToast("Não foi possível salvar a categoria: " + error.message, "error", 6000); }
+    });
+
+    await reload();
+}
+
 async function initAdminProductsPage() {
     const form = document.getElementById("adminProductForm");
     const list = document.getElementById("adminProductsList");
@@ -744,7 +925,7 @@ async function initAdminProductsPage() {
 }
 
 /* ----------------------------------------------------------
-   GRUPOS DE OPÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ES REUTILIZÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂVEIS (aÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§aÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­, molhos e adicionais)
+   GRUPOS DE OPÇÕES REUTILIZÁVEIS (molhos e adicionais)
 ---------------------------------------------------------- */
 async function initAdminOptionGroupsPage() {
     const groupForm = document.getElementById("optionGroupForm");
@@ -979,12 +1160,109 @@ async function initAdminOptionGroupsPage() {
     window.addEventListener("productsChanged", reload);
 }
 
+async function initKitchenBoard() {
+    const board = document.getElementById("kitchenBoard");
+    const connection = document.getElementById("kitchenConnection");
+    if (!board) return;
+    const stages = [
+        { id: "recebido", title: "Novos", statuses: ["recebido", "confirmado"] },
+        { id: "preparando", title: "Preparando", statuses: ["preparando"] },
+        { id: "pronto", title: "Prontos", statuses: ["pronto"] },
+        { id: "saiu_para_entrega", title: "Em entrega", statuses: ["saiu_para_entrega"] },
+        { id: "entregue", title: "Finalizados", statuses: ["entregue"] },
+    ];
+    let orders = [];
+    let loading = false;
+    const nextStep = order => {
+        if (["recebido", "confirmado"].includes(order.status)) return { status: "preparando", label: "Iniciar preparo" };
+        if (order.status === "preparando") return { status: "pronto", label: "Marcar pronto" };
+        if (order.status === "pronto" && order.delivery_type === "entrega") return { status: "saiu_para_entrega", label: "Saiu para entrega" };
+        if (order.status === "pronto" && order.delivery_type === "retirada") return { status: "entregue", label: "Concluir retirada" };
+        if (order.status === "saiu_para_entrega") return { status: "entregue", label: "Finalizar pedido" };
+        return null;
+    };
+    const renderOrder = order => {
+        const next = nextStep(order);
+        const address = order.delivery_type === "entrega" && order.address_snapshot
+            ? [order.address_snapshot.street, order.address_snapshot.number, order.address_snapshot.complement, order.address_snapshot.neighborhood, order.address_snapshot.reference && `Ref.: ${order.address_snapshot.reference}`].filter(Boolean).join(", ")
+            : "";
+        const items = (order.order_items || []).map(item => {
+            const options = Array.isArray(item.selected_options) ? item.selected_options.map(option => `${option.group ? `${option.group}: ` : ""}${option.name || ""}`).filter(Boolean).join(", ") : "";
+            const details = [options, item.notes].filter(Boolean).join(" · ");
+            return `<div class="kitchen-order-item"><strong>${Number(item.quantity) || 1}×</strong> ${escapeHtml(item.product_name)}${details ? `<small>${escapeHtml(details)}</small>` : ""}</div>`;
+        }).join("") || '<div class="kitchen-order-item">Itens não disponíveis</div>';
+        const payment = ({ dinheiro: "Dinheiro", pix: "PIX", cartao_debito: "Débito", cartao_credito: "Crédito" })[order.payment_method] || order.payment_method || "A combinar";
+        const time = order.created_at ? new Date(order.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "—";
+        return `<article class="kitchen-order-card" data-order-card="${escapeHtml(order.id)}">
+            <div class="kitchen-order-top"><span class="kitchen-order-number">${escapeHtml(order.order_number || order.id.slice(0, 8))}</span><time class="kitchen-order-time">${time}</time></div>
+            <div class="kitchen-order-body"><strong>${escapeHtml(order.customer_name)} · ${escapeHtml(order.customer_phone)}</strong>
+                <div class="kitchen-order-meta"><span>${order.delivery_type === "entrega" ? "Entrega" : "Retirada"}</span><span>${escapeHtml(payment)}</span><span>${order.total == null ? "Taxa a confirmar" : formatPrice(Number(order.total))}</span></div>
+                <div class="kitchen-order-items">${items}</div>${address ? `<div class="kitchen-order-address">${escapeHtml(address)}</div>` : ""}
+                ${order.notes ? `<div class="kitchen-order-notes"><strong>Observação:</strong> ${escapeHtml(order.notes)}</div>` : ""}</div>
+            <div class="kitchen-order-footer">${next ? `<button type="button" class="btn btn-primary" data-kitchen-next="${escapeHtml(order.id)}">${next.label}</button>` : ""}${!['entregue','cancelado'].includes(order.status) ? `<button type="button" class="btn btn-ghost btn-sm" data-kitchen-cancel="${escapeHtml(order.id)}">Cancelar pedido</button>` : ""}</div>
+        </article>`;
+    };
+    function render() {
+        board.innerHTML = stages.map(stage => {
+            const items = orders.filter(order => stage.statuses.includes(order.status));
+            return `<section class="kitchen-column" aria-labelledby="kitchenStage-${stage.id}"><header class="kitchen-column-heading"><h2 id="kitchenStage-${stage.id}">${stage.title}</h2><span class="kitchen-column-count">${items.length}</span></header><div class="kitchen-order-list">${items.length ? items.map(renderOrder).join("") : '<div class="kitchen-empty">Nenhum pedido nesta etapa.</div>'}</div></section>`;
+        }).join("");
+    }
+    async function reload() {
+        if (loading) return;
+        loading = true;
+        try {
+            orders = await adminFetchAllOrders({ limit: 1000 });
+            render();
+            connection.textContent = "Tempo real ativo";
+            connection.classList.add("is-live");
+            connection.classList.remove("is-error");
+        } catch (error) {
+            connection.textContent = "Falha na atualização";
+            connection.classList.add("is-error");
+            showToast("Não foi possível carregar pedidos: " + error.message, "error");
+        } finally { loading = false; }
+    }
+    board.addEventListener("click", async event => {
+        const nextButton = event.target.closest("[data-kitchen-next]");
+        const cancelButton = event.target.closest("[data-kitchen-cancel]");
+        const order = orders.find(item => item.id === (nextButton?.dataset.kitchenNext || cancelButton?.dataset.kitchenCancel));
+        if (!order) return;
+        let status;
+        let reason = null;
+        if (cancelButton) {
+            reason = await requestCancelReason(order.order_number || order.id.slice(0, 8));
+            if (!reason) return;
+            status = "cancelado";
+        } else {
+            status = nextStep(order)?.status;
+            if (!status) return;
+        }
+        try {
+            const notification = await updateOrderStatus(order.id, status, reason);
+            showToast(status === "cancelado" ? "Pedido cancelado." : "Pedido avançou de etapa.", "success");
+            if (notification?.status === "not_configured") showToast("WhatsApp não configurado; o status foi atualizado e nenhuma mensagem foi enviada.", "warning", 6000);
+            if (notification?.status === "failed") showToast("Status atualizado, mas a mensagem do WhatsApp falhou.", "warning", 6000);
+            await reload();
+        } catch (error) { showToast("Não foi possível atualizar o pedido: " + error.message, "error", 6000); }
+    });
+    document.getElementById("kitchenRefresh")?.addEventListener("click", reload);
+    const sb = getSupabase();
+    if (sb) sb.channel("kitchen-orders-live").on("postgres_changes", { event: "*", schema: "public", table: "orders" }, reload).subscribe(state => {
+        if (state === "SUBSCRIBED") { connection.textContent = "Tempo real ativo"; connection.classList.add("is-live"); }
+        if (state === "CHANNEL_ERROR" || state === "TIMED_OUT") { connection.textContent = "Reconectando…"; connection.classList.remove("is-live"); connection.classList.add("is-error"); }
+    });
+    await reload();
+}
+
 // Expor controladores
 Object.assign(window, {
+    initAdminCategoriesPage,
     initAdminDashboard,
     initAdminOrdersPage,
     initAdminClientsPage,
     initAdminSettingsPage,
     initAdminProductsPage,
-    initAdminOptionGroupsPage
+    initAdminOptionGroupsPage,
+    initKitchenBoard
 });

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Painel interno e telas de conta não devem aparecer nos resultados de busca.
+Disallow: /admin/
+Disallow: /login.html
+Disallow: /cadastro.html
+Disallow: /pedido.html
+Disallow: /carrinho.html
+
+Sitemap: https://SEU-DOMINIO-PUBLICO/sitemap.xml

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://SEU-DOMINIO-PUBLICO/pedido.html">
     <meta name="description" content="Finalize seu pedido e acompanhe em tempo real. Pancho da Fronteira.">
     <title>Meu Pedido | Pancho da Fronteira</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,8 +26,8 @@
                 <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></span>
             </button>
             <div class="nav-menu" id="navMenu">
-                <a href="./index.html" class="nav-link">Início</a>
-                <a href="./cardapio.html" class="nav-link">Cardápio</a>
+                <a href="./index.html" class="nav-link">InÃ­cio</a>
+                <a href="./cardapio.html" class="nav-link">CardÃ¡pio</a>
                 <a href="./carrinho.html" class="cart-button">
                     <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M3 4h2l2.2 9.2a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L18.5 7H7"/></svg></span>
                     <span>Carrinho</span>
@@ -40,7 +42,9 @@
     </header>
 
     <main class="order-page">
+        <div id="notificationToast" class="notification-toast" role="status" aria-live="polite" hidden></div>
         <div class="container">
+            <h1 class="order-page-title">Finalizar e acompanhar pedido</h1>
 
             <!-- Tabs -->
             <div class="order-tabs" role="tablist">
@@ -54,8 +58,9 @@
 
             <!-- ======== TAB: CHECKOUT ======== -->
             <div class="tab-panel active" id="panelCheckout" role="tabpanel">
+                <div id="guestOrderTracking" class="guest-order-tracking" hidden aria-live="polite"></div>
 
-                <!-- Pedido confirmado (oculto até confirmar) -->
+                <!-- Pedido confirmado (oculto atÃ© confirmar) -->
                 <div class="order-confirmed" id="orderConfirmed" hidden>
                     <div class="confirmed-icon">
                         <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
@@ -63,17 +68,17 @@
                     <h2>Pedido realizado!</h2>
                     <p>Obrigado por escolher o Pancho da Fronteira.</p>
                     <div class="order-number-display" id="confirmedOrderNum">#PF-0001</div>
-                    <p style="font-size:0.9rem; color:var(--color-text-muted);">Acompanhe o status do seu pedido na aba "Meus pedidos".</p>
+                    <p style="font-size:0.9rem; color:var(--color-text-muted);">Acompanhe o status do seu pedido nesta página. O token de acompanhamento fica neste dispositivo.</p>
                     <div class="confirmed-actions">
                         <button class="btn btn-secondary" onclick="switchTab('orders')">Ver meus pedidos</button>
                         <a href="./cardapio.html" class="btn btn-primary">Fazer novo pedido</a>
                     </div>
                 </div>
 
-                <!-- Formulário de checkout -->
+                <!-- FormulÃ¡rio de checkout -->
                 <div id="checkoutContent">
                     <p style="margin: 0 0 18px; color: var(--color-text-muted); font-size: 0.95rem;">
-                        Você pode finalizar este pedido sem criar uma conta agora.
+                        VocÃª pode finalizar este pedido sem criar uma conta agora.
                     </p>
                     <!-- Steps -->
                     <div class="checkout-steps">
@@ -90,7 +95,7 @@
 
                     <div class="checkout-layout">
 
-                        <!-- Formulário -->
+                        <!-- FormulÃ¡rio -->
                         <div>
 
                             <!-- STEP 1: Dados pessoais -->
@@ -110,9 +115,14 @@
                                     <input type="tel" id="clientePhone" class="form-input" placeholder="(55) 99999-9999" autocomplete="tel" required>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="form-label" for="orderNotes">Observações gerais</label>
-                                    <textarea id="orderNotes" class="form-textarea" rows="3" placeholder="Alergias, preferências, etc..."></textarea>
+                                <div class="checkbox-group whatsapp-consent">
+                                    <input type="checkbox" id="orderWhatsappOptIn">
+                                    <label for="orderWhatsappOptIn">Quero receber atualizações deste pedido por WhatsApp.</label>
+                                </div>
+
+                <div class="form-group">
+                                    <label class="form-label" for="orderNotes">ObservaÃ§Ãµes gerais</label>
+                                    <textarea id="orderNotes" class="form-textarea" rows="3" placeholder="Alergias, preferÃªncias, etc..."></textarea>
                                 </div>
 
                                 <button type="button" class="btn btn-primary checkout-next" id="toStep2Btn">
@@ -134,7 +144,7 @@
                                         <label for="deliveryEntrega">
                                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8Z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
                                             <strong>Entrega</strong>
-                                            <strong >Preço sob consulta</strong>
+                                            <strong >PreÃ§o sob consulta</strong>
                                         </label>
                                     </div>
                                     <div class="delivery-option">
@@ -147,15 +157,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Campos de endereço (aparece para entrega) -->
+                                <!-- Campos de endereÃ§o (aparece para entrega) -->
                                 <div id="addressFields">
                                     <div class="form-group">
                                         <label class="form-label" for="addrStreet">Rua / Avenida <span>*</span></label>
-                                        <input type="text" id="addrStreet" class="form-input" placeholder="Rua das Acácias" autocomplete="street-address">
+                                        <input type="text" id="addrStreet" class="form-input" placeholder="Rua das AcÃ¡cias" autocomplete="street-address">
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label class="form-label" for="addrNumber">Número <span>*</span></label>
+                                            <label class="form-label" for="addrNumber">NÃºmero <span>*</span></label>
                                             <input type="text" id="addrNumber" class="form-input" placeholder="123">
                                         </div>
                                         <div class="form-group">
@@ -168,14 +178,14 @@
                                         <input type="text" id="addrNeighborhood" class="form-input" placeholder="Centro">
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="addrReference">Ponto de referência</label>
-                                        <input type="text" id="addrReference" class="form-input" placeholder="Próximo ao mercado X">
+                                        <label class="form-label" for="addrReference">Ponto de referÃªncia</label>
+                                        <input type="text" id="addrReference" class="form-input" placeholder="PrÃ³ximo ao mercado X">
                                     </div>
                                 </div>
 
                                 <div class="form-row" style="margin-top: 8px;">
-                                    <button type="button" class="btn btn-ghost checkout-next" id="backToStep1Btn">← Voltar</button>
-                                    <button type="button" class="btn btn-primary checkout-next" id="toStep3Btn">Continuar →</button>
+                                    <button type="button" class="btn btn-ghost checkout-next" id="backToStep1Btn">â† Voltar</button>
+                                    <button type="button" class="btn btn-primary checkout-next" id="toStep3Btn">Continuar â†’</button>
                                 </div>
                             </div>
 
@@ -205,14 +215,14 @@
                                         <input type="radio" name="paymentMethod" id="payDebito" value="cartao_debito">
                                         <label for="payDebito">
                                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-                                            Débito
+                                            DÃ©bito
                                         </label>
                                     </div>
                                     <div class="payment-option">
                                         <input type="radio" name="paymentMethod" id="payCredito" value="cartao_credito">
                                         <label for="payCredito">
                                             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-                                            Crédito
+                                            CrÃ©dito
                                         </label>
                                     </div>
                                 </div>
@@ -224,7 +234,7 @@
                                 </div>
 
                                 <div class="form-row" style="margin-top: 8px;">
-                                    <button type="button" class="btn btn-ghost" id="backToStep2Btn">← Voltar</button>
+                                    <button type="button" class="btn btn-ghost" id="backToStep2Btn">â† Voltar</button>
                                     <button type="button" class="btn btn-primary" id="confirmOrderBtn" style="flex:1;">
                                         <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
                                         Confirmar pedido
@@ -245,11 +255,11 @@
                             </div>
                             <div class="summary-row" id="summaryDeliveryRow">
                                 <span>Entrega</span>
-                                <span id="summaryDelivery">Preço sob consulta</span>
+                                <span id="summaryDelivery">PreÃ§o sob consulta</span>
                             </div>
                             <div class="summary-row total">
                                 <span>Total</span>
-                                <strong id="summaryTotal">Preço sob consulta</strong>
+                                <strong id="summaryTotal">PreÃ§o sob consulta</strong>
                             </div>
                         </aside>
 
@@ -260,17 +270,21 @@
 
             <!-- ======== TAB: MEUS PEDIDOS ======== -->
             <div class="tab-panel" id="panelOrders" role="tabpanel">
+                <section id="customerNotificationCenter" class="notification-center" hidden aria-labelledby="notificationCenterTitle">
+                    <div class="notification-center-heading"><h2 id="notificationCenterTitle">Notificações</h2><span id="notificationUnreadCount" class="notification-count">0</span></div>
+                    <div id="customerNotifications" class="customer-notifications"></div>
+                </section>
                 <div id="ordersContent">
                     <div class="empty-state" id="ordersEmpty" hidden>
-                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-icon">ðŸ“‹</div>
                         <h3>Nenhum pedido ainda</h3>
-                        <p>Seu histórico de pedidos aparecerá aqui.</p>
-                        <a href="./cardapio.html" class="btn btn-primary">Ver cardápio</a>
+                        <p>Seu histÃ³rico de pedidos aparecerÃ¡ aqui.</p>
+                        <a href="./cardapio.html" class="btn btn-primary">Ver cardÃ¡pio</a>
                     </div>
                     <div class="empty-state" id="ordersLogin" hidden>
-                        <div class="empty-state-icon">🔐</div>
+                        <div class="empty-state-icon">ðŸ”</div>
                         <h3>Entre na sua conta</h3>
-                        <p>Para ver seus pedidos, faça login primeiro.</p>
+                        <p>Para ver seus pedidos, faÃ§a login primeiro.</p>
                         <a href="./login.html" class="btn btn-primary">Entrar</a>
                     </div>
                     <div class="orders-list" id="ordersList"></div>
@@ -284,7 +298,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
+                <p>Â© 2026 Pancho da Fronteira. Feito com <span class="icon fill" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5 4.7 13.3a4.7 4.7 0 1 1 6.7-6.6L12 7l.6-.9a4.7 4.7 0 0 1 6.7 6.6L12 20.5Z"/></svg></span> e muito sabor.</p>
             </div>
         </div>
     </footer>
@@ -306,6 +320,8 @@
     let deliveryFeePending = false;
     let operationalSettings = null;
     let currentUser      = null;
+    let customerRealtimeChannel = null;
+    let notificationsRealtimeChannel = null;
 
     /* ===== TABS ===== */
     function switchTab(tab) {
@@ -346,6 +362,7 @@
         checkoutData.customerName  = name;
         checkoutData.customerPhone = phone;
         checkoutData.notes         = document.getElementById("orderNotes").value.trim();
+        checkoutData.whatsappOptIn = document.getElementById("orderWhatsappOptIn").checked;
         goStep(2);
     });
 
@@ -359,7 +376,7 @@
             const number = document.getElementById("addrNumber").value.trim();
             const hood   = document.getElementById("addrNeighborhood").value.trim();
             if (!street) { showToast("Informe a rua.", "warning"); return; }
-            if (!number) { showToast("Informe o número.", "warning"); return; }
+            if (!number) { showToast("Informe o nÃºmero.", "warning"); return; }
             if (!hood)   { showToast("Informe o bairro.", "warning"); return; }
             checkoutData.address = {
                 street, number,
@@ -382,7 +399,7 @@
 
     document.getElementById("backToStep2Btn").addEventListener("click", () => goStep(2));
 
-    /* Mostrar/ocultar campos de endereço */
+    /* Mostrar/ocultar campos de endereÃ§o */
     document.querySelectorAll("input[name='deliveryType']").forEach(r => {
         r.addEventListener("change", () => {
             const isEntrega = document.getElementById("deliveryEntrega").checked;
@@ -407,6 +424,23 @@
             document.getElementById("trocoGroup").hidden = !isDinheiro;
         });
     });
+
+    function configurePaymentMethods(methods) {
+        if (!Array.isArray(methods)) return;
+        const validMethods = new Set(["dinheiro", "pix", "cartao_debito", "cartao_credito"]);
+        const enabled = new Map(methods.filter(method => validMethods.has(method.id)).map(method => [method.id, method]));
+        document.querySelectorAll(".payment-option").forEach(option => {
+            const input = option.querySelector("input[name='paymentMethod']");
+            const method = enabled.get(input?.value);
+            option.hidden = !method || method.enabled === false;
+            const label = option.querySelector("label");
+            if (label && method?.label) {
+                Array.from(label.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).forEach(node => node.remove());
+                label.append(` ${method.label}`);
+            }
+            if (input && option.hidden) input.checked = false;
+        });
+    }
 
     /* ===== RESUMO ===== */
     function updateSummary() {
@@ -433,7 +467,7 @@
         const totalEl = document.getElementById("summaryTotal");
         if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
         if (deliveryEl) deliveryEl.textContent = deliveryFeePending && isDelivery
-            ? "Consultar taxa" : (fee > 0 ? formatPrice(fee) : "Grátis");
+            ? "Consultar taxa" : (fee > 0 ? formatPrice(fee) : "GrÃ¡tis");
         if (totalEl) totalEl.textContent = deliveryFeePending && isDelivery
             ? "Subtotal + taxa a confirmar" : formatPrice(total);
     }
@@ -441,13 +475,14 @@
     /* ===== CONFIRMAR PEDIDO ===== */
     document.getElementById("confirmOrderBtn").addEventListener("click", async () => {
         const cart = readCart();
-        if (cart.length === 0) { showToast("Seu carrinho está vazio!", "warning"); return; }
+        if (cart.length === 0) { showToast("Seu carrinho estÃ¡ vazio!", "warning"); return; }
         if (isStoreOpen(new Date(), operationalSettings) === false) {
-            showToast("A loja está fechada no momento. Consulte os dias e horários de funcionamento.", "warning", 6000);
+            showToast("A loja estÃ¡ fechada no momento. Consulte os dias e horÃ¡rios de funcionamento.", "warning", 6000);
             return;
         }
 
-        const payMethod = document.querySelector("input[name='paymentMethod']:checked")?.value || "dinheiro";
+        const payMethod = document.querySelector("input[name='paymentMethod']:checked")?.value;
+        if (!payMethod) { showToast("A loja ainda não configurou uma forma de pagamento disponível.", "warning", 6000); return; }
         checkoutData.paymentMethod = payMethod;
 
         const btn = document.getElementById("confirmOrderBtn");
@@ -456,6 +491,11 @@
 
         try {
             const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const serverItems = cart.map(item => {
+                const options = Array.isArray(item.selectedOptions) ? item.selectedOptions : [];
+                const optionTotal = options.reduce((sum, option) => sum + Math.max(0, Number(option.price_delta) || 0), 0);
+                return { ...item, base_price: Math.max(0, Number(item.price) - optionTotal) };
+            });
             const fee      = checkoutData.deliveryType === "entrega" ? (deliveryFeePending ? null : deliveryFee) : 0;
             const total    = fee === null ? null : subtotal + fee;
 
@@ -472,14 +512,21 @@
                 deliveryFeeStatus: fee === null ? "pending" : "confirmed",
                 total,
                 notes:           checkoutData.notes || null,
-                items:           cart,
+                whatsappOptIn:   checkoutData.whatsappOptIn,
+                items:           serverItems,
             });
 
             clearCart();
+            if (!currentUser && order.tracking_token) {
+                localStorage.setItem("panchoLastTrackingToken", order.tracking_token);
+                const tracking = document.getElementById("guestOrderTracking");
+                tracking.hidden = false;
+                tracking.innerHTML = `<strong>Acompanhe este pedido sem entrar:</strong><p>O link seguro fica salvo neste dispositivo.</p><span>${escapeHtml(order.order_number)} · Recebido</span>`;
+            }
             document.getElementById("confirmedOrderNum").textContent = order.order_number;
             document.getElementById("checkoutContent").hidden = true;
             document.getElementById("orderConfirmed").hidden = false;
-            showToast("Pedido confirmado! 🎉", "success", 5000);
+            showToast("Pedido confirmado! ðŸŽ‰", "success", 5000);
 
         } catch (err) {
             showToast(err.message || "Erro ao confirmar pedido.", "error");
@@ -511,6 +558,7 @@
 
         const orders = await fetchOrdersByUser(currentUser.id);
         listEl.innerHTML = "";
+        await loadCustomerNotifications();
 
         if (!orders.length) {
             emptyEl.hidden = false;
@@ -520,50 +568,91 @@
 
         orders.forEach(order => {
             const info = getStatusInfo(order.status);
-            const itemsSummary = (order.order_items || []).map(i => `${i.quantity}x ${i.product_name}`).join(", ");
+            const itemsSummary = (order.order_items || []).map(i => `${i.quantity}x ${escapeHtml(i.product_name)}${i.notes ? ` (${escapeHtml(i.notes)})` : ""}`).join(", ");
             const card = document.createElement("div");
             card.className = "order-card";
             card.innerHTML = `
                 <div class="order-card-header">
                     <div>
-                        <div class="order-card-num">${order.order_number}</div>
+                        <div class="order-card-num">${escapeHtml(order.order_number)}</div>
                         <div class="order-card-date">${formatDate(order.created_at)}</div>
                     </div>
-                    <span class="status-badge ${info.color}">${info.emoji} ${info.label}</span>
+                    <span class="status-badge ${info.color}">${info.emoji} ${escapeHtml(info.label)}</span>
                 </div>
                 <div class="order-card-body">
                     <div class="order-card-items">${itemsSummary || "Sem itens"}</div>
-                    ${renderTimeline(order.status)}
+                    ${renderTimeline(order.status, order.delivery_type)}
                 </div>
                 <div class="order-card-footer">
                     <span class="order-card-total">${order.total == null ? "Total a confirmar" : formatPrice(order.total)}</span>
                     <span class="order-card-action">
-                        ${order.delivery_type === "entrega" ? "🛵 Entrega" : "🏠 Retirada"}
+                        ${order.delivery_type === "entrega" ? "ðŸ›µ Entrega" : "ðŸ  Retirada"}
                     </span>
                 </div>
             `;
             listEl.appendChild(card);
         });
+        await loadCustomerNotifications();
     }
 
-    const STATUS_FLOW = ["recebido","confirmado","preparando","pronto","saiu_para_entrega","entregue"];
+    async function loadCustomerNotifications() {
+        const section = document.getElementById("customerNotificationCenter");
+        const list = document.getElementById("customerNotifications");
+        if (!currentUser || !section || !list) return;
+        try {
+            const notifications = await fetchUserNotifications(currentUser.id);
+            section.hidden = false;
+            document.getElementById("notificationUnreadCount").textContent = String(notifications.filter(item => !item.read_at).length);
+            list.innerHTML = notifications.length ? notifications.map(item => `<article class="customer-notification ${item.read_at ? "" : "is-unread"}" data-notification-id="${escapeHtml(item.id)}"><div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.message)}</p></div><time>${escapeHtml(formatDate(item.created_at))}</time></article>`).join("") : '<p class="notification-empty">As atualizações dos seus pedidos aparecerão aqui.</p>';
+        } catch (error) { console.warn("[Notifications]", error.message); }
+    }
+
+    function showNotificationToast(title) {
+        const toast = document.getElementById("notificationToast");
+        if (!toast) return;
+        toast.textContent = title;
+        toast.hidden = false;
+        toast.classList.add("is-visible");
+        window.clearTimeout(showNotificationToast.timer);
+        showNotificationToast.timer = window.setTimeout(() => {
+            toast.classList.remove("is-visible");
+            toast.hidden = true;
+        }, 5200);
+    }
+
+    async function loadGuestTracking() {
+        const token = localStorage.getItem("panchoLastTrackingToken");
+        const display = document.getElementById("guestOrderTracking");
+        if (!token || !display || currentUser) return;
+        try {
+            const order = await getGuestOrderTracking(token);
+            if (!order) { localStorage.removeItem("panchoLastTrackingToken"); return; }
+            display.hidden = false;
+            const info = getStatusInfo(order.status);
+            display.innerHTML = `<strong>Acompanhamento de ${escapeHtml(order.order_number)}</strong><p>Status atual: <span class="status-badge ${info.color}">${info.emoji} ${escapeHtml(info.label)}</span></p><small>Atualizado automaticamente enquanto esta página estiver aberta.</small>`;
+        } catch (error) { console.warn("[Guest tracking]", error.message); }
+    }
+
+    const STATUS_FLOW = ["recebido","preparando","pronto","saiu_para_entrega","entregue"];
     const STATUS_LABELS = {
-        recebido: "📋 Recebido", confirmado: "✅ Confirmado",
-        preparando: "🍳 Em preparo", pronto: "✔️ Pronto",
-        saiu_para_entrega: "🛵 Saiu para entrega", entregue: "🏠 Entregue",
+        recebido: "ðŸ“‹ Pedido recebido",
+        preparando: "ðŸ³ Em preparo", pronto: "âœ”ï¸ Pronto",
+        saiu_para_entrega: "ðŸ›µ Saiu para entrega", entregue: "ðŸ  Entregue",
     };
 
-    function renderTimeline(currentStatus) {
+    function renderTimeline(currentStatus, deliveryType) {
         if (currentStatus === "cancelado") {
-            return `<div style="color:var(--color-error);font-size:0.875rem;margin-top:8px;">❌ Pedido cancelado</div>`;
+            return `<div style="color:var(--color-error);font-size:0.875rem;margin-top:8px;">âŒ Pedido cancelado</div>`;
         }
-        const currentIdx = STATUS_FLOW.indexOf(currentStatus);
+        const flow = deliveryType === "retirada" ? STATUS_FLOW.filter(status => status !== "saiu_para_entrega") : STATUS_FLOW;
+        const normalizedStatus = currentStatus === "confirmado" ? "recebido" : currentStatus;
+        const currentIdx = flow.indexOf(normalizedStatus);
         return `
             <div class="order-timeline" style="margin-top:16px;padding:20px;">
                 <div class="timeline">
-                    ${STATUS_FLOW.map((s, i) => `
+                    ${flow.map((s, i) => `
                         <div class="timeline-item ${i < currentIdx ? "done" : ""} ${i === currentIdx ? "current" : ""}">
-                            <div class="timeline-dot">${i <= currentIdx ? (i < currentIdx ? "✓" : STATUS_LABELS[s].split(" ")[0]) : ""}</div>
+                            <div class="timeline-dot">${i <= currentIdx ? (i < currentIdx ? "âœ“" : STATUS_LABELS[s].split(" ")[0]) : ""}</div>
                             <div class="timeline-content">
                                 <div class="timeline-label">${STATUS_LABELS[s]}</div>
                             </div>
@@ -577,6 +666,7 @@
     /* ===== INIT ===== */
     (async () => {
         const storeSettings = await fetchStoreSettings();
+        configurePaymentMethods(storeSettings?.payment_methods);
         operationalSettings = await loadOperationalSettings(storeSettings);
         const initialDelivery = resolveDeliveryFee("", operationalSettings);
         deliveryFee = initialDelivery.fee;
@@ -592,14 +682,35 @@
             onLogout: () => { currentUser = null; },
         });
 
-        // Pré-preencher dados se logado
+        // PrÃ©-preencher dados se logado
         if (currentUser) {
             const profile = await fetchProfile(currentUser.id);
             if (profile?.nome)     document.getElementById("clienteName").value = profile.nome;
             if (profile?.telefone) document.getElementById("clientePhone").value = profile.telefone;
+            document.getElementById("orderWhatsappOptIn").checked = Boolean(profile?.whatsapp_opt_in);
         }
 
-        // Aguarda a sessão antes de carregar a aba de pedidos.
+        document.getElementById("customerNotifications")?.addEventListener("click", async event => {
+            const item = event.target.closest("[data-notification-id]");
+            if (!item || !currentUser || !item.classList.contains("is-unread")) return;
+            try { await markNotificationRead(item.dataset.notificationId); await loadCustomerNotifications(); }
+            catch { showToast("Não foi possível marcar a notificação como lida.", "error"); }
+        });
+
+        const sb = getSupabase();
+        if (currentUser && sb) {
+            customerRealtimeChannel = sb.channel(`customer-orders-${currentUser.id}`).on("postgres_changes", {
+                event: "UPDATE", schema: "public", table: "orders", filter: `user_id=eq.${currentUser.id}`,
+            }, async () => { await loadMyOrders(); showToast("O status do seu pedido foi atualizado.", "info", 5000); }).subscribe();
+            notificationsRealtimeChannel = sb.channel(`customer-notifications-${currentUser.id}`).on("postgres_changes", {
+                event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${currentUser.id}`,
+            }, async payload => { await loadCustomerNotifications(); if (payload.new?.title) showNotificationToast(payload.new.title); }).subscribe();
+        } else {
+            await loadGuestTracking();
+            window.setInterval(loadGuestTracking, 12000);
+        }
+
+        // Aguarda a sessÃ£o antes de carregar a aba de pedidos.
         if (location.hash === "#meus-pedidos") {
             switchTab("orders");
         }

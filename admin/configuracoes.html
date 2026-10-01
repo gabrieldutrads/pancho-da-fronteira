@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Configurações da Loja - Pancho da Fronteira">
+    <meta name="robots" content="noindex, nofollow">
     <title>Configurações | Painel Administrativo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +25,7 @@
             <nav class="admin-nav">
                 <span class="admin-nav-label">Principal</span>
                 <a href="./index.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18h16"/><path d="M7 15V8"/><path d="M12 15V5"/><path d="M17 15v-7"/></svg></span></span>Dashboard</a>
-                <a href="./pedidos.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span></span>Pedidos</a>
+                <a href="./pedidos.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span></span>Pedidos</a><a href="./cozinha.html" class="admin-nav-link">Cozinha</a>
 
                 <span class="admin-nav-label">Gerenciamento</span>
                 <a href="./produtos.html" class="admin-nav-link"><span><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 8.2A2 2 0 0 1 15.9 19H8.1a2 2 0 0 1-2-1.8L5 9Z"/><path d="M8 9V7.2A2.2 2.2 0 0 1 10.2 5h3.6A2.2 2.2 0 0 1 16.4 7.2V9"/><path d="M8 13h8"/></svg></span></span>Produtos</a>
@@ -62,10 +63,10 @@
             </header>
 
             <div class="admin-content">
-                <div class="page-header"><div><span class="page-eyebrow">Painel da loja</span><h1>Configura&#231;&#245;es</h1><p>Gerencie contato, taxas por bairro e hor&#225;rios da loja em um s&#243; lugar.</p></div></div>
+                <div class="page-header"><div><span class="page-eyebrow">Painel da loja</span><h1>Configurações</h1><p>Gerencie contato, taxas por bairro e horários da loja em um só lugar.</p></div></div>
                 <form id="storeSettingsForm" class="settings-layout">
                     <section class="admin-panel settings-card" aria-labelledby="storeDetailsTitle">
-                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">01</span><div><h2 id="storeDetailsTitle">Dados da loja</h2><p>Informa&#231;&#245;es exibidas para seus clientes.</p></div></div>
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">01</span><div><h2 id="storeDetailsTitle">Dados da loja</h2><p>Informações exibidas para seus clientes.</p></div></div>
                         <div class="settings-fields">
                             <div class="form-group"><label class="form-label" for="storeName">Nome do estabelecimento</label><input type="text" id="storeName" class="form-input" value="Pancho da Fronteira" autocomplete="organization" required></div>
                             <div class="form-group"><label class="form-label" for="storePhone">Telefone / WhatsApp</label><input type="tel" id="storePhone" class="form-input" value="4888712496" placeholder="(55) 99999-9999" autocomplete="tel"><small>Use o n&#250;mero com DDD para facilitar o contato.</small></div>
@@ -92,6 +93,14 @@
                                 <div id="openingExceptionsList" class="settings-editor-list"></div>
                             </div>
                         </div>
+                    </section>
+                    <section class="admin-panel settings-card" aria-labelledby="paymentSettingsTitle">
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">04</span><div><h2 id="paymentSettingsTitle">Formas de pagamento</h2><p>O checkout apenas registra a opção escolhida. Nenhuma cobrança é processada pelo site.</p></div></div>
+                        <div class="settings-card-body"><div id="paymentMethodsList" class="settings-payment-methods"></div></div>
+                    </section>
+                    <section class="admin-panel settings-card" aria-labelledby="whatsappSettingsTitle">
+                        <div class="settings-card-heading"><span class="settings-card-icon" aria-hidden="true">05</span><div><h2 id="whatsappSettingsTitle">Notificações pelo WhatsApp</h2><p>Configure templates aprovados da WhatsApp Business Platform. O token fica somente no ambiente seguro do backend.</p></div></div>
+                        <div class="settings-card-body"><label class="settings-editor-toggle"><input type="checkbox" id="whatsappEnabled"> Ativar envio oficial</label><div id="whatsappTemplates" class="settings-whatsapp-templates"></div><p id="whatsappConfigHint" class="settings-section-hint">Sem token da API, identificador do número e templates aprovados, nenhuma mensagem será enviada.</p></div>
                     </section>
                     <div class="settings-savebar"><p>Confira os dados antes de salvar para manter pedidos e entregas corretos.</p><button type="submit" class="btn btn-primary settings-save-button">Salvar configura&#231;&#245;es</button></div>
                 </form>
